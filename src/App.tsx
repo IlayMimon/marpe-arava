@@ -5,7 +5,7 @@ function App() {
     return (
         <HashRouter>
             <Routes>
-                <Route path="*" element={<div>404</div>}/>
+                <Route path="*" element={<div>404</div>} />
             </Routes>
         </HashRouter>
     )

@@ -1,9 +1,9 @@
 *,
 *::after,
 *::before {
-  direction: rtl;
   margin: 0;
   padding: 0;
+  direction: rtl;
   box-sizing: border-box;
 }
 
@@ -15,5 +15,5 @@
 }
 
 html {
-  font-size: 62.5%
+  font-size: 62.5%;
 }
