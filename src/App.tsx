@@ -1,12 +1,10 @@
 import {HashRouter,Route,Routes} from "react-router-dom"
-import HomePage from './pages/HomePage'
 
 function App() {
 
   return (
    <HashRouter>
        <Routes>
-           <Route index element={<HomePage/>} />
            <Route path="*" element={<div>404</div>}/>
        </Routes>
    </HashRouter>
