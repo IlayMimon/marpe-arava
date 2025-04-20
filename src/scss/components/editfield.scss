@@ -1,0 +1,123 @@
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 0.8rem;
+
+  &__date-icon {
+    color: red;
+    pointer-events: auto;
+    cursor: pointer;
+    &:hover {
+
+    }
+  }
+
+  &__icon {
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    cursor: default;
+
+
+    &--visible {
+      color: red;
+      visibility: visible;
+      cursor: pointer;
+    }
+  }
+
+  width: 100%;
+
+  &__input {
+    width: 100%;
+  }
+
+  &__top {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__title {
+    color: var(--Text-color-text, rgba(0, 0, 0, 0.88));
+    text-align: right;
+    font-style: normal;
+    font-family: Rubik, serif;
+    font-weight: 400;
+    font-size: 1.4rem;
+  }
+
+  &__body > .ant-picker {
+    padding: 0;
+  }
+}
+
+
+.ant-checkbox-inner::after {
+  direction: ltr;
+}
+
+.ant-picker-ok span {
+  font-size: 0;
+}
+
+.ant-picker-ok span:after {
+  content: "עכשיו" !important;
+  font-size: 16px; /* original font size */
+}
+
+.ant-input {
+  font-family: Rubik, serif;
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+table th,
+table td {
+  flex: 1;
+  text-align: center;
+}
+
+.ant-picker-content tr {
+  flex-direction: row-reverse;
+}
+
+.ant-picker {
+
+  &-input {
+    flex-direction: row-reverse !important;
+
+    padding: 0.4rem 0.4rem 0.4rem 0.4rem !important;
+
+    direction: rtl;
+    font-family: Rubik, serif !important;
+    font-weight: 400 !important;
+    font-size: 1.4rem !important;
+
+    & input {
+      font-size: 14rem;
+    }
+  }
+
+  &-clear {
+    margin-inline-end: 4px;
+  }
+
+
+  &-content {
+    direction: ltr;
+  }
+
+  &-suffix {
+    padding: 0 0 0 0.4rem;
+  }
+}
+
+.custom-tag {
+  margin-inline-end: 0.6rem;
+}
+
+

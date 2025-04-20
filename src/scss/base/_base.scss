@@ -1,0 +1,27 @@
+* ,
+*::after,
+*::before {
+  direction: rtl;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--background-color-ng-container);
+  color: var(--Text-color-text);
+}
+$base-font-size: 10px;
+html{
+
+
+  font-size: 62.5%
+
+
+}
