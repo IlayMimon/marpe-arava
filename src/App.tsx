@@ -1,4 +1,4 @@
-import {HashRouter, Route, Routes} from "react-router-dom"
+import { HashRouter, Route, Routes } from "react-router-dom"
 
 function App() {
 
