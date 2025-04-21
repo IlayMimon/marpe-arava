@@ -1,4 +1,9 @@
+// Utilities
+@use "./utilities/variables";
+@use "./utilities/mixins";
+
+// Base
 @use './base/typography';
 @use './base/base';
 
-
+// Components
