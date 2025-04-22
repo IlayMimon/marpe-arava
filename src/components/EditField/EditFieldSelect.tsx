@@ -1,4 +1,3 @@
-// 📁 EditFieldSelect.tsx
 import {Select, Tooltip} from "antd";
 import type {SelectProps} from "antd";
 import {ExclamationCircleOutlined} from "@ant-design/icons";

@@ -1,4 +1,3 @@
-// 📁 EditFieldTimePicker.tsx
 import {TimePicker, Tooltip} from "antd";
 import dayjs from "dayjs";
 import type {TimePickerProps} from "antd";

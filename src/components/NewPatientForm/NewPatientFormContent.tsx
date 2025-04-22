@@ -1,4 +1,3 @@
-// NewPatientFormContent.tsx
 import {useState} from "react";
 import {Button} from "antd";
 import SoldierDetailsSection from "./SoldierDetailsSection.tsx";

@@ -1,6 +1,3 @@
-// 📁 SoldierDetailsSection.tsx
-
-
 import EditField from "../EditField/EditField.tsx";
 import {FormErrors, PatientFormData} from "../../types/PatientForm.types.ts";
 

@@ -1,4 +1,3 @@
-// NewPatientFormModal.tsx
 import {Button, Modal} from "antd";
 import NewPatientFormContent from "./NewPatientFormContent.tsx";
 import {useState} from "react";
