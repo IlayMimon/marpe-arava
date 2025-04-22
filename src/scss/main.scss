@@ -7,3 +7,6 @@
 @use './base/base';
 
 // Components
+@use '../../../marpe/src/scss/components/editfield';
+@use '../../../marpe/src/scss/components/NewPatientForm/newpatientformcontent';
+@use '../../../marpe/src/scss/components/NewPatientForm/NewPatientFormmodal';

@@ -1,0 +1,80 @@
+.patient-form{
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 3.2rem;
+
+  direction: rtl;
+
+  &__footer{
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: end;
+    gap: 1.6rem;
+
+    width: 100%;
+
+    padding-top: 2rem;
+  }
+
+  &__title{
+    font-family: Rubik, serif ;
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+  &__section {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 1.6rem;
+
+    width: 100%;
+
+    &-feilds {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+      justify-content: end;
+      row-gap: 2.4rem;
+      column-gap: 3.2rem;
+
+      width: 100%;
+    }
+
+    &-title{
+      font-family: Rubik, serif ;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+  }
+}
+.ant-picker-input,
+.ant-select-single{
+  height: 3.2rem;
+
+  font-size: 1.4rem!important;
+}
+
+.ant-btn{
+  height: 3.2rem;
+
+  padding: 0 1.2rem;
+
+  font-size: 1.4rem!important;
+}
+
+.ant-select{
+  font-size: 1.4rem!important;
+}
+.ant-checkbox-inner,
+.ant-select-multiple,
+.ant-select-arrow,
+.ant-select-selector{
+  font-size: 1.4rem!important;
+}
