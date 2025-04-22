@@ -1,9 +1,10 @@
 // Utilities
-@use "./utilities/variables";
-@use "./utilities/mixins";
+@use './utilities/variables';
+@use './utilities/mixins';
 
 // Base
 @use './base/typography';
 @use './base/base';
 
 // Components
+@use './components/sidebar-navigation.scss';
