@@ -21,7 +21,6 @@ interface CommonProps {
     autoSize?: boolean | { minRows?: number; maxRows?: number };
 }
 
-/** Select Field – Multi-select */
 interface SelectFieldMulti extends CommonProps {
     options: OptionItem[] | string[];
     multiSelect: true;
@@ -30,7 +29,6 @@ interface SelectFieldMulti extends CommonProps {
     tagRender?: (props: CustomTagProps, index: number, all: string[]) => React.ReactNode;
 }
 
-/** Select Field – Single-select */
 interface SelectFieldSingle extends CommonProps {
     options: OptionItem[] | string[];
     multiSelect?: false | undefined;
@@ -38,21 +36,18 @@ interface SelectFieldSingle extends CommonProps {
     type?: never;
 }
 
-/** Input field (text, email, number, etc.) */
 interface InputField extends CommonProps {
     type?: Exclude<React.HTMLInputTypeAttribute, "time" | "date">;
     value: string;
     maxLength?: number | undefined;
 }
 
-/** Time picker field */
 interface TimePickerField extends CommonProps {
     type: "time";
     value: string;
     disabledTimes?: TimePickerProps["disabledTime"];
 }
 
-/** ✅ Date picker field */
 interface DatePickerField extends CommonProps {
     type: "date";
     value: string;

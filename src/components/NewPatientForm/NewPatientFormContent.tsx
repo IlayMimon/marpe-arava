@@ -92,11 +92,9 @@ export default function NewPatientFormContent({closeModal}: Props) {
                 else if (selectedDate.isBefore(now, "day")) error = "לא ניתן לבחור תאריך עבר";
                 else if ((value as string).trim() === "") error = "שדה חובה";
 
-                // ✅ בדיקה חוצה – שים שגיאה על השעה אם נבחר היום והשעה עברה
                 if (isToday && isTimePast) {
                     setErrors(prev => ({...prev, desiredTime: "לא ניתן לבחור שעה שכבר עברה"}));
                 } else {
-                    // ✅ אם זה לא היום – הסר שגיאה מהשעה
                     setErrors(prev => ({...prev, desiredTime: ""}));
                 }
                 break;
