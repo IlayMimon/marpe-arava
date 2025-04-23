@@ -1,4 +1,4 @@
-import GroupedTable from "../components/Table/Table";
+import Table from "../components/Table/Table";
 
 const HomePage = () => {
 
@@ -6,7 +6,7 @@ const HomePage = () => {
         <div>
             <h1>Welcome to the Home Page</h1>
             <p>This is the main page of the application.</p>
-            <GroupedTable
+            <Table
                 data={[
                     { id: '1', name: 'Alice', age: 25, dept: 'Engineering' },
                     { id: '2', name: 'Bob', age: 32, dept: 'Engineering' },

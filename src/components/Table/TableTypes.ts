@@ -9,7 +9,7 @@ export interface TableColumn<T> extends Omit<ColumnType<T>, 'dataIndex'> {
 
 export interface GenericGroupedTableProps<T> {
     data: T[];
-    groupBy: (record: T) => string;
+    groupBy?: (record: T) => string;
     columns: TableColumn<T>[];
     rowKey: (record: T) => string;
 }

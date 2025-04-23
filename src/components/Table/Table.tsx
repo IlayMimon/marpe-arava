@@ -1,17 +1,15 @@
-import { Table } from 'antd';
+import { Table as AntTable } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/es/table';
 import { useState } from 'react';
 import { useGroupedRows } from '../../hooks/useGroupedRows';
 import { GenericGroupedTableProps, GroupedRow, RenderedCell } from './TableTypes';
 
-function GroupedTable<T extends object>({
-    data,
-    columns,
-    groupBy,
-    rowKey,
-}: GenericGroupedTableProps<T>) {
+const Table = <T extends object>({ data, columns, groupBy, rowKey }: GenericGroupedTableProps<T>) => {
     const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-    const groupedRows = useGroupedRows<T>(data, groupBy, collapsedGroups);
+
+    const groupedRows: GroupedRow<T>[] = groupBy
+        ? useGroupedRows<T>(data, groupBy, collapsedGroups)
+        : data.map((item) => ({ type: 'data', original: item }));
 
     const toggleGroup = (groupTitle: string) => {
         setCollapsedGroups((prev) => ({
@@ -37,7 +35,7 @@ function GroupedTable<T extends object>({
                                     className="group-label"
                                     onClick={() => toggleGroup(record.groupTitle)}
                                 >
-                                    ▶ {record.groupTitle} ({collapsedGroups[record.groupTitle] ? 'Show' : 'Hide'})
+                                    ▶ {record.groupTitle} ({collapsedGroups?.[record.groupTitle] ? 'Show' : 'Hide'})
                                 </div>
                             ),
                             props: { colSpan: columns.length },
@@ -50,7 +48,6 @@ function GroupedTable<T extends object>({
                     }
                 }
 
-                // 💡 THIS IS THE FIX: get the value manually from original
                 const actualValue =
                     col.dataIndex && record.original
                         ? (record.original[col.dataIndex as keyof T] as React.ReactNode)
@@ -60,13 +57,13 @@ function GroupedTable<T extends object>({
                     ? col.render(actualValue, record.original, index)
                     : actualValue ?? null;
             }
-        }
+        };
 
         return baseCol;
     });
 
     return (
-        <Table<GroupedRow<T>>
+        <AntTable<GroupedRow<T>>
             columns={enhancedColumns}
             dataSource={groupedRows}
             rowKey={(record) => {
@@ -89,4 +86,4 @@ function GroupedTable<T extends object>({
     );
 }
 
-export default GroupedTable;
+export default Table
