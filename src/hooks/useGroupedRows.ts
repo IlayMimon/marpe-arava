@@ -1,40 +1,37 @@
 import { useMemo } from 'react';
+import { GroupedRow } from '../components/Table/TableTypes';
 
-export function useGroupedRows<T extends object>(
-    data: T[],
-    groupBy: (record: T) => string,
-    collapsedGroups: Record<string, boolean>
-) {
-    return useMemo(() => {
-        const groups: Record<string, T[]> = {};
-        data.forEach((item) => {
-            const key = groupBy(item);
-            groups[key] = groups[key] || [];
-            groups[key].push(item);
-        });
+export function useGroupedRows<T>(
+  data: T[],
+  groupBy: (row: T) => string,
+  collapsedGroups: Record<string, boolean>
+): GroupedRow<T>[] {
+  return useMemo(() => {
+    const grouped: Record<string, T[]> = {};
 
-        const result: any[] = [];
+    // Step 1: group data
+    for (const item of data) {
+      const key = groupBy(item);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(item);
+    }
 
-        Object.entries(groups).forEach(([groupTitle, rows]) => {
-            const isCollapsed = collapsedGroups[groupTitle] ?? false;
+    // Step 2: build grouped rows
+    const result: GroupedRow<T>[] = [];
 
-            result.push({
-                type: 'group',
-                key: `group-${groupTitle}`,
-                groupTitle,
-            });
+    for (const groupTitle in grouped) {
+      result.push({ type: 'group', groupTitle });
 
-            if (!isCollapsed) {
-                result.push(
-                    ...rows.map((row) => ({
-                        ...row,
-                        type: 'data',
-                        groupTitle,
-                    }))
-                );
-            }
-        });
+      if (!collapsedGroups[groupTitle]) {
+        result.push(
+          ...grouped[groupTitle].map((item) => ({
+            type: 'data' as const,
+            original: item,
+          }))
+        );
+      }
+    }
 
-        return result;
-    }, [data, groupBy, collapsedGroups]);
+    return result;
+  }, [data, groupBy, collapsedGroups]);
 }
