@@ -1,0 +1,39 @@
+.sidebar-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 7.5rem !important;
+
+  height: 100vh !important;
+
+  &--image {
+    height: 6rem;
+
+    display: flex;
+  }
+
+  .ant-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100% !important;
+  }
+
+  .ant-menu-item-selected {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .ant-menu-item {
+    width: 6.1rem !important;
+
+    padding: 0 2.2rem !important;
+  }
+  ul {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    background: transparent !important;
+  }
+}
