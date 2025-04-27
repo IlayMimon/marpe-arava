@@ -1,4 +1,4 @@
-import TravelBar from './components/TravelBar';
+import TravelBar from './components/travel-bar/TravelBar';
 import './styles/main.scss';
 
 
