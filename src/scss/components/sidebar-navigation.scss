@@ -1,8 +1,12 @@
 .sidebar-navigation {
   display: flex;
+  flex: 0 0 7.5rem !important;
   align-items: center;
   justify-content: center;
-  flex-basis: 7.5rem !important;
+
+  max-width: 7.5rem !important;
+  min-width: 7.5rem !important;
+  width: 7.5rem !important;
 
   height: 100vh !important;
 
