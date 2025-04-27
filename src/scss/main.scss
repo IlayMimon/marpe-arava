@@ -6,8 +6,10 @@
 @use './base/typography';
 @use './base/base';
 
-// Components
+// Pages
 @use './pages/home-page.scss';
 
 // Components
-@use './components/sidebar-navigation.scss';
+@use './components/sidebar-navigation';
+@use './components/header';
+@use './components/home-screen-body';
