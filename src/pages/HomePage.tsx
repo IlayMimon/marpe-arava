@@ -1,13 +1,21 @@
+import Header from "../components/Header";
+import HomeScreenBody from "../components/HomeScreenBody";
 import SidebarNavigation from "../components/sidebarNavigation";
 import React from "react";
 
 const HomePage: React.FC = () => {
   return (
     <div className="home-page">
-      <SidebarNavigation />
+      <div className="home-page__sidebar">
+        <SidebarNavigation />
+      </div>
       <div className="home-page__content">
-        <h1>Welcome to the Home Page</h1>
-        <p>This is the main page of the application.</p>
+        <header className="home-page__content__header">
+          <Header />
+        </header>
+        <div className="home-page__content__body">
+          <HomeScreenBody />
+        </div>
       </div>
     </div>
   );

@@ -1,19 +1,19 @@
 .sidebar-navigation {
   display: flex;
-  flex: 0 0 7.5rem !important;
+  flex: 0 0 100% !important;
   align-items: center;
   justify-content: center;
 
-  max-width: 7.5rem !important;
-  min-width: 7.5rem !important;
-  width: 7.5rem !important;
-
+  width: 100% !important;
   height: 100vh !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+
 
   &--image {
-    height: 6rem;
-
     display: flex;
+    
+    height: 6rem;
   }
 
   .ant-layout-sider-children {
@@ -29,7 +29,7 @@
   }
 
   .ant-menu-item {
-    width: 6.1rem !important;
+    width: 6.5rem !important;
 
     padding: 0 2.2rem !important;
   }
