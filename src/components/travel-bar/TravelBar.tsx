@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { ChevronRight, ChevronDown, ChevronLeft, Users } from 'lucide-react';
 import { ColorType, TravelItem, TravelBarProps } from './types';
 import { defaultTravelItems, colorToDriverNumber, availableDrivers, kilometersPerColor } from './dummyData';
-
+import { FaLongArrowAltLeft } from "react-icons/fa";
+        
 const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   // State
   const [activeFilters, setActiveFilters] = useState<ColorType[]>([]);
@@ -155,8 +156,8 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                   <div
                     key={driver.id}
                     className={`travel-bar__filters__driver__dropdown__item ${isDriverAssigned(driver.id) && driverAssignments['purple'] !== driver.id
-                        ? 'travel-bar__filters__driver__dropdown__item--disabled'
-                        : ''
+                      ? 'travel-bar__filters__driver__dropdown__item--disabled'
+                      : ''
                       }`}
                     onClick={() => {
                       if (!isDriverAssigned(driver.id) || driverAssignments['purple'] === driver.id) {
@@ -198,8 +199,8 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                   <div
                     key={driver.id}
                     className={`travel-bar__filters__driver__dropdown__item ${isDriverAssigned(driver.id) && driverAssignments['teal'] !== driver.id
-                        ? 'travel-bar__filters__driver__dropdown__item--disabled'
-                        : ''
+                      ? 'travel-bar__filters__driver__dropdown__item--disabled'
+                      : ''
                       }`}
                     onClick={() => {
                       if (!isDriverAssigned(driver.id) || driverAssignments['teal'] === driver.id) {
@@ -241,8 +242,8 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                   <div
                     key={driver.id}
                     className={`travel-bar__filters__driver__dropdown__item ${isDriverAssigned(driver.id) && driverAssignments['yellow'] !== driver.id
-                        ? 'travel-bar__filters__driver__dropdown__item--disabled'
-                        : ''
+                      ? 'travel-bar__filters__driver__dropdown__item--disabled'
+                      : ''
                       }`}
                     onClick={() => {
                       if (!isDriverAssigned(driver.id) || driverAssignments['yellow'] === driver.id) {
@@ -289,17 +290,18 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
 
                     <div className="travel-bar__list__item__time">
                       <span>{item.startTime}</span>
-                      <span className="travel-bar__list__item__time__separator">→</span>
+                      <span className="travel-bar__list__item__time__separator"><FaLongArrowAltLeft />
+                      </span>
                       <span>{item.endTime}</span>
                     </div>
                   </div>
 
                   <div className="travel-bar__list__item__right">
                     <div className="travel-bar__list__item__type">
-                      {item.location}
+                      אזור
                     </div>
                     <div className="travel-bar__list__item__location">
-                      {item.type}
+                      {item.code}
                     </div>
 
                   </div>
@@ -311,7 +313,6 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                   <div className={`travel-bar__list__item__color-indicator travel-bar__list__item__color-indicator--${item.colorType}`}></div>
                 </div>
 
-                {/* Expanded details with stations */}
                 {expandedTrips.includes(item.id) && item.stations.length > 0 && (
                   <div className="travel-bar__list__item__expanded">
                     <ul className={`travel-bar__list__item__stations travel-bar__list__item__stations--${item.colorType}`}>
@@ -320,10 +321,10 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                           key={idx}
                           className={`travel-bar__list__item__station travel-bar__list__item__station--${item.colorType}`}
                         >
-                          <div className="travel-bar__list__item__station__time">
-                            {station.arrivalTime}
-                          </div>
 
+                          <div className="travel-bar__list__item__station__name">
+                            {station.name}
+                          </div>
                           {station.passengers && (
                             <div className="travel-bar__list__item__station__passengers">
                               <Users size={14} className="travel-bar__list__item__station__passengers__icon" />
@@ -333,8 +334,8 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                             </div>
                           )}
 
-                          <div className="travel-bar__list__item__station__name">
-                            {station.name}
+                          <div className="travel-bar__list__item__station__time">
+                            {station.arrivalTime}
                           </div>
                         </li>
                       ))}

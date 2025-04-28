@@ -29,7 +29,7 @@ export const availableDrivers: Driver[] = [
       type: 'ירושלים', 
       startTime: '07:30', 
       endTime: '08:20', 
-      code: 'אזור א', 
+      code: ' א', 
       colorType: 'purple',
       driverId: 1,
       stations: [
@@ -44,7 +44,7 @@ export const availableDrivers: Driver[] = [
       type: 'תחנה מרכזית', 
       startTime: '07:30', 
       endTime: '08:35', 
-      code: 'אזור ב', 
+      code: ' ב', 
       colorType: 'purple',
       driverId: 3,
       stations: [
@@ -59,7 +59,7 @@ export const availableDrivers: Driver[] = [
       type: 'בסיס חצבה תא 10', 
       startTime: '08:50', 
       endTime: '10:00', 
-      code: 'אזור ב', 
+      code: ' ב', 
       colorType: 'purple',
       driverId: 3,
       stations: [
@@ -76,7 +76,7 @@ export const availableDrivers: Driver[] = [
       type: 'חיפה', 
       startTime: '09:30', 
       endTime: '09:55', 
-      code: 'אזור א', 
+      code: ' א', 
       colorType: 'teal',
       driverId: 2,
       stations: []
@@ -88,7 +88,7 @@ export const availableDrivers: Driver[] = [
       type: 'באר שבע', 
       startTime: '10:05', 
       endTime: '10:55', 
-      code: 'אזור ב', 
+      code: ' ב', 
       colorType: 'teal',
       driverId: 2,
       stations: []
@@ -100,7 +100,7 @@ export const availableDrivers: Driver[] = [
       type: 'נתניה', 
       startTime: '10:30', 
       endTime: '12:00', 
-      code: 'אזור א', 
+      code: ' א', 
       colorType: 'yellow',
       driverId: 1,
       stations: []
@@ -112,7 +112,7 @@ export const availableDrivers: Driver[] = [
       type: 'אשדוד', 
       startTime: '10:45', 
       endTime: '11:50', 
-      code: 'אזור א', 
+      code: ' א', 
       colorType: 'purple',
       driverId: 3,
       stations: []
@@ -124,7 +124,7 @@ export const availableDrivers: Driver[] = [
       type: 'אילת', 
       startTime: '12:00', 
       endTime: '13:30', 
-      code: 'אזור א', 
+      code: ' א', 
       colorType: 'teal',
       driverId: 2,
       stations: []
