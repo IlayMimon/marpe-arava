@@ -1,12 +1,18 @@
 // Utilities
-@use "./utilities/variables";
-@use "./utilities/mixins";
+@use './utilities/variables';
+@use './utilities/mixins';
 
 // Base
 @use './base/typography';
 @use './base/base';
 
+// Pages
+@use './pages/home-page.scss';
+
 // Components
+@use './components/sidebar-navigation';
+@use './components/header';
+@use './components/home-screen-body';
 @use 'components/editfield';
 @use 'components/NewPatientForm/newpatientformcontent';
 @use 'components/NewPatientForm/NewPatientFormmodal';
