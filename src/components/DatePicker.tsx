@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { DatePicker, Button, ConfigProvider, Tag } from "antd";
+import { DatePicker as AntDatePicker, Button, ConfigProvider, Tag } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import heIL from "antd/lib/locale/he_IL";
@@ -11,7 +11,7 @@ dayjs.locale("he");
 
 const defaultDate = dayjs();
 
-const HeaderDatePicker = () => {
+const DatePicker = () => {
   const [date, setDate] = useState<Dayjs>(defaultDate);
   const isToday = useMemo(() => date.isSame(dayjs(), "day"), [date]);
 
@@ -38,17 +38,17 @@ const HeaderDatePicker = () => {
   const disabledDate = (current: Dayjs) => !isAllowedDay(current.day());
 
   return (
-    <div className="main-date-picker">
+    <div className="date-picker">
       <Button
-        className="main-date-picker__button--prev"
+        className="date-picker__button--prev"
         onClick={goPreviousDay}
       >
         <RightOutlined />
       </Button>
 
       <ConfigProvider locale={heIL} direction="rtl">
-        <DatePicker
-          className="main-date-picker__input"
+        <AntDatePicker
+          className="date-picker__input"
           picker="date"
           value={date}
           inputMode="none"
@@ -57,7 +57,7 @@ const HeaderDatePicker = () => {
           prefix={
             isToday && (
               <Tag
-                className="main-date-picker__input--tag"
+                className="date-picker__input--tag"
                 bordered={false}
                 color="processing"
               >
@@ -72,11 +72,11 @@ const HeaderDatePicker = () => {
         />
       </ConfigProvider>
 
-      <Button className="main-date-picker__button--next" onClick={goNextDay}>
+      <Button className="date-picker__button--next" onClick={goNextDay}>
         <LeftOutlined />
       </Button>
     </div>
   );
 };
 
-export default HeaderDatePicker;
+export default DatePicker;
