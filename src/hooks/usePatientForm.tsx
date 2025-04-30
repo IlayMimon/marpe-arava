@@ -160,7 +160,6 @@ export const usePatientForm = (closeModal?: () => void) => {
     notes: validateNotes,
   };
 
-  // Validate a specific field
   const validateField = <K extends keyof PatientFormData>(
     key: K,
     value: PatientFormData[K]
@@ -170,7 +169,6 @@ export const usePatientForm = (closeModal?: () => void) => {
     setErrors((prev) => ({ ...prev, [key]: error }));
   };
 
-  // Check if the form is valid
   const isFormValid =
     Object.values(errors).every((e) => e === "") &&
     formData.fullName.trim() !== "" &&
@@ -181,7 +179,6 @@ export const usePatientForm = (closeModal?: () => void) => {
     formData.desiredDate.trim() !== "" &&
     formData.desiredTime.trim() !== "";
 
-  // Form submission
   const handleSubmit = () => {
     if (!isFormValid) return;
     console.log("Submit patient", formData);
@@ -206,13 +203,11 @@ export const usePatientForm = (closeModal?: () => void) => {
     setIsDropOffTouched(false);
   };
 
-  // Handle field changes
   const handleChange = (key: keyof PatientFormData) => (val: string | string[]) => {
     setFormData((prev) => ({ ...prev, [key]: val }));
     validateField(key, val);
   };
 
-  // Special handler for pickup station
   const handlePickupChange = (val: string | string[]) => {
     const pickupVal = Array.isArray(val) ? val[0] : val;
     const dropVal = isDropOffTouched ? formData.dropOffStation : pickupVal;

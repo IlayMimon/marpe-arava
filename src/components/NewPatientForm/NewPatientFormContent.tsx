@@ -3,7 +3,6 @@ import SoldierDetailsSection from "./SoldierDetailsSection.tsx";
 import AppointmentDetailsSection from "./AppointmentDetailsSection.tsx";
 import { usePatientForm } from "../../hooks/usePatientForm.tsx";
 
-
 interface Props {
   closeModal: () => void;
 }
