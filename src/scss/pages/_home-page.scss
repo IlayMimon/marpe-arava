@@ -5,7 +5,9 @@
   &__sidebar {
     width: 8rem;
   }
+
   &__content {
+    min-width: 0;
     width: 100%;
     height: 100%;
 
@@ -13,14 +15,13 @@
 
     &__header {
       height: 7%;
+      min-height: 7rem;
       padding: 2rem 2.8rem 1.6rem 2.2rem;
     }
 
     &__body {
       height: 93%;
-      padding: 2rem;
       padding: 3rem 2.8rem 1.6rem 2.2rem;
-
       background-color: var(--Background-color-bg-layout);
     }
   }
