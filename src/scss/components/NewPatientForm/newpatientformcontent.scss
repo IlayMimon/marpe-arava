@@ -1,4 +1,4 @@
-.patient-form{
+.patient-form {
   position: relative;
 
   display: flex;
@@ -8,7 +8,7 @@
 
   direction: rtl;
 
-  &__footer{
+  &__footer {
     position: relative;
 
     display: flex;
@@ -22,8 +22,8 @@
     padding-top: 2rem;
   }
 
-  &__title{
-    font-family: Rubik, serif ;
+  &__title {
+    font-family: Rubik, serif;
     font-size: 1.6rem;
     font-weight: 500;
   }
@@ -47,34 +47,34 @@
       width: 100%;
     }
 
-    &-title{
-      font-family: Rubik, serif ;
+    &-title {
+      font-family: Rubik, serif;
       font-size: 1.4rem;
       font-weight: 500;
     }
   }
 }
 .ant-picker-input,
-.ant-select-single{
+.ant-select-single {
   height: 3.2rem;
 
-  font-size: 1.4rem!important;
+  font-size: 1.4rem !important;
 }
 
-.ant-btn{
+.ant-btn {
   height: 3.2rem;
 
   padding: 0 1.2rem;
 
-  font-size: 1.4rem!important;
+  font-size: 1.4rem !important;
 }
 
-.ant-select{
-  font-size: 1.4rem!important;
+.ant-select {
+  font-size: 1.4rem !important;
 }
 .ant-checkbox-inner,
 .ant-select-multiple,
 .ant-select-arrow,
-.ant-select-selector{
-  font-size: 1.4rem!important;
+.ant-select-selector {
+  font-size: 1.4rem !important;
 }
