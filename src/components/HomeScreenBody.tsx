@@ -1,11 +1,27 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
-import { Button, Tooltip } from "antd";
+import { Button, message, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
+import ShuttleAssignmentModal from './ShuttleAssignmentModal/ShuttleAssignmentModal'
+// import btnPopUpMsg from "./generic/btnPopUpMsg";
+
 
 const HomeScreenBody = () => {
   const [isShattlesArranged, setIsShattlesArranged] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
+  const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
 
+
+   const handleSubmit = (values: any) => {
+    // כאן תוכל לשלוח את הנתונים לשרת
+    console.log("Submitting values:", values);
+    message.success("שיבוץ הנסיעות בוצע בהצלחה");
+    setModalVisible(false);
+
+    // סימולציה: לאחר שליחה נניח שנשלחו הודעות
+    setMessagesAlreadySent(true);
+  };
   return (
     <div className="home-screen-body">
       <div className="home-screen-body__header">
@@ -14,6 +30,7 @@ const HomeScreenBody = () => {
         </div>
         <div className="home-screen-body__header__left">
           <Button
+          onClick={() => setModalVisible(!modalVisible)}
             color="default"
             variant="filled"
             icon={<IconSparkles />}
@@ -21,6 +38,14 @@ const HomeScreenBody = () => {
           >
             שבץ נסיעות
           </Button>
+          <ShuttleAssignmentModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSubmit={handleSubmit}
+        medicName={selectedMedic}
+        setMedicName={setSelectedMedic}
+        messagesAlreadySent={messagesAlreadySent}
+      />
           <Tooltip title={isShattlesArranged ? undefined : "נדרש לשבץ נסיעות"}>
             <Button
               disabled
@@ -43,6 +68,7 @@ const HomeScreenBody = () => {
         </div>
       </div>
       <div className="home-screen-body__body">table</div>
+
     </div>
   );
 };
