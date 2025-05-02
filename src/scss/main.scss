@@ -16,6 +16,7 @@
 @use 'components/editfield';
 @use 'components/NewPatientForm/newpatientformcontent';
 @use 'components/NewPatientForm/NewPatientFormmodal';
+@use './components/date-picker';
 @use './components/kpies';
 @use './components/kpi';
 @use './components/summarize-numbers';
