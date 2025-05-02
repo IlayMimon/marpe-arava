@@ -1,0 +1,17 @@
+.shuttle-table-header{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 1.6rem;
+    width: 100%;
+    height: fit-content;
+    
+    border :none !important;
+    background-color: white;
+    &__segmented{
+        width: 10rem;
+    }
+}
