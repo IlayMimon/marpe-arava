@@ -41,9 +41,7 @@
   }
 
   &__title {
-    color: var(--Text-color-text, rgba(0, 0, 0, 0.88));
     text-align: right;
-    font-family: Rubik, serif;
     font-size: 1.4rem;
   }
 
@@ -97,7 +95,6 @@
     padding: 0.4rem !important;
 
     direction: rtl;
-    font-family: Rubik, serif !important;
 
     & input {
       font-size: 1.4rem !important;
