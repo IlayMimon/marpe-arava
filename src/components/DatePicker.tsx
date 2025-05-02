@@ -53,7 +53,7 @@ const DatePicker = () => {
           inputReadOnly
           allowClear={false}
           prefix={
-            isToday && (
+            !isToday && (
               <Tag className="date-picker__input--tag" bordered={false}>
                 היום
               </Tag>
