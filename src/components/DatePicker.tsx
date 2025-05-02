@@ -1,50 +1,48 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { DatePicker as AntDatePicker, Button, ConfigProvider, Tag } from "antd";
-import dayjs, { Dayjs } from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 import heIL from "antd/lib/locale/he_IL";
+import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/he";
-import { useState, useMemo } from "react";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useMemo, useState } from "react";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("he");
 
 const defaultDate = dayjs();
+const allowedDays = [1, 2, 3]; // Sunday, Monday, Tuesday
 
 const DatePicker = () => {
-  const [date, setDate] = useState<Dayjs>(defaultDate);
-  const isToday = useMemo(() => date.isSame(dayjs(), "day"), [date]);
-
-  const isAllowedDay = (day: number) => [1, 2, 3].includes(day);
+  const isAllowedDay = (day: number) => allowedDays.includes(day);
 
   const findNextAllowedDay = (current: Dayjs): Dayjs => {
-    let next = current.add(1, "day");
-    while (!isAllowedDay(next.day())) {
-      next = next.add(1, "day");
-    }
-    return next;
+    return isAllowedDay(current.day() + 1)
+      ? current.add(1, "day")
+      : current.add((8 - current.day()) % 7, "day");
   };
 
   const findPreviousAllowedDay = (current: Dayjs): Dayjs => {
-    let prev = current.subtract(1, "day");
-    while (!isAllowedDay(prev.day())) {
-      prev = prev.subtract(1, "day");
-    }
-    return prev;
+    return isAllowedDay(current.day() - 1)
+      ? current.subtract(1, "day")
+      : current.subtract((current.day() + 4) % 7, "day");
   };
 
-  const goPreviousDay = () => setDate(findPreviousAllowedDay(date));
-  const goNextDay = () => setDate(findNextAllowedDay(date));
+  const goPreviousDay = () => setDate((prevDate) => findPreviousAllowedDay(prevDate));
+  const goNextDay = () => setDate((prevDate) => findNextAllowedDay(prevDate));
   const disabledDate = (current: Dayjs) => !isAllowedDay(current.day());
+
+  const [date, setDate] = useState<Dayjs>(
+    isAllowedDay(defaultDate.day()) ? defaultDate : findNextAllowedDay(defaultDate)
+  );
+  const isToday = useMemo(() => date.isSame(dayjs(), "day"), [date]);
 
   return (
     <div className="date-picker">
       <Button
-        className="date-picker__button--prev"
+        className="date-picker__button date-picker__button--prev"
         onClick={goPreviousDay}
-      >
-        <RightOutlined />
-      </Button>
+        icon={<RightOutlined />}
+      />
 
       <ConfigProvider locale={heIL} direction="rtl">
         <AntDatePicker
@@ -55,26 +53,24 @@ const DatePicker = () => {
           inputReadOnly
           allowClear={false}
           prefix={
-            isToday && (
-              <Tag
-                className="date-picker__input--tag"
-                bordered={false}
-                color="processing"
-              >
+            !isToday && (
+              <Tag className="date-picker__input--tag" bordered={false}>
                 היום
               </Tag>
             )
           }
           suffixIcon={null}
-          format="[יום] dd D.M.YY"
+          format="[יום] dd DD.MM.YY"
           onChange={(val) => val && isAllowedDay(val.day()) && setDate(val)}
           disabledDate={disabledDate}
         />
       </ConfigProvider>
 
-      <Button className="date-picker__button--next" onClick={goNextDay}>
-        <LeftOutlined />
-      </Button>
+      <Button
+        className="date-picker__button date-picker__button--next"
+        onClick={goNextDay}
+        icon={<LeftOutlined />}
+      />
     </div>
   );
 };

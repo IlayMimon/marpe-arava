@@ -5,50 +5,56 @@
   justify-content: center;
   align-items: center;
 
+  width: 25rem;
+
   &__input {
     position: relative;
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
 
-    width: 22rem;
+    width: 100%;
 
     border-radius: 0;
-    border-color: #d9d9d9;
+    border-color: var(--Border-color-border);
+
     .ant-picker-input {
+
       width: auto !important;
+      min-width: 8rem !important;
+
 
       font-size: 1.4rem;
       font-family: Rubik, serif;
+
+      input {
+        text-align: center !important;
+      }
     }
 
     &--tag {
+      margin: 0;
+
       font-size: 1.4rem;
       font-family: Rubik, serif;
-    }
-
-    & input {
-      max-width: 8rem;
+      color: var(--Text-color-text-secondary) !important;
+      background-color: var(--control-item-bg-active) !important;
     }
   }
 
   &__button {
+    width: 4rem !important;
+    border: var(--Border) !important;
+
     &--next {
       border-radius: 8px 0px 0px 8px;
-      border-top: 1px solid #d9d9d9;
-      border-bottom: 1px solid #d9d9d9;
-      border-left: 1px solid #d9d9d9;
-      border-right: none;
+      border-right: none !important;
     }
 
     &--prev {
       border-radius: 0px 8px 8px 0px;
-      border-top: 1px solid #d9d9d9;
-      border-bottom: 1px solid #d9d9d9;
-      border-left: none;
-      border-right: 1px solid #d9d9d9;
+      border-left: none !important;
     }
   }
 }
