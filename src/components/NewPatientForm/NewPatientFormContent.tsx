@@ -26,8 +26,8 @@ export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {
 
   const handleSubmit = () => {
     if (isFormValid) {
-      onSubmit(formData); // העברת נתוני הטופס לקומפוננטת האב
-      closeModal(); // סגירת המודל לאחר השליחה
+      onSubmit(formData); 
+      closeModal();
     }
   };
 
