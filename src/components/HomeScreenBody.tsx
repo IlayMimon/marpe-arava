@@ -1,10 +1,21 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
-import { Button, Tooltip } from "antd";
+import { Button, Modal, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
+import NewPatientFormContent from "./NewPatientForm/NewPatientFormContent";
+import { PatientFormData } from "../types/PatientForm.types";
 
 const HomeScreenBody = () => {
   const [isShattlesArranged, setIsShattlesArranged] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handlePatientSubmit = (formData: PatientFormData) => {
+    console.log("נתוני הטופס:", formData);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="home-screen-body">
@@ -37,10 +48,22 @@ const HomeScreenBody = () => {
             variant="solid"
             icon={<TbPlus />}
             className="home-screen-body__header__left__button"
+            onClick={() => setIsModalOpen(true)}
           >
             הוספת מטופל
           </Button>
         </div>
+        <Modal
+          className="patient-form-modal"
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          footer={null}
+        >
+          <NewPatientFormContent
+            closeModal={closeModal}
+            onSubmit={handlePatientSubmit}
+          />
+        </Modal>
       </div>
       <div className="home-screen-body__body">table</div>
     </div>

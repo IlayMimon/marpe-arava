@@ -1,9 +1,18 @@
 import { Button, Modal } from "antd";
 import NewPatientFormContent from "./NewPatientFormContent.tsx";
 import { useState } from "react";
+import { PatientFormData } from "../../types/PatientForm.types.ts";
 
 export default function NewPatientFormModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handlePatientSubmit = (formData: PatientFormData) => {
+    console.log("נתוני הטופס:", formData);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -16,7 +25,10 @@ export default function NewPatientFormModal() {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
-        <NewPatientFormContent closeModal={() => setIsModalOpen(false)} />
+        <NewPatientFormContent
+          closeModal={closeModal}
+          onSubmit={handlePatientSubmit}
+        />
       </Modal>
     </>
   );

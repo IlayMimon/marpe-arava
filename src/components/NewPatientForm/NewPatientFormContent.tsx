@@ -2,12 +2,14 @@ import { Button } from "antd";
 import SoldierDetailsSection from "./SoldierDetailsSection.tsx";
 import AppointmentDetailsSection from "./AppointmentDetailsSection.tsx";
 import { usePatientForm } from "../../hooks/usePatientForm.tsx";
+import { PatientFormData } from "../../types/PatientForm.types.ts";
 
 interface Props {
   closeModal: () => void;
+  onSubmit: (formData: PatientFormData) => void; // הוסף את onSubmit כ- prop
 }
 
-export default function NewPatientFormContent({ closeModal }: Props) {
+export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {
   const {
     formData,
     errors,
@@ -19,9 +21,15 @@ export default function NewPatientFormContent({ closeModal }: Props) {
     setIsDropOffTouched,
     handleChange,
     handlePickupChange,
-    handleSubmit,
     handleClear
-  } = usePatientForm(closeModal);
+  } = usePatientForm();
+
+  const handleSubmit = () => {
+    if (isFormValid) {
+      onSubmit(formData); // העברת נתוני הטופס לקומפוננטת האב
+      closeModal(); // סגירת המודל לאחר השליחה
+    }
+  };
 
   return (
     <div className="patient-form">
