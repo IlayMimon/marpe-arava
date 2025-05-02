@@ -91,27 +91,25 @@
     margin-inline-end: 0.6rem;
   }
 
-  .ant-picker {
-    &-input {
-      flex-direction: row-reverse !important;
+  .ant-picker-input {
+    flex-direction: row-reverse !important;
 
-      padding: 0.4rem !important;
+    padding: 0.4rem !important;
 
-      direction: rtl;
-      font-family: Rubik, serif !important;
+    direction: rtl;
+    font-family: Rubik, serif !important;
 
-      & input {
-        font-size: 1.4rem !important;
-      }
+    & input {
+      font-size: 1.4rem !important;
     }
+  }
 
-    &-clear {
-      margin-inline-end: 4px;
-    }
+  .ant-picker-clear {
+    margin-inline-end: 4px;
+  }
 
-    &-suffix {
-      padding-left: 0.4rem;
-    }
+  .ant-picker-suffix {
+    padding-left: 0.4rem;
   }
 }
 
