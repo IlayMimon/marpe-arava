@@ -11,10 +11,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex: 3;
     gap: 1rem;
 
-    width: 100%;
+    width: 30%;
     height: 100%;
 
     &__date {
@@ -43,9 +42,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 7;
 
-    width: 100%;
+    width: 70%;
     height: 100%;
   }
 }
