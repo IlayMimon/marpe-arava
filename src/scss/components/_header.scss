@@ -10,10 +10,10 @@
   &__right {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
 
-    width: 30%;
+    width: 25%;
+    min-width: 35rem;
     height: 100%;
 
     &__date {
@@ -23,8 +23,6 @@
 
       width: 55%;
       height: 100%;
-
-      background-color: cadetblue;
     }
     &__medic {
       display: flex;
@@ -32,9 +30,8 @@
       justify-content: center;
 
       width: 45%;
+      min-width: 15rem;
       height: 100%;
-
-      background-color: cadetblue;
     }
   }
 
@@ -43,7 +40,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 70%;
+    width: 75%;
+    min-width: 20rem;
     height: 100%;
   }
 }
