@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import { TbBus } from 'react-icons/tb';
-import marpeLogo from '../../public/assets/marpeLogo.png';
+import marpeLogo from '/assets/marpeLogo.png';
 const { Sider } = Layout;
 
 const SidebarNavigation: React.FC = () => {

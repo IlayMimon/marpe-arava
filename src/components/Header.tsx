@@ -1,11 +1,15 @@
+import DatePicker from "./DatePicker";
 import Kpies from "./Kpies";
+import MedicSelect from "./MedicSelect";
 
 const Header = () => {
   return (
     <div className="header">
       <div className="header__right">
-        <div className="header__right__date">date</div>
-        <div className="header__right__medic">medic</div>
+        <DatePicker />
+        <div className="header__right__medic">
+          <MedicSelect />
+        </div>
       </div>
       <div className="header__left">
         <Kpies />
