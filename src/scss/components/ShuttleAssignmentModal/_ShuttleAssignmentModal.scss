@@ -3,9 +3,10 @@
     border-radius: 8px !important;
     
     &__assign-btn{
-        background-color: var(--Text-color-text) !important;
+        background-color: rgba(0, 0, 0, 0.88) !important;
+        color: white !important;
         &:hover{
-            background-color:  !important;
+            background-color:  #1677FF !important;
         }
     }
     &__timePicker{

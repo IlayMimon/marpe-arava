@@ -3,7 +3,7 @@ import { Button, message, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import ShuttleAssignmentModal from './ShuttleAssignmentModal/ShuttleAssignmentModal'
-// import btnPopUpMsg from "./generic/btnPopUpMsg";
+import BtnPopUpMsg from "./generic/btnPopUpMsg";
 
 
 const HomeScreenBody = () => {
@@ -11,17 +11,18 @@ const HomeScreenBody = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
-
+  const [popUpMsgOpen, setPopUpMsg] = useState(false);
 
    const handleSubmit = (values: any) => {
-    // כאן תוכל לשלוח את הנתונים לשרת
+    
     console.log("Submitting values:", values);
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
+    setIsShattlesArranged(true);
     setModalVisible(false);
 
-    // סימולציה: לאחר שליחה נניח שנשלחו הודעות
-    setMessagesAlreadySent(true);
+    // setMessagesAlreadySent(true);
   };
+  
   return (
     <div className="home-screen-body">
       <div className="home-screen-body__header">
@@ -29,15 +30,22 @@ const HomeScreenBody = () => {
           <h1>שאטלים</h1>
         </div>
         <div className="home-screen-body__header__left">
-          <Button
-          onClick={() => setModalVisible(!modalVisible)}
-            color="default"
-            variant="filled"
-            icon={<IconSparkles />}
-            className="home-screen-body__header__left__button"
-          >
-            שבץ נסיעות
-          </Button>
+
+          <BtnPopUpMsg title="שיבוץ נסיעות מחדש?" msg="שים לב, פעולה זו תאפס את השיבוצים הקיימים." btnContent="שבץ מחדש" isOpen={popUpMsgOpen} 
+          onConfirm={() => {setModalVisible(!modalVisible); setPopUpMsg(false)}} onCancel={() => setPopUpMsg(false)}>
+            <Tooltip key="submit" title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""} >
+                <Button
+                  onClick={() => isShattlesArranged ? setPopUpMsg(true) : setModalVisible(true)}
+                  disabled={messagesAlreadySent}
+                  color="default"
+                  variant="filled"
+                  icon={<IconSparkles />}
+                  className="home-screen-body__header__left__button"
+                >
+                  שבץ נסיעות
+              </Button>
+            </Tooltip>
+          </BtnPopUpMsg>
           <ShuttleAssignmentModal
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
@@ -68,7 +76,6 @@ const HomeScreenBody = () => {
         </div>
       </div>
       <div className="home-screen-body__body">table</div>
-
     </div>
   );
 };

@@ -30,7 +30,6 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   onSubmit,
   medicName,
   setMedicName,
-  messagesAlreadySent,
 }) => {
   const [form] = Form.useForm();
 
@@ -76,13 +75,11 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
         <Button key="cancel" onClick={onCancel}>
           ביטול
         </Button>,
-        <Tooltip key="submit" title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""} >
-
-          <Button type="primary" className="ShuttleAssignmentModal__assign-btn" onClick={handleSubmit} disabled={messagesAlreadySent} >
+        
+          <Button type="primary" className="ShuttleAssignmentModal__assign-btn" onClick={handleSubmit} >
           <IconSparkles />
             שבץ נסיעות
           </Button>
-        </Tooltip>,
       ]}
     >
       <Form form={form} layout="vertical" onValuesChange={handleValuesChange} initialValues={{ vehicleCount: 3 }} >

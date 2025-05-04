@@ -1,32 +1,39 @@
 import React from 'react';
-import { Button, Popconfirm, message } from 'antd';
-import { DeploymentUnitOutlined } from '@ant-design/icons';
+import { Popconfirm } from 'antd';
 
-
-interface BtnPopUpMsgProps {
-  title:string; 
+type BtnPopUpMsgProps = {
+  title: string;
   msg: string;
   btnContent: string;
-}
+  isOpen?: boolean;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  children: React.ReactNode;
+};
 
-
-const btnPopUpMsg: React.FC<BtnPopUpMsgProps> = ({
-    title,
-    msg,
-    btnContent,
+const BtnPopUpMsg: React.FC<BtnPopUpMsgProps> = ({
+  title,
+  msg,
+  btnContent,
+  isOpen,
+  onConfirm,
+  onCancel,
+  children,
 }) => {
-  
-
   return (
-    <Popconfirm
-      placement="bottomRight"
-      title={title}
-      description={ msg }
-      okText={btnContent}
-      cancelText="ביטול"
-    >
-    </Popconfirm>
+        <Popconfirm
+          placement="bottomRight"
+          title={title}
+          description={msg}
+          okText={btnContent}
+          cancelText="ביטול"
+          onCancel={onCancel}
+          onConfirm={onConfirm}
+          open={isOpen}
+        >
+          {children}
+        </Popconfirm>
   );
 };
 
-export default btnPopUpMsg;
+export default BtnPopUpMsg;
