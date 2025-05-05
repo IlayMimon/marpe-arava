@@ -18,7 +18,6 @@ interface CommonProps {
     error?: string;
     checked?: boolean;
     onCheckChange?: (checked: boolean) => void;
-    autoSize?: boolean | { minRows?: number; maxRows?: number };
 }
 
 interface SelectFieldMulti extends CommonProps {
@@ -40,6 +39,7 @@ interface InputField extends CommonProps {
     type?: Exclude<React.HTMLInputTypeAttribute, "time" | "date">;
     value: string;
     maxLength?: number | undefined;
+    autosize?: boolean | { minRows?: number; maxRows?: number };
 }
 
 interface TimePickerField extends CommonProps {

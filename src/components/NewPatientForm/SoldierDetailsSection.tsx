@@ -59,7 +59,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
     <EditField
       title="תחנת פיזור"
       showCheckbox
-      autoSize={{ minRows: 1, maxRows: 2 }}
+      autosize={{ minRows: 1, maxRows: 2 }}
       checked={!isDropoffDisabled}
       onCheckChange={(val) => setIsDropoffDisabled(!val)}
       options={["שגוב", "סיירים"]}
