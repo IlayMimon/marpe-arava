@@ -43,6 +43,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
       value={formData.phone}
       onTextChange={onChange("phone")}
       error={errors.phone}
+      maxLength={10}
     />
     <EditField
       title="תחנת איסוף"

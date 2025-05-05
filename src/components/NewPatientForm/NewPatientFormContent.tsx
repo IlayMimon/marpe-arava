@@ -6,7 +6,7 @@ import { PatientFormData } from "../../types/PatientForm.types.ts";
 
 interface Props {
   closeModal: () => void;
-  onSubmit: (formData: PatientFormData) => void; // הוסף את onSubmit כ- prop
+  onSubmit: (formData: PatientFormData) => void;
 }
 
 export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {

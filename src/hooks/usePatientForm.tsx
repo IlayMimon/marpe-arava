@@ -53,14 +53,14 @@ export const usePatientForm = (closeModal?: () => void) => {
       setFormData((prev) => ({ ...prev, phone }));
     }
   
-    if (!phone.startsWith("05")) {
-      return "מספר טלפון חייב להתחיל בקידומת 05";
-    }
     if (!/^[0-9]+$/.test(phone)) {
       return "מספר טלפון חייב להכיל ספרות בלבד";
     }
-    if (phone.length !== 10) {
-      return "מספר טלפון חייב להכיל בדיוק 10 ספרות";
+    if(phone.length < 2) {
+      return "";
+    }
+    if (!phone.startsWith("05")) {
+      return "מספר טלפון חייב להתחיל בקידומת 05";
     }
     return "";
   };

@@ -25,7 +25,6 @@ export default function EditField(props: EditFieldProps) {
 
   const isControlled = typeof checked === "boolean";
   const [internalChecked, setInternalChecked] = useState(!defaultCheck);
-
   const currentChecked = isControlled ? checked : internalChecked;
 
   let normalizedOptions: OptionItem[] | undefined;
@@ -51,6 +50,53 @@ export default function EditField(props: EditFieldProps) {
 
   const isDisabled = forceDisable ?? (showCheckbox ? !currentChecked : false);
 
+  const componentMap: Record<string, React.ReactNode> = {
+    time: (
+      <EditFieldTimePicker
+        value={value as string}
+        onChange={onTextChange}
+        hint={hint}
+        disabled={isDisabled}
+        error={error}
+        {...restProps}
+      />
+    ),
+    date: (
+      <EditFieldDatePicker
+        value={value as string}
+        onChange={onTextChange}
+        hint={hint}
+        disabled={isDisabled}
+        error={error}
+        {...restProps}
+      />
+    ),
+    default: (
+      <EditFieldInput
+        value={value as string}
+        onChange={onTextChange}
+        type={type}
+        hint={hint}
+        disabled={isDisabled}
+        error={error}
+        {...restProps}
+      />
+    ),
+  };
+
+  const renderComponent = normalizedOptions ? (
+    <EditFieldSelect
+      value={value}
+      onChange={onTextChange}
+      options={normalizedOptions}
+      multiSelect={multiSelect}
+      hint={hint}
+      disabled={isDisabled}
+      error={error}
+      {...restProps}
+    />
+  ) : componentMap[type] || componentMap.default;
+
   return (
     <div className="edit-field">
       <div className="edit-field__top">
@@ -63,49 +109,7 @@ export default function EditField(props: EditFieldProps) {
           />
         )}
       </div>
-
-      <div className="edit-field__body">
-        {normalizedOptions ? (
-          <EditFieldSelect
-            value={value}
-            onChange={onTextChange}
-            options={normalizedOptions}
-            multiSelect={multiSelect}
-            hint={hint}
-            disabled={isDisabled}
-            error={error}
-            {...restProps}
-          />
-        ) : type === "time" ? (
-          <EditFieldTimePicker
-            value={value as string}
-            onChange={onTextChange}
-            hint={hint}
-            disabled={isDisabled}
-            error={error}
-            {...restProps}
-          />
-        ) : type === "date" ? (
-          <EditFieldDatePicker
-            value={value as string}
-            onChange={onTextChange}
-            hint={hint}
-            disabled={isDisabled}
-            error={error}
-            {...restProps}
-          />
-        ) : (
-          <EditFieldInput
-            value={value as string}
-            onChange={onTextChange}
-            type={type}
-            hint={hint}
-            disabled={isDisabled}
-            error={error}
-            {...restProps}
-          />
-        )}
-      </div>
+      <div className="edit-field__body">{renderComponent}</div>
     </div>
   );
 }
