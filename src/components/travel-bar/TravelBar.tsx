@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronDown, ChevronLeft, Users } from 'lucide-react';
+import {  ChevronDown, ChevronLeft, Users } from 'lucide-react';
 import { ColorType, TravelItem, TravelBarProps } from './types';
 import { defaultTravelItems, colorToDriverNumber, availableDrivers, kilometersPerColor } from './dummyData';
 import { FaLongArrowAltLeft } from "react-icons/fa";
@@ -123,9 +123,9 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
  {isOpen?
  <div className="travel-bar" dir="rtl">
       <div className="travel-bar__header">
-        <div className="travel-bar__header__back-button">
+        <div className="travel-bar__header__back-button" onClick={()=>setIsOpen(false)}>
           <TbChevronsLeft className="travel-bar__header__back-icon" size={16} />
-          <span className="travel-bar__header__back-text" onClick={()=>setIsOpen(false)}>נסיעות</span>
+          <span className="travel-bar__header__back-text" >נסיעות</span>
         </div>
         <div className="travel-bar__header__title">
           הצג סידור יומי
