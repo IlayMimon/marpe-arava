@@ -3,9 +3,9 @@ import { ChevronRight, ChevronDown, ChevronLeft, Users } from 'lucide-react';
 import { ColorType, TravelItem, TravelBarProps } from './types';
 import { defaultTravelItems, colorToDriverNumber, availableDrivers, kilometersPerColor } from './dummyData';
 import { FaLongArrowAltLeft } from "react-icons/fa";
-        
+import { TbChevronsLeft } from "react-icons/tb";
 const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
-  // State
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeFilters, setActiveFilters] = useState<ColorType[]>([]);
   const [travelItems] = useState<TravelItem[]>(initialItems.sort((a, b) => {
     return a.startTime.localeCompare(b.startTime);
@@ -119,21 +119,20 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   const filteredItems = getFilteredItems();
 
   return (
-    <div className="travel-bar" dir="rtl">
-      {/* Header */}
+    <>
+ {isOpen?
+ <div className="travel-bar" dir="rtl">
       <div className="travel-bar__header">
         <div className="travel-bar__header__back-button">
-          <ChevronRight className="travel-bar__header__back-icon" size={16} />
-          <span className="travel-bar__header__back-text">נסיעות</span>
+          <TbChevronsLeft className="travel-bar__header__back-icon" size={16} />
+          <span className="travel-bar__header__back-text" onClick={()=>setIsOpen(false)}>נסיעות</span>
         </div>
         <div className="travel-bar__header__title">
           הצג סידור יומי
         </div>
       </div>
 
-      {/* Filters */}
       <div className="travel-bar__filters">
-        {/* Purple driver */}
         <div className="travel-bar__filters__driver">
           <div className="travel-bar__filters__driver__dropdown-container">
             <button
@@ -176,7 +175,6 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
           </div>
         </div>
 
-        {/* Teal driver */}
         <div className="travel-bar__filters__driver">
           <div className="travel-bar__filters__driver__dropdown-container">
             <button
@@ -219,7 +217,6 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
           </div>
         </div>
 
-        {/* Yellow driver */}
         <div className="travel-bar__filters__driver">
           <div className="travel-bar__filters__driver__dropdown-container">
             <button
@@ -263,7 +260,6 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
         </div>
       </div>
 
-      {/* List of travel items */}
       <div className="travel-bar__list-container">
         <ul className="travel-bar__list">
           {filteredItems.map(item => {
@@ -347,7 +343,15 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
           })}
         </ul>
       </div>
-    </div>
+      </div>
+      :<div onClick={()=>setIsOpen(true)} className='side-bar'>
+          <div className="side-bar__button-container">
+          <TbChevronsLeft  className="side-bar__button-container__icon"size={16} />
+          <span className="side-bar__button-container__text">נסיעות</span>
+        </div>
+        </div>}
+      </>
+    
   );
 };
 
