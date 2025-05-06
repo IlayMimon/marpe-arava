@@ -4,25 +4,10 @@ import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
+import {Props, FormValues} from "../types/shuttleAssignmentProps";
 dayjs.extend(customParseFormat);
 
 const { Option } = Select;
-
-type Props = {
-  visible: boolean;
-  onCancel: () => void;
-  onSubmit: (values: FormValues) => void;
-  medicName: string | null;
-  setMedicName: (name: string) => void;
-  messagesAlreadySent: boolean;
-};
-
-type FormValues = {
-  startTime: Dayjs;
-  endTime: Dayjs;
-  vehicleCount: number;
-  medicName: string;
-};
 
 const ShuttleAssignmentModal: React.FC<Props> = ({
   visible,
@@ -47,7 +32,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     form.setFieldValue("medicName", medicName);
   }, [medicName]);
 
-  const handleValuesChange = (changedValues: any) => {
+  const handleValuesChange = (changedValues: FormValues) => {
     if ("medicName" in changedValues) {
       setMedicName(changedValues.medicName);
     }
@@ -90,8 +75,9 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
               name="startTime"
               rules={[{ required: true, message: "יש לבחור שעת התחלה" }]}
               className="ShuttleAssignmentModal__timePicker__container__startTime"
+              
             >
-              <TimePicker format="HH:mm" />
+              <TimePicker format="HH:mm" placeholder="התחלה"/>
             </Form.Item>
 
             <TbArrowNarrowLeft className="ShuttleAssignmentModal__timePicker__container__arrowIcon" />
@@ -104,7 +90,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
               ]}
               className="ShuttleAssignmentModal__timePicker__container__endTime"
             >
-              <TimePicker format="HH:mm" />
+              <TimePicker format="HH:mm" placeholder="סיום" />
             </Form.Item>
           </div>
         </Form.Item>

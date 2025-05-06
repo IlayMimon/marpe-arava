@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import ShuttleAssignmentModal from './ShuttleAssignmentModal/ShuttleAssignmentModal'
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
+import { FormValues } from "./types/shuttleAssignmentProps";
 
 
 const HomeScreenBody = () => {
@@ -11,16 +12,14 @@ const HomeScreenBody = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
-  const [popUpMsgOpen, setPopUpMsg] = useState(false);
+  const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
 
-   const handleSubmit = (values: any) => {
+   const handleSubmit = (values: FormValues) => {
     
     console.log("Submitting values:", values);
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShattlesArranged(true);
     setModalVisible(false);
-
-    // setMessagesAlreadySent(true);
   };
   
   return (
@@ -32,10 +31,10 @@ const HomeScreenBody = () => {
         <div className="home-screen-body__header__left">
 
           <BtnPopUpMsg title="שיבוץ נסיעות מחדש?" msg="שים לב, פעולה זו תאפס את השיבוצים הקיימים." btnContent="שבץ מחדש" isOpen={popUpMsgOpen} 
-          onConfirm={() => {setModalVisible(!modalVisible); setPopUpMsg(false)}} onCancel={() => setPopUpMsg(false)}>
+          onConfirm={() => {setModalVisible(!modalVisible); setPopUpMsgOpen(false)}} onCancel={() => setPopUpMsgOpen(false)}>
             <Tooltip key="submit" title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""} >
                 <Button
-                  onClick={() => isShattlesArranged ? setPopUpMsg(true) : setModalVisible(true)}
+                  onClick={() => isShattlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true)}
                   disabled={messagesAlreadySent}
                   color="default"
                   variant="filled"
@@ -54,7 +53,7 @@ const HomeScreenBody = () => {
         setMedicName={setSelectedMedic}
         messagesAlreadySent={messagesAlreadySent}
       />
-          <Tooltip title={isShattlesArranged ? undefined : "נדרש לשבץ נסיעות"}>
+          <Tooltip title={isShattlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               disabled
               color="default"

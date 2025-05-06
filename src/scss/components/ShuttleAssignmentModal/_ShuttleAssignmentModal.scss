@@ -1,40 +1,39 @@
 .ShuttleAssignmentModal{
     width: 32rem !important;
-    border-radius: 8px !important;
     
     &__assign-btn{
-        background-color: rgba(0, 0, 0, 0.88) !important;
-        color: white !important;
+        background-color: rgba(0, 0, 0, 0.88) ;
+        color: white ;
         &:hover{
             background-color:  #1677FF !important;
         }
     }
     &__timePicker{
-        margin-bottom: 5rem !important;
+        margin-bottom: 5rem ;
         &__container{
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            width: 100% !important;
+            display: flex ;
+            justify-content: space-between;
+            align-items: center ;
+            width: 100% ;
 
             &__startTime{
-                 display: inline-block !important;
-                 width: 10rem !important;
-                 height: 1rem !important;
+                 display: inline-block ;
+                 width: 10rem ;
+                 height: 1rem;
              }
              &__endTime{
-                 display: inline-block !important;
-                 width: 10rem !important;
-                 height: 1rem !important;
+                 display: inline-block ;
+                 width: 10rem ;
+                 height: 1rem ;
              }
              &__arrowIcon{
-                 font-size: 2rem !important;
+                 font-size: 2rem ;
              }
         }
     }
-}
-.ant-modal-footer{
-    display: flex !important;
-    align-items: center !important;
-    justify-content: end;
+    .ant-modal-footer{
+        display: flex ;
+        align-items: center ;
+        justify-content: end ;
+    }
 }
