@@ -1,7 +1,6 @@
 .home-screen-body {
   display: flex;
   flex-direction: column;
-
   height: 100%;
   width: 100%;
 
@@ -37,6 +36,7 @@
 
   &__body {
     display: flex;
+    direction: ltr;
 
     height: 90%;
     width: 100%;
