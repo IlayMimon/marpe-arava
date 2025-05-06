@@ -8,7 +8,7 @@ import { FormValues } from "./types/shuttleAssignmentProps";
 
 
 const HomeScreenBody = () => {
-  const [isShattlesArranged, setIsShattlesArranged] = useState(false);
+  const [isshuttlesArranged, setIsShuttlesArranged] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
@@ -18,7 +18,7 @@ const HomeScreenBody = () => {
     
     console.log("Submitting values:", values);
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
-    setIsShattlesArranged(true);
+    setIsShuttlesArranged(true);
     setModalVisible(false);
   };
   
@@ -34,7 +34,7 @@ const HomeScreenBody = () => {
           onConfirm={() => {setModalVisible(!modalVisible); setPopUpMsgOpen(false)}} onCancel={() => setPopUpMsgOpen(false)}>
             <Tooltip key="submit" title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""} >
                 <Button
-                  onClick={() => isShattlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true)}
+                  onClick={() => isshuttlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true)}
                   disabled={messagesAlreadySent}
                   color="default"
                   variant="filled"
@@ -53,7 +53,7 @@ const HomeScreenBody = () => {
         setMedicName={setSelectedMedic}
         messagesAlreadySent={messagesAlreadySent}
       />
-          <Tooltip title={isShattlesArranged ? "" : "נדרש לשבץ נסיעות"}>
+          <Tooltip title={isshuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               disabled
               color="default"
