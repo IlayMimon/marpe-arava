@@ -1,16 +1,21 @@
 import { IconSparkles } from "@tabler/icons-react";
-import { Button, Form, Modal, Select, TimePicker, message, ConfigProvider } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Form,
+  Modal,
+  Select,
+  TimePicker,
+  message,
+} from "antd";
+import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import {Props, FormValues} from "../types/shuttleAssignmentProps";
+import { FormValues, Props } from "../types/shuttleAssignmentProps";
 dayjs.extend(customParseFormat);
-import heIL from 'antd/locale/he_IL';
 const { Option } = Select;
-
-
-
 
 const ShuttleAssignmentModal: React.FC<Props> = ({
   visible,
@@ -63,65 +68,80 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
         <Button key="cancel" onClick={onCancel}>
           ביטול
         </Button>,
-        
-          <Button type="primary" className="ShuttleAssignmentModal__assign-btn" onClick={handleSubmit} >
+
+        <Button
+          type="primary"
+          className="ShuttleAssignmentModal__assign-btn"
+          onClick={handleSubmit}
+        >
           <IconSparkles />
-            שבץ נסיעות
-          </Button>
+          שבץ נסיעות
+        </Button>,
       ]}
     >
-      <Form form={form} layout="vertical" onValuesChange={handleValuesChange} initialValues={{ vehicleCount: 3 }} >
-
-        <Form.Item  label="שעות פעילות השאטלים" className="ShuttleAssignmentModal__timePicker" required >
-          <div className="ShuttleAssignmentModal__timePicker__container">
-            <Form.Item
-              name="startTime"
-              rules={[{ required: true, message: "יש לבחור שעת התחלה" }]}
-              className="ShuttleAssignmentModal__timePicker__container__startTime"
-              
-            >
-              <ConfigProvider locale={heIL} direction="rtl">
+      <ConfigProvider locale={heIL} direction="rtl">
+        <Form
+          form={form}
+          layout="vertical"
+          onValuesChange={handleValuesChange}
+          initialValues={{ vehicleCount: 3 }}
+        >
+          <Form.Item
+            label="שעות פעילות השאטלים"
+            className="ShuttleAssignmentModal__timePicker"
+            required
+          >
+            <div className="ShuttleAssignmentModal__timePicker__container">
+              <Form.Item
+                name="startTime"
+                rules={[{ required: true, message: "יש לבחור שעת התחלה" }]}
+                className="ShuttleAssignmentModal__timePicker__container__startTime"
+              >
                 <TimePicker format="HH:mm" placeholder="התחלה" />
-              </ConfigProvider>
-            </Form.Item>
+              </Form.Item>
 
-            <TbArrowNarrowLeft className="ShuttleAssignmentModal__timePicker__container__arrowIcon" />
-            
-            <Form.Item
-              name="endTime"
-              rules={[
-                { required: true, message: "יש לבחור שעת סיום" },
-                { validator: validateTimeRange },
-              ]}
-              className="ShuttleAssignmentModal__timePicker__container__endTime"
-            >
-              <ConfigProvider locale={heIL} direction="rtl">
+              <TbArrowNarrowLeft className="ShuttleAssignmentModal__timePicker__container__arrowIcon" />
+
+              <Form.Item
+                name="endTime"
+                rules={[
+                  { required: true, message: "יש לבחור שעת סיום" },
+                  { validator: validateTimeRange },
+                ]}
+                className="ShuttleAssignmentModal__timePicker__container__endTime"
+              >
                 <TimePicker format="HH:mm" placeholder="סיום" />
-              </ConfigProvider>
-            </Form.Item>
-          </div>
-        </Form.Item>
+              </Form.Item>
+            </div>
+          </Form.Item>
 
-        <Form.Item label="מספר נהגים" name="vehicleCount" rules={[{ required: true, message: "יש לבחור מספר רכבים" }]} >
-          <Select>
-            {[1, 2, 3, 4, 5].map((num) => (
-              <Option key={num} value={num}>
-                {num}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+          <Form.Item
+            label="מספר נהגים"
+            name="vehicleCount"
+            rules={[{ required: true, message: "יש לבחור מספר רכבים" }]}
+          >
+            <Select>
+              {[1, 2, 3, 4, 5].map((num) => (
+                <Option key={num} value={num}>
+                  {num}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item label="חובש אחראי" name="medicName" rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}>
-          <Select placeholder="בחר חובש">
-            
-            <Option value="משה כהן">משה כהן</Option>
-            <Option value="דנה לוי">דנה לוי</Option>
-            <Option value="רועי ישראלי">רועי ישראלי</Option>
-          </Select>
-        </Form.Item>
-        
-      </Form>
+          <Form.Item
+            label="חובש אחראי"
+            name="medicName"
+            rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
+          >
+            <Select placeholder="בחר חובש">
+              <Option value="משה כהן">משה כהן</Option>
+              <Option value="דנה לוי">דנה לוי</Option>
+              <Option value="רועי ישראלי">רועי ישראלי</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </ConfigProvider>
     </Modal>
   );
 };

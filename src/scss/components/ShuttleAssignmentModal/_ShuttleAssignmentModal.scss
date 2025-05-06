@@ -1,39 +1,39 @@
-.ShuttleAssignmentModal{
-    width: 32rem !important;
-    
-    &__assign-btn{
-        background-color: rgba(0, 0, 0, 0.88) ;
-        color: white ;
-        &:hover{
-            background-color:  #1677FF !important;
-        }
-    }
-    &__timePicker{
-        margin-bottom: 5rem ;
-        &__container{
-            display: flex ;
-            justify-content: space-between;
-            align-items: center ;
-            width: 100% ;
+.ShuttleAssignmentModal {
+  width: 32rem !important;
 
-            &__startTime{
-                 display: inline-block ;
-                 width: 10rem ;
-                 height: 1rem;
-             }
-             &__endTime{
-                 display: inline-block ;
-                 width: 10rem ;
-                 height: 1rem ;
-             }
-             &__arrowIcon{
-                 font-size: 2rem ;
-             }
-        }
+  &__assign-btn {
+    background-color: rgba(0, 0, 0, 0.88);
+    color: white;
+    &:hover {
+      background-color: #1677ff !important;
     }
-    .ant-modal-footer{
-        display: flex ;
-        align-items: center ;
-        justify-content: end ;
+  }
+  &__timePicker {
+    margin-bottom: 4.5rem;
+    &__container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      &__startTime {
+        display: inline-block;
+        width: 10rem;
+        height: 1rem;
+      }
+      &__endTime {
+        display: inline-block;
+        width: 10rem;
+        height: 1rem;
+      }
+      &__arrowIcon {
+        font-size: 2rem;
+      }
     }
+  }
+  .ant-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
 }

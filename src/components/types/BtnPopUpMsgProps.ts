@@ -6,4 +6,4 @@ export interface BtnPopUpMsgProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   children: React.ReactNode;
-};
+}
