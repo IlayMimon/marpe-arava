@@ -1,12 +1,11 @@
-.btn-pop-up-msg{
-    background-color: aqua !important;
-}
-
 
 .ant-popover .ant-popover-inner {
-    width: 22.4rem !important;
+    width: 22.4rem;
 }
 .ant-btn-variant-solid{
-    background-color: rgba(0, 0, 0, 0.88) !important;
-    color: white !important;
+    background-color: rgba(0, 0, 0, 0.88);
+    color: white;
+    &:hover{
+        background-color:  #1677FF;
+    }
 }
