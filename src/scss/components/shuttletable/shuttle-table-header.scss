@@ -7,11 +7,17 @@
     gap: 1rem;
     padding: 0 1.6rem;
     width: 100%;
-    height: fit-content;
-    
-    border :none !important;
+    height: 4.4rem;
     background-color: white;
     &__segmented{
-        width: 10rem;
+        font-size: 1.4rem;
+        font-weight: 400;
+        align-self: center;
+        width: 22rem;
+    }
+    .ant-segmented-item-label{
+        font-size: 1.4rem;
+        font-weight: 400 ;
+        min-height: 2.4rem ;
     }
 }
