@@ -2,6 +2,7 @@ import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
+import TravelBar from "./travel-bar/TravelBar";
 
 const HomeScreenBody = () => {
   const [isShattlesArranged, setIsShattlesArranged] = useState(false);
@@ -42,7 +43,9 @@ const HomeScreenBody = () => {
           </Button>
         </div>
       </div>
-      <div className="home-screen-body__body">table</div>
+      <div className="home-screen-body__body">   
+               <TravelBar />
+      </div>
     </div>
   );
 };

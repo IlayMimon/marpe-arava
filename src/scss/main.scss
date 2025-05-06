@@ -7,9 +7,9 @@
 @use './base/base';
 
 // Components
-@import './travel-bar';
+@use './travel-bar';
 // Pages
-@use './pages/home-page.scss';
+@use './pages/home-page';
 
 // Components
 @use './components/sidebar-navigation';
