@@ -1,13 +1,16 @@
 import { IconSparkles } from "@tabler/icons-react";
-import { Button, Form, Modal, Select, TimePicker, message } from "antd";
+import { Button, Form, Modal, Select, TimePicker, message, ConfigProvider } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import {Props, FormValues} from "../types/shuttleAssignmentProps";
 dayjs.extend(customParseFormat);
-
+import heIL from 'antd/locale/he_IL';
 const { Option } = Select;
+
+
+
 
 const ShuttleAssignmentModal: React.FC<Props> = ({
   visible,
@@ -77,7 +80,9 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
               className="ShuttleAssignmentModal__timePicker__container__startTime"
               
             >
-              <TimePicker format="HH:mm" placeholder="התחלה"/>
+              <ConfigProvider locale={heIL} direction="rtl">
+                <TimePicker format="HH:mm" placeholder="התחלה" />
+              </ConfigProvider>
             </Form.Item>
 
             <TbArrowNarrowLeft className="ShuttleAssignmentModal__timePicker__container__arrowIcon" />
@@ -90,7 +95,9 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
               ]}
               className="ShuttleAssignmentModal__timePicker__container__endTime"
             >
-              <TimePicker format="HH:mm" placeholder="סיום" />
+              <ConfigProvider locale={heIL} direction="rtl">
+                <TimePicker format="HH:mm" placeholder="סיום" />
+              </ConfigProvider>
             </Form.Item>
           </div>
         </Form.Item>
