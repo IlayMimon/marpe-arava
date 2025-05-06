@@ -1,0 +1,81 @@
+// Sidebar.scss
+.sidebar {
+    height: 100vh;
+    display: flex;
+    
+    &__navigation {
+      width: 4rem;
+      background-color: white;
+      border-right: 1px solid #d9d9d9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1rem;
+      
+      &__label {
+        color: #595959;
+        font-size: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      
+      &__travel-button {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &--active {
+          background-color: #ff6b35;
+          color: white;
+        }
+        
+        &--inactive {
+          background-color: #f5f5f5;
+          color: #595959;
+        }
+        
+        &__number {
+          font-size: 1.25rem;
+          font-weight: 500;
+        }
+        
+        &__arrows {
+          display: flex;
+          align-items: center;
+          font-size: 0.875rem;
+        }
+      }
+    }
+    
+    &__travel-bar-container {
+      transition: width 0.3s ease, opacity 0.3s ease;
+      overflow: hidden;
+      
+      &--open {
+        width: 38rem;
+        opacity: 1;
+      }
+      
+      &--closed {
+        width: 0;
+        opacity: 0;
+      }
+    }
+    
+    &__content {
+      flex: 1;
+      background-color: #f5f5f5;
+      padding: 1.5rem;
+      
+      &__placeholder {
+        text-align: center;
+        margin-top: 2rem;
+        color: #595959;
+      }
+    }
+  }
