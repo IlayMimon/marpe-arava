@@ -4,11 +4,12 @@ import { Button } from 'antd';
 interface DriverOrganizationHeaderProps {
   paramedic: string;
   isSendDisabled: boolean;
+  downloadImages: () => void;
 }
 
 // TODO change SVG line to be CSS or save as separate file
 
-const DriverOrganizationHeader = ({ paramedic, isSendDisabled }: DriverOrganizationHeaderProps) => {
+const DriverOrganizationHeader = ({ paramedic, isSendDisabled, downloadImages }: DriverOrganizationHeaderProps) => {
   return (
     <div className="driver-organization-header">
       <div className="driver-organization-header__button__container">
@@ -21,7 +22,12 @@ const DriverOrganizationHeader = ({ paramedic, isSendDisabled }: DriverOrganizat
           שלח לנהגים
           <IconSend className="driver-organization-header__button__icon" />
         </Button>
-        <Button className="driver-organization-header__button" color="default" variant="outlined">
+        <Button
+          onClick={downloadImages}
+          className="driver-organization-header__button"
+          color="default"
+          variant="outlined"
+        >
           הורד כתמונות
         </Button>
       </div>
