@@ -1,7 +1,5 @@
+import { IconBusStop, IconRoute, IconUsersGroup } from "@tabler/icons-react";
 import Kpi from "./Kpi";
-import { IconRoute } from "@tabler/icons-react";
-import { IconBusStop } from "@tabler/icons-react";
-import { IconUsersGroup } from "@tabler/icons-react";
 
 const SummarizeNumbers = () => {
   return (
