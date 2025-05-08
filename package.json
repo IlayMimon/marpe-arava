@@ -10,15 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@tanstack/react-table": "^8.21.3",
-    "antd": "^5.24.8",
-=======
     "@tabler/icons-react": "^3.31.0",
     "antd": "^5.24.9",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.13",
->>>>>>> NP
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
