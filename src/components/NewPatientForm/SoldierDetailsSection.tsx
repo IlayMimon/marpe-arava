@@ -2,6 +2,7 @@ import React from 'react';
 import EditField from "../EditField/EditField.tsx";
 import { FormErrors, PatientFormData } from "../../types/PatientForm.types.ts";
 import FormSection from './FormSection.tsx';
+import { Rule } from 'antd/es/form/index';
 
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
   setIsPickupDisabled: (val: boolean) => void;
   setIsDropoffDisabled: (val: boolean) => void;
   setIsDropoffTouched: (val: boolean) => void;
+  validationMap: Record<keyof PatientFormData, Rule[]>;
 }
 
 const SoldierDetailsSection: React.FC<Props> = ({
@@ -26,17 +28,22 @@ const SoldierDetailsSection: React.FC<Props> = ({
   setIsPickupDisabled,
   setIsDropoffDisabled,
   setIsDropoffTouched,
+  validationMap,
 }) => (
+
   <FormSection title="פרטי החייל">
     <EditField
+      name='fullName'
       title="שם מלא"
       hint="הקלד שם החייל"
       value={formData.fullName}
       onTextChange={onChange("fullName")}
       error={errors.fullName}
       maxLength={20}
+      rules={validationMap.fullName}
     />
     <EditField
+      name='phone'
       title="טלפון"
       type="tel"
       hint="הקלד מספר"
@@ -44,8 +51,10 @@ const SoldierDetailsSection: React.FC<Props> = ({
       onTextChange={onChange("phone")}
       error={errors.phone}
       maxLength={10}
+      rules={validationMap.phone}
     />
     <EditField
+      name='pickupStation'
       title="תחנת איסוף"
       showCheckbox
       checked={!isPickupDisabled}
@@ -55,8 +64,10 @@ const SoldierDetailsSection: React.FC<Props> = ({
       value={formData.pickupStation}
       onTextChange={onPickupChange}
       error={errors.pickupStation}
+      rules={validationMap.pickupStation}
     />
     <EditField
+      name='dropOffStation'
       title="תחנת פיזור"
       showCheckbox
       autosize={{ minRows: 1, maxRows: 2 }}
@@ -70,6 +81,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
         onChange("dropOffStation")(val);
       }}
       error={errors.dropOffStation}
+      rules={validationMap.dropOffStation}
     />
   </FormSection>
 );

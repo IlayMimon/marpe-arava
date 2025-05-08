@@ -1,7 +1,6 @@
-import { TimePicker, Tooltip } from "antd";
+import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import type { TimePickerProps } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 interface Props {
   value: string;
@@ -38,15 +37,6 @@ export function EditFieldTimePicker({
       onChange={handleChange}
       popupClassName="edit-field__timepicker-dropdown"
       status={error ? "error" : ""}
-      suffixIcon={
-        error ? (
-          <Tooltip title={error} trigger="hover">
-            <span onMouseDown={(e) => e.preventDefault()}>
-              <ExclamationCircleOutlined className={"edit-field__date-icon"} />
-            </span>
-          </Tooltip>
-        ) : undefined
-      }
       disabledTime={disabledTimes}
     />
   );

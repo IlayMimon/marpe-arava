@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Checkbox } from "antd";
+import { Checkbox, Form } from "antd";
 import { EditFieldInput } from "./EditFieldInput.tsx";
 import { EditFieldSelect } from "./EditFieldSelect.tsx";
 import { EditFieldTimePicker } from "./EditFieldTimePicker.tsx";
@@ -10,6 +10,7 @@ export default function EditField(props: EditFieldProps) {
   const {
     title,
     type = "text",
+    rules,
     hint = "",
     showCheckbox = false,
     forceDisable,
@@ -20,6 +21,7 @@ export default function EditField(props: EditFieldProps) {
     onToggleEnable,
     onTextChange,
     error,
+    name, 
     ...restProps
   } = props;
 
@@ -98,18 +100,27 @@ export default function EditField(props: EditFieldProps) {
   ) : componentMap[type] || componentMap.default;
 
   return (
-    <div className="edit-field">
-      <div className="edit-field__top">
+    <Form.Item
+      name={name} 
+      rules={rules}
+      validateStatus={error ? "error" : ""}
+      help={error}
+      validateTrigger="onChange"
+      {...restProps}
+    >
+      <div className="edit-field">
+        <div className="edit-field__top">
         <p className="edit-field__title">{title}</p>
-        {showCheckbox && (
-          <Checkbox
-            className="edit-field__checkbox"
-            checked={currentChecked}
-            onChange={handleToggle}
-          />
-        )}
+          {showCheckbox && (
+            <Checkbox
+              className="edit-field__checkbox"
+              checked={currentChecked}
+              onChange={handleToggle}
+            />
+          )}
+        </div>
+        <div className="edit-field__body">{renderComponent}</div>
       </div>
-      <div className="edit-field__body">{renderComponent}</div>
-    </div>
+    </Form.Item>
   );
 }

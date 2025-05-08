@@ -1,6 +1,5 @@
-import { Select, Tooltip } from "antd";
+import { Select } from "antd";
 import type { SelectProps } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { OptionItem } from "../../types/EditField.types.ts";
 
 interface Props {
@@ -44,15 +43,6 @@ export function EditFieldSelect({
       showSearch
       allowClear
       status={error ? "error" : ""}
-      suffixIcon={
-        error ? (
-          <Tooltip title={error}>
-            <span className="edit-field__icon--visible">
-              <ExclamationCircleOutlined />
-            </span>
-          </Tooltip>
-        ) : undefined
-      }
       {...restProps}
     />
   );

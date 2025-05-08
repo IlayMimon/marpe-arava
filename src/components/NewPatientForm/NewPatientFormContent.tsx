@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Form } from "antd";
 import SoldierDetailsSection from "./SoldierDetailsSection.tsx";
 import AppointmentDetailsSection from "./AppointmentDetailsSection.tsx";
 import { usePatientForm } from "../../hooks/usePatientForm.tsx";
@@ -11,8 +11,8 @@ interface Props {
 
 export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {
   const {
-    formData,
-    errors,
+    form,
+    formErrors,
     isFormValid,
     isPickupDisabled,
     isDropOffDisabled,
@@ -21,52 +21,49 @@ export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {
     setIsDropOffTouched,
     handleChange,
     handlePickupChange,
-    handleClear
-  } = usePatientForm();
-
-  const handleSubmit = () => {
-    if (isFormValid) {
-      onSubmit(formData); 
-      closeModal();
-    }
-  };
+    handleSubmit,
+    handleClearAll,
+    updateFormErrors,
+    validationMap,
+  } = usePatientForm(closeModal, onSubmit);
 
   return (
-    <div className="patient-form">
-      <p className="patient-form__title">הוספת מטופל ידנית</p>
+    <Form
+      form={form}
+      onFinish={handleSubmit}
+      layout="vertical"
+      onFieldsChange={updateFormErrors}
+    >
+      <div className="patient-form">
+        <p className="patient-form__title">הוספת מטופל ידנית</p>
 
-      <SoldierDetailsSection
-        formData={formData}
-        onChange={handleChange}
-        onPickupChange={handlePickupChange}
-        isPickupDisabled={isPickupDisabled}
-        isDropoffDisabled={isDropOffDisabled}
-        setIsPickupDisabled={setIsPickupDisabled}
-        setIsDropoffDisabled={setIsDropOffDisabled}
-        setIsDropoffTouched={setIsDropOffTouched}
-        errors={errors}
-      />
+        <SoldierDetailsSection
+          formData={form.getFieldsValue()}
+          onChange={handleChange}
+          onPickupChange={handlePickupChange}
+          isPickupDisabled={isPickupDisabled}
+          isDropoffDisabled={isDropOffDisabled}
+          setIsPickupDisabled={setIsPickupDisabled}
+          setIsDropoffDisabled={setIsDropOffDisabled}
+          setIsDropoffTouched={setIsDropOffTouched}
+          errors={formErrors}
+          validationMap={validationMap}
+        />
 
-      <AppointmentDetailsSection
-        formData={formData}
-        onChange={handleChange}
-        isPickupDisabled={isPickupDisabled}
-        errors={errors}
-      />
-
-      <div className="patient-form__footer">
-        <Button key="clear" onClick={handleClear}>
-          נקה טופס
-        </Button>
-        <Button
-          color="default"
-          variant="solid"
-          onClick={handleSubmit}
-          disabled={!isFormValid}
-        >
-          הוסף מטופל
-        </Button>
+        <AppointmentDetailsSection
+          formData={form.getFieldsValue()}
+          onChange={handleChange}
+          isPickupDisabled={isPickupDisabled}
+          validationMap={validationMap}
+          errors={formErrors}
+        />
+        <div className="patient-form__footer">
+          <Button onClick={handleClearAll}>נקה טופס</Button>
+          <Button type="primary" htmlType="submit" disabled={!isFormValid}>
+            הוסף מטופל
+          </Button>
+        </div>
       </div>
-    </div>
+    </Form>
   );
 }

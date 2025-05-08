@@ -1,8 +1,7 @@
-import { ConfigProvider, DatePicker, DatePickerProps, Tooltip } from "antd";
+import { ConfigProvider, DatePicker, DatePickerProps } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
 import "dayjs/locale/he";
-import { ExclamationCircleOutlined, CalendarOutlined } from "@ant-design/icons";
 
 interface Props {
   value: string;
@@ -27,14 +26,6 @@ export function EditFieldDatePicker({
     }
   };
 
-  const suffixIcon = error ? (
-    <Tooltip title={error}>
-      <ExclamationCircleOutlined className={"edit-field__date-icon"} />
-    </Tooltip>
-  ) : (
-    <CalendarOutlined />
-  );
-
   return (
     <ConfigProvider locale={heIL} direction="rtl">
       <DatePicker
@@ -47,7 +38,6 @@ export function EditFieldDatePicker({
         showToday={!disabled}
         status={error ? "error" : ""}
         popupClassName="edit-field__datepicker-dropdown"
-        suffixIcon={suffixIcon}
         disabledDate={disabledDate}
         inputReadOnly
       />

@@ -1,124 +1,197 @@
 import { useState } from "react";
 import dayjs from "dayjs";
-import { useForm } from "./useForm";
 import { PatientFormData } from "../types/PatientForm.types";
+import { Rule } from "antd/es/form";
+import { Form } from "antd";
 
-export const usePatientForm = (closeModal?: () => void) => {
+export interface FormErrors {
+  fullName: string;
+  phone: string;
+  pickupStation: string;
+  dropOffStation: string;
+  appointmentTypes: string;
+  desiredDate: string;
+  desiredTime: string;
+  notes: string;
+}
+
+const defaultFormErrors: FormErrors = {
+  fullName: "",
+  phone: "",
+  pickupStation: "",
+  dropOffStation: "",
+  appointmentTypes: "",
+  desiredDate: "",
+  desiredTime: "",
+  notes: "",
+};
+
+export const usePatientForm = (
+  closeModal?: () => void,
+  onSubmitCallback?: (formData: PatientFormData) => void
+) => {
+  const [form] = Form.useForm<PatientFormData>();
+
+  const [formErrors, setFormErrors] = useState<FormErrors>(defaultFormErrors);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
   const [isDropOffTouched, setIsDropOffTouched] = useState(false);
   const [isPickupDisabled, setIsPickupDisabled] = useState(false);
   const [isDropOffDisabled, setIsDropOffDisabled] = useState(true);
 
-  const initialForm: PatientFormData = {
-    fullName: "",
-    phone: "",
-    pickupStation: "",
-    dropOffStation: "",
-    appointmentTypes: [],
-    desiredDate: "",
-    desiredTime: "",
-    notes: "",
-  };
-
-  const validationMap = {
-    fullName: (value: string) => {
-      if (!value || value.trim() === "") return "שדה חובה";
-      if (value.length > 20) return "שם המטופל לא יכול להכיל יותר מ-20 תווים";
-      return "";
-    },
-    phone: (value: string) => {
-      if (!value || value.trim() === "") return "מספר טלפון הוא שדה חובה";
-      let phone = value.trim();
-      if (phone.startsWith("+972")) phone = phone.replace("+972", "0");
-      if (!/^[0-9]+$/.test(phone)) return "מספר טלפון חייב להכיל ספרות בלבד";
-      if (phone.length < 2) return "";
-      if (!phone.startsWith("05")) return "מספר טלפון חייב להתחיל בקידומת 05";
-      return "";
-    },
-    pickupStation: (value: string) => {
-      if (!isPickupDisabled && (!value || value.trim() === "")) return "שדה חובה";
-      return "";
-    },
-    dropOffStation: (value: string) => {
-      if (!isDropOffDisabled && (!value || value.trim() === "")) return "שדה חובה";
-      return "";
-    },
-    desiredDate: (value: string, formData?: PatientFormData) => {
-      if (!value || value.trim() === "") return "שדה חובה";
-      const selectedDate = dayjs(value, "DD/MM/YYYY");
-      const now = dayjs();
-      if (!selectedDate.isValid()) return "תאריך לא תקין";
-      if (selectedDate.isBefore(now, "day")) return "לא ניתן לבחור תאריך עבר";
-
-      const selectedTime = dayjs(formData?.desiredTime, "HH:mm");
-      const isToday = selectedDate.isSame(now, "day");
-      if (isToday && selectedTime.isValid() && selectedTime.isBefore(now, "minute")) {
-        return "לא ניתן לבחור שעה שכבר עברה";
+  const validationMap: { [K in keyof PatientFormData]: Rule[] } = {
+    fullName: [
+      { required: true, message: "שדה חובה", validateTrigger: "onChange" },
+      { max: 20, message: "שם המטופל לא יכול להכיל יותר מ-20 תווים", validateTrigger: "onChange" },
+    ],
+    phone: [
+      { required: true, message: "מספר טלפון הוא שדה חובה", validateTrigger: "onChange" },
+      { pattern: /^\d+$/, message: "מספר טלפון יכול להכיל ספרות בלבד", validateTrigger: "onChange" },
+      {
+        validator: () => {
+          const phone = form.getFieldValue("phone");
+          if (!phone || phone.startsWith("05")) return Promise.resolve();
+          return Promise.reject("מספר טלפון חייב להתחיל ב-05");
+        },
+        validateTrigger: "onChange"
+      },
+      {
+        validator: () => {
+          const phone = form.getFieldValue("phone");
+          if (!phone || phone.length === 10) return Promise.resolve();
+          return Promise.reject("מספר טלפון חייב להיות באורך של 10 ספרות");
+        },
+        validateTrigger: "onChange"
       }
-      return "";
-    },
-    desiredTime: (value: string, formData?: PatientFormData) => {
-      if (!value || value.trim() === "") return "שדה חובה";
-      const selectedTime = dayjs(value, "HH:mm");
-      const selectedDate = dayjs(formData?.desiredDate, "DD/MM/YYYY");
-      const now = dayjs();
-      if (!selectedTime.isValid()) return "שעה לא תקינה";
-      const isToday = selectedDate.isValid() && selectedDate.isSame(now, "day");
-      if (isToday && selectedTime.isBefore(now, "minute")) return "לא ניתן לבחור שעה שכבר עברה";
-      return "";
-    },
-    appointmentTypes: (value: string[]) => {
-      if (!Array.isArray(value) || value.length === 0) return "יש לבחור לפחות סוג תור אחד";
-      return "";
-    },
-    notes: (value: string) => {
-      if (value && value.length > 300) return "ההערה ארוכה מדי (מקסימום 300 תווים)";
-      return "";
-    },
+    ],
+    pickupStation: [
+      { required: !isPickupDisabled, message: "שדה חובה", validateTrigger: "onChange" },
+    ],
+    dropOffStation: [
+      { required: !isDropOffDisabled, message: "שדה חובה", validateTrigger: "onChange" },
+    ],
+    desiredDate: [
+      { required: true, message: "שדה חובה", validateTrigger: "onChange" },
+      {
+        validator: (_, value) => {
+          const selectedDate = dayjs(value, "DD/MM/YYYY");
+          const now = dayjs();
+          if (!selectedDate.isValid()) return Promise.reject("תאריך לא תקין");
+          if (selectedDate.isBefore(now, "day")) return Promise.reject("לא ניתן לבחור תאריך עבר");
+          return Promise.resolve();
+        },
+        validateTrigger: "onChange"
+      },
+    ],
+    desiredTime: [
+      { required: true, message: "שדה חובה", validateTrigger: "onChange" },
+      {
+        validator: () => {
+          const time = form.getFieldValue("desiredTime");
+          const date = form.getFieldValue("desiredDate");
+          const selectedTime = dayjs(time, "HH:mm");
+          const selectedDate = dayjs(date, "DD/MM/YYYY");
+          const now = dayjs();
+          if (!selectedTime.isValid()) return Promise.reject("שעה לא תקינה");
+          if (selectedDate.isSame(now, "day") && selectedTime.isBefore(now, "minute")) {
+            return Promise.reject("לא ניתן לבחור שעה שכבר עברה");
+          }
+          return Promise.resolve();
+        },
+        validateTrigger: "onChange"
+      },
+    ],
+    appointmentTypes: [
+      { required: true, message: "יש לבחור לפחות סוג תור אחד", validateTrigger: "onChange" },
+    ],
+    notes: [
+      { max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)", validateTrigger: "onChange" },
+    ],
+  };
+  
+
+  const updateFormErrors = () => {
+    const errors = form.getFieldsError();
+    const values = form.getFieldsValue();
+    const newErrors: FormErrors = { ...defaultFormErrors };
+  
+    errors.forEach(({ name, errors }) => {
+      if (errors.length > 0) {
+        const key = Array.isArray(name) ? name[0] : name;
+        if (key in newErrors) {
+          newErrors[key as keyof FormErrors] = errors.join(", ");
+        }
+      }
+    });
+  
+    setFormErrors(newErrors);
+  
+    // בדיקת שדות חובה מול ערכים
+    const requiredFields: (keyof PatientFormData)[] = [
+      "fullName",
+      "phone",
+      "pickupStation",
+      "dropOffStation",
+      "desiredDate",
+      "desiredTime",
+      "appointmentTypes"
+    ];
+  
+    const allRequiredFilled = requiredFields.every((field) => {
+      const value = values[field];
+      return Array.isArray(value)
+        ? value.length > 0
+        : value !== undefined && value !== null && value !== "";
+    });
+  
+    const noFieldErrors = errors.every((e) => e.errors.length === 0);
+  
+    setIsFormValid(allRequiredFilled && noFieldErrors);
+  };
+  
+
+  const handleSubmit = () => {
+    form
+      .validateFields()
+      .then(() => {
+        const values = form.getFieldsValue();
+        onSubmitCallback?.(values);
+        closeModal?.();
+      })
+      .catch(() => {
+        updateFormErrors();
+      });
   };
 
-  const {
-    formData,
-    errors,
-    isFormValid,
-    handleChange,
-    validateField,
-    handleSubmit: rawSubmit,
-    handleClear: rawClear,
-    setFormData,
-    setErrors,
-  } = useForm<PatientFormData>({
-    initialForm,
-    validationMap,
-    onSubmit: (data) => {
-      console.log("Submit patient", data);
-      if (closeModal) closeModal();
-    },
-  });
-
-  const handlePickupChange = (val: string | string[]) => {
-    const pickupVal = Array.isArray(val) ? val[0] : val;
-    const dropVal = isDropOffTouched ? formData.dropOffStation : pickupVal;
-
-    setFormData((prev) => ({
-      ...prev,
-      pickupStation: pickupVal,
-      dropOffStation: dropVal,
-    }));
-
-    validateField("pickupStation", pickupVal);
-    if (!isDropOffTouched) validateField("dropOffStation", dropVal);
-  };
-
-  const handleClear = () => {
-    rawClear();
+  const handleClearAll = () => {
+    form.resetFields();
     setIsDropOffDisabled(true);
     setIsPickupDisabled(false);
     setIsDropOffTouched(false);
+    setFormErrors(defaultFormErrors);
+    setIsFormValid(false); // ← תוקן
+  };
+
+  const handleChange =
+    (key: keyof PatientFormData) => (val: string | string[]) => {
+      form.setFieldValue(key, val);
+    };
+
+  const handlePickupChange = (val: string | string[]) => {
+    const pickupVal = Array.isArray(val) ? val[0] : val;
+    const dropVal = isDropOffTouched
+      ? form.getFieldValue("dropOffStation")
+      : pickupVal;
+
+    form.setFieldsValue({
+      pickupStation: pickupVal,
+      dropOffStation: dropVal,
+    });
   };
 
   return {
-    formData,
-    errors,
+    form,
+    formErrors,
     isFormValid,
     isPickupDisabled,
     isDropOffDisabled,
@@ -128,9 +201,9 @@ export const usePatientForm = (closeModal?: () => void) => {
     setIsDropOffTouched,
     handleChange,
     handlePickupChange,
-    handleSubmit: rawSubmit,
-    handleClear,
-    setFormData,
-    setErrors,
+    handleSubmit,
+    handleClearAll,
+    updateFormErrors,
+    validationMap,
   };
 };

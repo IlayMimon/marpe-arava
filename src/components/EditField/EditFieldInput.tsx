@@ -1,6 +1,4 @@
-import { Input, Tooltip } from "antd";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { Input } from "antd";
 
 const { TextArea } = Input;
 
@@ -22,16 +20,10 @@ export function EditFieldInput({
   error,
   ...restProps
 }: Props) {
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     onChange(e.target.value);
-  };
-
-  const handleIconClick = () => {
-    if (error) setTooltipOpen((prev) => !prev);
   };
 
   const inputField =
@@ -55,24 +47,6 @@ export function EditFieldInput({
         onChange={handleChange}
         status={error ? "error" : ""}
         {...restProps}
-        suffix={
-          <Tooltip
-            title={error}
-            open={tooltipOpen && !!error}
-            trigger="hover"
-            onOpenChange={setTooltipOpen}
-          >
-            <span
-              className={`edit-field__icon ${
-                error ? "edit-field__icon--visible" : ""
-              }`}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleIconClick}
-            >
-              <ExclamationCircleOutlined />
-            </span>
-          </Tooltip>
-        }
       />
     );
 

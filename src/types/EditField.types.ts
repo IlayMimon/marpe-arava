@@ -1,4 +1,5 @@
 import type { TimePickerProps, DatePickerProps } from "antd";
+import { Rule } from "antd/es/form";
 import {CustomTagProps} from "rc-select/lib/BaseSelect";
 
 export interface OptionItem {
@@ -9,6 +10,7 @@ export interface OptionItem {
 interface CommonProps {
     title: string;
     hint?: string;
+    rules?: Rule[];
     showCheckbox?: boolean;
     defaultCheck?: boolean;
     forceDisable?: boolean;
@@ -18,6 +20,7 @@ interface CommonProps {
     error?: string;
     checked?: boolean;
     onCheckChange?: (checked: boolean) => void;
+    name?: string;
 }
 
 interface SelectFieldMulti extends CommonProps {
