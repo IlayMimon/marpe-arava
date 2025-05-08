@@ -1,19 +1,9 @@
 import { useState } from "react";
 import dayjs from "dayjs";
-import { PatientFormData } from "../types/PatientForm.types";
+import { FormErrors, PatientFormData } from "../types/PatientForm.types";
 import { Rule } from "antd/es/form";
 import { Form } from "antd";
 
-export interface FormErrors {
-  fullName: string;
-  phone: string;
-  pickupStation: string;
-  dropOffStation: string;
-  appointmentTypes: string;
-  desiredDate: string;
-  desiredTime: string;
-  notes: string;
-}
 
 const defaultFormErrors: FormErrors = {
   fullName: "",
