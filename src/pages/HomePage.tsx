@@ -1,21 +1,22 @@
-import Table from "../components/Table/Table";
-import useGetTableColumns from "../hooks/useGetTableColumns";
-import useGetTableData from "../hooks/useGetTableData";
+import Header from "../components/Header";
+import HomeScreenBody from "../components/HomeScreenBody";
+import SidebarNavigation from "../components/sidebarNavigation";
+import React from "react";
 
-const HomePage = () => {
-  const columns = useGetTableColumns();
-  const data = useGetTableData();
-
+const HomePage: React.FC = () => {
   return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the main page of the application.</p>
-      <Table
-        data={data}
-        columns={columns}
-        groupBy={(row) => row.area}
-        rowKey={(row) => row.key}
-      />
+    <div className="home-page">
+      <div className="home-page__sidebar">
+        <SidebarNavigation />
+      </div>
+      <div className="home-page__content">
+        <header className="home-page__content__header">
+          <Header />
+        </header>
+        <div className="home-page__content__body">
+          <HomeScreenBody />
+        </div>
+      </div>
     </div>
   );
 };
