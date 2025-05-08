@@ -6,6 +6,18 @@ import { TbPlus } from "react-icons/tb";
 const HomeScreenBody = () => {
   const [isShattlesArranged, setIsShattlesArranged] = useState(false);
 
+  const sendWhatsMessage = (messageInfo: {
+    date: string;
+    number: string;
+    name: string;
+  }) => {
+    const phone = `972${messageInfo.number}`;
+    const message = encodeURIComponent(
+      `Hello, ${messageInfo.name}. \n Your appointment for ${messageInfo.date}, `
+    );
+    window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${message}`, "WhatsApp");
+  };
+
   return (
     <div className="home-screen-body">
       <div className="home-screen-body__header">
@@ -23,10 +35,16 @@ const HomeScreenBody = () => {
           </Button>
           <Tooltip title={isShattlesArranged ? undefined : "נדרש לשבץ נסיעות"}>
             <Button
-              disabled
               color="default"
               variant="filled"
               icon={<IconSend />}
+              onClick={() =>
+                sendWhatsMessage({
+                  date: new Date().toDateString(),
+                  name: "אגטסיו",
+                  number: "549465992",
+                })
+              }
               className="home-screen-body__header__left__button"
             >
               שליחת הודעות
