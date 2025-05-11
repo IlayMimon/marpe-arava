@@ -7,6 +7,7 @@ import {
   GroupedRow,
   RenderedCell,
 } from "./TableTypes";
+import { BiSolidDownArrow, BiSolidLeftArrow } from "react-icons/bi";
 
 const Table = <T extends object>({
   data,
@@ -76,8 +77,12 @@ const Table = <T extends object>({
                   className="group-label"
                   onClick={() => toggleGroup(record.groupTitle)}
                 >
-                  ▶ {record.groupTitle} (
-                  {collapsedGroups?.[record.groupTitle] ? "Show" : "Hide"})
+                  {collapsedGroups?.[record.groupTitle] ? (
+                    <BiSolidLeftArrow />
+                  ) : (
+                    <BiSolidDownArrow />
+                  )}
+                  {record.groupTitle}
                 </div>
               ),
               props: { colSpan: columns.length },
