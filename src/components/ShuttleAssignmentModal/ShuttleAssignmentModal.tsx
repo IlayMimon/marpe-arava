@@ -64,7 +64,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       title="שיבוץ נסיעות אוטומטי"
       open={visible}
       onCancel={onCancel}
-      footer={[
+      footer={
         <div className="ShuttleAssignmentModal__footer">
 
         <Button key="cancel" onClick={onCancel}>
@@ -80,7 +80,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
           שבץ נסיעות
         </Button>
         </div>
-      ]}
+      }
     >
       <ConfigProvider locale={heIL} direction="rtl">
         <Form
