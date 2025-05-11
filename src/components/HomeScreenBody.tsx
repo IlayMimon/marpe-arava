@@ -7,14 +7,13 @@ import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import { FormValues } from "./types/shuttleAssignmentProps";
 
 const HomeScreenBody = () => {
-  const [isshuttlesArranged, setIsShuttlesArranged] = useState(false);
+  const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
 
   const handleSubmit = (values: FormValues) => {
-    console.log("Submitting values:", values);
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setModalVisible(false);
@@ -33,7 +32,7 @@ const HomeScreenBody = () => {
             btnContent="שבץ מחדש"
             isOpen={popUpMsgOpen}
             onConfirm={() => {
-              setModalVisible(!modalVisible);
+              setModalVisible((prevValue) => !prevValue);
               setPopUpMsgOpen(false);
             }}
             onCancel={() => setPopUpMsgOpen(false)}
@@ -46,7 +45,7 @@ const HomeScreenBody = () => {
             >
               <Button
                 onClick={() =>
-                  isshuttlesArranged
+                  isShuttlesArranged
                     ? setPopUpMsgOpen(true)
                     : setModalVisible(true)
                 }
@@ -68,13 +67,18 @@ const HomeScreenBody = () => {
             setMedicName={setSelectedMedic}
             messagesAlreadySent={messagesAlreadySent}
           />
-          <Tooltip title={isshuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
+          <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
-              disabled
+              disabled={!isShuttlesArranged}
               color="default"
               variant="filled"
               icon={<IconSend />}
               className="home-screen-body__header__left__button"
+              onClick={() => {
+                setMessagesAlreadySent(true);
+                setPopUpMsgOpen(false);
+              }
+              }
             >
               שליחת הודעות
             </Button>
