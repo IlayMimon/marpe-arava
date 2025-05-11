@@ -65,9 +65,11 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       open={visible}
       onCancel={onCancel}
       footer={[
+        <div className="ShuttleAssignmentModal__footer">
+
         <Button key="cancel" onClick={onCancel}>
           ביטול
-        </Button>,
+        </Button>
 
         <Button
           type="primary"
@@ -76,7 +78,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
         >
           <IconSparkles />
           שבץ נסיעות
-        </Button>,
+        </Button>
+        </div>
       ]}
     >
       <ConfigProvider locale={heIL} direction="rtl">
