@@ -17,14 +17,19 @@ const Kpi = ({ title, icon, value, titleColor, borderColor }: KpiProps) => {
       ) : (
         <span
           className="kpi__title"
-          style={{ color: `var(${titleColor})`, borderColor: `var(${borderColor})` }}
+          style={{
+            color: `var(${titleColor})`,
+            borderColor: `var(${borderColor})`,
+          }}
         >
           {title}
         </span>
       )}
       <div
         className="kpi__value"
-        style={value === 0 ? { color: "var(--Text-color-text-tertiary)" } : undefined}
+        style={
+          value === 0 ? { color: "var(--Text-color-text-tertiary)" } : undefined
+        }
       >
         {value}
       </div>

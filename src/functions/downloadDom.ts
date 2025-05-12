@@ -1,8 +1,8 @@
-import { toPng } from 'html-to-image';
-import { saveAs as saveFileAs } from 'file-saver';
+import { toPng } from "html-to-image";
+import { saveAs as saveFileAs } from "file-saver";
 
 // NOTE: Firefox does not support this library, or any similar library, due to privacy concerns.
-const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
 
 /**\
  * Downloads elements from the DOM.
@@ -11,12 +11,12 @@ const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
  */
 async function downloadDom<T extends HTMLElement | null>(
   ref: React.RefObject<T>,
-  fileName?: string
+  fileName?: string,
 ) {
   if (!ref.current) return;
 
   if (isFirefox) {
-    window.alert('הורדת תמונה לא עובדת בדפדפן זה. אנא השתמשו בכרום');
+    window.alert("הורדת תמונה לא עובדת בדפדפן זה. אנא השתמשו בכרום");
     return;
   }
 
@@ -25,7 +25,7 @@ async function downloadDom<T extends HTMLElement | null>(
 
   const imageData = await toPng(ref.current);
   const blob = await (await fetch(imageData)).blob();
-  saveFileAs(blob, fileName || 'bus-arrangements' + '.png');
+  saveFileAs(blob, fileName || "bus-arrangements" + ".png");
 }
 
 export default downloadDom;
