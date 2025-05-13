@@ -1,29 +1,18 @@
 .shuttle-table-header{
-    position: relative;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
 
     padding: 0 1.6rem;
     width: 100%;
-    height: 4.4rem;
-
-    background-color: white;
+    height: 5rem;
 
     &__segmented{
-        align-self: center;
-
         width: 22rem;
-
-        font-size: 1.4rem;
-        font-weight: 400;
     }
     
     .ant-segmented-item-label{
         font-size: 1.4rem;
-        font-weight: 400 ;
-        min-height: 2.4rem ;
+        font-weight: 400;
+        min-height: 2.4rem;
     }
 }

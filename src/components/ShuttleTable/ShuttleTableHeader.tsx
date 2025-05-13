@@ -1,20 +1,22 @@
 import { ConfigProvider, Flex, Segmented } from "antd";
-import { SizeType } from "antd/es/config-provider/SizeContext";
-import { useState } from "react";
+import { TripDirection } from "../HomeScreenBody";
+interface IShuttleTableHeaderProps {
+  tripDirection: TripDirection;
+  handleChange: (direction: TripDirection) => void;
+}
 
-export default function ShuttleTableHeader({}) {
-  const [size, setSize] = useState<SizeType>("large");
+export default function ShuttleTableHeader({ handleChange, tripDirection }: IShuttleTableHeaderProps) {
   return (
     <div className="shuttle-table-header">
       <ConfigProvider direction="rtl">
       <Flex gap="large" align="flex-start" vertical>
         <Segmented
-        dir="ltr"
+          dir="ltr"
           className="shuttle-table-header__segmented"
-          options={["הלוך", "חזור"]} 
+          options={[{label: "הלוך", value: "outbound"}, {label: "חזור", value: "return"}]} 
           block
-          value={size}
-          onChange={(value) => setSize(value as SizeType)}
+          value={tripDirection}
+          onChange={(direction) => handleChange(direction as TripDirection)}
         />
       </Flex>
       </ConfigProvider>
