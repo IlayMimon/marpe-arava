@@ -13,7 +13,7 @@
 @use "./components/sidebar-navigation";
 @use "./components/header";
 @use "./components/home-screen-body";
-@use 'components/NewPatientForm/newpatientformcontent';
+@use "components/NewPatientForm/newpatientformcontent";
 @use "./components/date-picker";
 @use "./components/kpies";
 @use "./components/kpi";
@@ -21,3 +21,4 @@
 @use "./components/ShuttleAssignmentModal/ShuttleAssignmentModal";
 @use "./components/generic/btn-pop-up-msg";
 @use "./components/medic-select";
+@use "./components/shuttletable/shuttle-table-header";
