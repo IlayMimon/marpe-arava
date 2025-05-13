@@ -4,4 +4,15 @@
   &__container {
     border-top: 1px solid #d9d9d9;
   }
+
+  &__path {
+    &__id {
+      &__container {
+        display: inline-flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.8rem;
+      }
+    }
+  }
 }

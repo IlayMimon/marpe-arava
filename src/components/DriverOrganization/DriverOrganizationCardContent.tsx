@@ -11,9 +11,17 @@ const DriverOrganizationCardPath = ({ path }: { path: Path }) => {
 const DriverOrganizationCardContent = ({ driverData }: DriverOrganizationCardContentProps) => {
   return (
     <div className="driver-organization-card-content">
-      {driverData.paths.map((path) => {
+      {driverData.paths.map((path, index) => {
         if ('pathId' in path) {
-          return <DriverOrganizationCardPath path={path} />;
+          return (
+            <div className="driver-organization-card-content__path">
+              <div className="driver-organization-card-content__path__id__container">
+                <span>{(index + 1).toString()}</span>
+                <span>{'# ' + path.pathId}</span>
+              </div>
+              <DriverOrganizationCardPath path={path} />
+            </div>
+          );
         } else return <div>this is a break</div>;
       })}
     </div>
