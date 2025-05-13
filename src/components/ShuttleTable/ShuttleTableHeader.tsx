@@ -2,8 +2,7 @@ import { ConfigProvider, Flex, Segmented } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { useState } from "react";
 
-interface ShuttleTableHeaderProps {}
-export default function NewPatientFormContent({}: ShuttleTableHeaderProps) {
+export default function ShuttleTableHeader({}) {
   const [size, setSize] = useState<SizeType>("large");
   return (
     <div className="shuttle-table-header">

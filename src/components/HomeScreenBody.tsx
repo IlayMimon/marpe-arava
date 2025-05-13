@@ -5,6 +5,7 @@ import { TbPlus } from "react-icons/tb";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import { FormValues } from "./types/shuttleAssignmentProps";
+import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
