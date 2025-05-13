@@ -1,10 +1,9 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
-import { Button, message, Modal, Tooltip } from "antd";
+import { Button, Modal, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import { FormValues } from "./types/shuttleAssignmentProps";
 import NewPatientFormContent from "./NewPatientForm/NewPatientFormContent";
 import { PatientFormData } from "../types/PatientForm.types";
 
@@ -24,8 +23,7 @@ const HomeScreenBody = () => {
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
 
-  const handleSubmit = (values: FormValues) => {
-    message.success("שיבוץ הנסיעות בוצע בהצלחה");
+  const handleSubmit = () => {
     setIsShuttlesArranged(true);
     setModalVisible(false);
   };
