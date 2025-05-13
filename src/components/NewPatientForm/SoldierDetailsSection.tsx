@@ -3,10 +3,11 @@ import EditField from "../EditField/EditField.tsx";
 import { FormErrors, PatientFormData } from "../../types/PatientForm.types.ts";
 import FormSection from './FormSection.tsx';
 import { Rule } from 'antd/es/form/index';
-
+import { Form } from "antd";
+import { FormInstance } from 'antd/lib/index';
 
 interface Props {
-  formData: PatientFormData;
+  formData: FormInstance<PatientFormData>;
   errors: FormErrors;
   onChange: (key: keyof PatientFormData) => (val: string | string[]) => void;
   onPickupChange: (val: string | string[]) => void;
@@ -29,14 +30,20 @@ const SoldierDetailsSection: React.FC<Props> = ({
   setIsDropoffDisabled,
   setIsDropoffTouched,
   validationMap,
-}) => (
+}) =>{ 
+  
+  const fullName = Form.useWatch("fullName", formData);
+  const phone = Form.useWatch("phone", formData);
+  const pickupStation = Form.useWatch("pickupStation", formData);
+  const dropOffStation = Form.useWatch("dropOffStation", formData);
 
+  return(
   <FormSection title="פרטי החייל">
     <EditField
       name='fullName'
       title="שם מלא"
       hint="הקלד שם החייל"
-      value={formData.fullName}
+      value={fullName}
       onTextChange={onChange("fullName")}
       error={errors.fullName}
       maxLength={20}
@@ -47,7 +54,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
       title="טלפון"
       type="tel"
       hint="הקלד מספר"
-      value={formData.phone}
+      value={phone}
       onTextChange={onChange("phone")}
       error={errors.phone}
       maxLength={10}
@@ -61,7 +68,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
       onCheckChange={(val) => setIsPickupDisabled(!val)}
       options={["שגוב", "סיירים"]}
       hint="בחר תחנה"
-      value={formData.pickupStation}
+      value={pickupStation}
       onTextChange={onPickupChange}
       error={errors.pickupStation}
       rules={validationMap.pickupStation}
@@ -75,7 +82,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
       onCheckChange={(val) => setIsDropoffDisabled(!val)}
       options={["שגוב", "סיירים"]}
       hint="בחר תחנה"
-      value={isDropoffDisabled ? "" : formData.dropOffStation}
+      value={isDropoffDisabled ? "" : dropOffStation}
       onTextChange={(val) => {
         setIsDropoffTouched(true);
         onChange("dropOffStation")(val);
@@ -84,6 +91,7 @@ const SoldierDetailsSection: React.FC<Props> = ({
       rules={validationMap.dropOffStation}
     />
   </FormSection>
-);
+)
+};
 
 export default SoldierDetailsSection;

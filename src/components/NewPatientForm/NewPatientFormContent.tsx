@@ -38,7 +38,7 @@ export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {
         <p className="patient-form__title">הוספת מטופל ידנית</p>
 
         <SoldierDetailsSection
-          formData={form.getFieldsValue()}
+          formData={form}
           onChange={handleChange}
           onPickupChange={handlePickupChange}
           isPickupDisabled={isPickupDisabled}
@@ -51,7 +51,7 @@ export default function NewPatientFormContent({ closeModal, onSubmit }: Props) {
         />
 
         <AppointmentDetailsSection
-          formData={form.getFieldsValue()}
+          formData={form}
           onChange={handleChange}
           isPickupDisabled={isPickupDisabled}
           validationMap={validationMap}
