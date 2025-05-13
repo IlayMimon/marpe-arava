@@ -1,65 +1,44 @@
-import type { TimePickerProps, DatePickerProps } from "antd";
-import { Rule } from "antd/es/form";
-import {CustomTagProps} from "rc-select/lib/BaseSelect";
+import type { Rule } from "antd/es/form";
+import type { DatePickerProps, TimePickerProps } from "antd";
+import type { CustomTagProps } from "rc-select/lib/BaseSelect";
+import type { ReactElement } from "react";
 
 export interface OptionItem {
-    value: string;
-    label: string;
+  value: string;
+  label: string;
 }
 
 interface CommonProps {
-    title: string;
-    hint?: string;
-    rules?: Rule[];
-    showCheckbox?: boolean;
-    defaultCheck?: boolean;
-    forceDisable?: boolean;
-    onToggleEnable?: (enabled: boolean) => void;
-    onTextChange: (value: string | string[]) => void;
-    onTextBlur?: (value: string | string[]) => void;
-    error?: string;
-    checked?: boolean;
-    onCheckChange?: (checked: boolean) => void;
-    name?: string;
+  name: string;
+  title: string;
+  hint?: string;
+  rules?: Rule[];
+  forceDisable?: boolean;
 }
 
-interface SelectFieldMulti extends CommonProps {
-    options: OptionItem[] | string[];
-    multiSelect: true;
-    value: string[];
-    type?: never;
-    tagRender?: (props: CustomTagProps, index: number, all: string[]) => React.ReactNode;
+export interface InputField extends CommonProps {
+  type?: "text" | "tel" | "textarea";
+  autosize?: boolean | { minRows?: number; maxRows?: number };
 }
 
-interface SelectFieldSingle extends CommonProps {
-    options: OptionItem[] | string[];
-    multiSelect?: false | undefined;
-    value: string;
-    type?: never;
+export interface SelectField extends CommonProps {
+  options: OptionItem[] | string[];
+  multiSelect?: boolean;
+  tagRender?: (props: CustomTagProps) => ReactElement;
 }
 
-interface InputField extends CommonProps {
-    type?: Exclude<React.HTMLInputTypeAttribute, "time" | "date">;
-    value: string;
-    maxLength?: number | undefined;
-    autosize?: boolean | { minRows?: number; maxRows?: number };
+export interface DateField extends CommonProps {
+  type: "date";
+  disabledDate?: DatePickerProps["disabledDate"];
 }
 
-interface TimePickerField extends CommonProps {
-    type: "time";
-    value: string;
-    disabledTimes?: TimePickerProps["disabledTime"];
-}
-
-interface DatePickerField extends CommonProps {
-    type: "date";
-    value: string;
-    disabledDate?: DatePickerProps["disabledDate"];
+export interface TimeField extends CommonProps {
+  type: "time";
+  disabledTimes?: TimePickerProps["disabledTime"];
 }
 
 export type EditFieldProps =
-    | SelectFieldMulti
-    | SelectFieldSingle
-    | InputField
-    | TimePickerField
-    | DatePickerField;
+  | InputField
+  | SelectField
+  | DateField
+  | TimeField;

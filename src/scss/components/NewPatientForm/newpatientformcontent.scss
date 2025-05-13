@@ -36,6 +36,9 @@
 
     width: 100%;
 
+    .ant-form-item {
+      margin-bottom: 0;
+    }
     &-feilds {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -45,8 +48,6 @@
       column-gap: 3.2rem;
 
       width: 100%;
-
-      
     }
 
     &-title {
@@ -56,31 +57,41 @@
     }
   }
 
-.ant-picker-input,
-.ant-select-single {
-  height: 3.2rem;
+  .ant-picker-input,
+  .ant-select-single {
+    height: 3.2rem;
 
-  font-size: 1.4rem !important;
-}
+    font-size: 1.4rem !important;
+  }
 
-.ant-btn {
-  height: 3.2rem;
+  .ant-btn {
+    height: 3.2rem;
 
-  padding: 0 1.2rem;
+    padding: 0 1.2rem;
 
-  font-size: 1.4rem !important;
-}
+    font-size: 1.4rem !important;
+  }
 
-.ant-select {
-  font-size: 1.4rem !important;
-}
-.ant-checkbox-inner,
-.ant-select-multiple,
-.ant-select-arrow,
-.ant-select-selector {
-  font-size: 1.4rem !important;
-}
+  .ant-picker-content tr {
+    flex-direction: row-reverse;
+  }
+  .ant-select {
+    font-size: 1.4rem !important;
+  }
+  .ant-checkbox-inner,
+  .ant-select-multiple,
+  .ant-select-arrow,
+  .ant-select-selector {
+    font-size: 1.4rem !important;
+  }
 }
 .patient-form-modal {
   width: 72rem !important;
+}
+
+.ant-checkbox-inner:after {
+  direction: ltr !important;
+}
+.ant-picker-content {
+  direction: ltr !important;
 }

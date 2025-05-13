@@ -1,11 +1,13 @@
 import dayjs from "dayjs";
 import type { CustomTagProps } from "rc-select/lib/BaseSelect";
-import { Tooltip } from "antd";
+import { Tooltip, Form } from "antd";
+import { PatientFormData } from "../types/PatientForm.types.ts";
+import { FormInstance } from "antd";
 
-export function useAppointmentDetailsLogic(
-  desiredDate: string,
-  appointmentTypes: string[]
-) {
+export function useAppointmentDetailsLogic(form: FormInstance<PatientFormData>) {
+  const desiredDate = Form.useWatch("desiredDate", form);
+  const appointmentTypes = Form.useWatch("appointmentTypes", form) || [];
+
   const selectedDate = dayjs(desiredDate, "DD/MM/YYYY");
 
   const appointmentOptions = [

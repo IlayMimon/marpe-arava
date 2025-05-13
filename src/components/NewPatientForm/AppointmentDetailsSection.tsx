@@ -1,83 +1,78 @@
-import { Rule } from "antd/es/form/index";
-import { useAppointmentDetailsLogic } from "../../hooks/useAppointmentDetailsLogic.tsx";
-import { FormErrors, PatientFormData } from "../../types/PatientForm.types.ts";
-import EditField from "../EditField/EditField.tsx";
+import { Form, Select, DatePicker, TimePicker, Input, ConfigProvider } from "antd";
+import heIL from "antd/locale/he_IL";
 import FormSection from "./FormSection.tsx";
-import dayjs from "dayjs";
-import { FormInstance } from "antd/lib/index";
-import { Form } from "antd";
 
-interface Props {
-  formData: FormInstance<PatientFormData>;
-  errors: FormErrors;
-  onChange: (key: keyof PatientFormData) => (val: string | string[]) => void;
-  isPickupDisabled: boolean;
-  validationMap: Record<keyof PatientFormData, Rule[]>;
-}
+const { TextArea } = Input;
 
 export default function AppointmentDetailsSection({
-  formData,
-  errors,
-  onChange,
-  isPickupDisabled,
   validationMap,
-}: Props) {
-  const desiredDate = Form.useWatch("desiredDate", formData);
-  const desiredTime = Form.useWatch("desiredTime", formData);
-  const notes = Form.useWatch("notes", formData);
-  const appointmentTypes = Form.useWatch("appointmentTypes", formData);
-  const { appointmentOptions, tagRender, disabledTimes } =
-    useAppointmentDetailsLogic(desiredDate, appointmentTypes);
-
+  disabledDate,
+  disabledTimes,
+  pickupEnabled,
+  appointmentOptions,
+  tagRender,
+}: any) {
   return (
     <FormSection title="פרטי התור">
-      <EditField
-      name="desiredDate"
-        title="תאריך הגעה רצוי"
-        type="date"
-        hint="בחר תאריך"
-        showCheckbox={false}
-        value={desiredDate}
-        onTextChange={onChange("desiredDate")}
-        error={errors.desiredDate}
-        disabledDate={(current) => current && current < dayjs().startOf("day")}
+      <Form.Item
+        name="desiredDate"
+        label="תאריך הגעה רצוי"
         rules={validationMap.desiredDate}
-      />
-      <EditField
-        title="שעת הגעה רצויה"
-        type="time"
-        hint="בחר שעת הגעה"
-        showCheckbox={false}
-        forceDisable={isPickupDisabled}
-        value={desiredTime}
-        onTextChange={onChange("desiredTime")}
-        error={errors.desiredTime}
-        disabledTimes={disabledTimes}
-        rules={{...validationMap.desiredTime}}
-      />
-      <EditField
-      name="appointmentTypes"
-        title="סוג התור"
-        multiSelect
-        showCheckbox={false}
-        options={appointmentOptions}
-        hint="בחר סוג תור"
-        value={appointmentTypes}
-        onTextChange={onChange("appointmentTypes")}
-        error={errors.appointmentTypes}
-        tagRender={tagRender}
+        required={false}
+      >
+        <ConfigProvider locale={heIL} direction="rtl">
+          <DatePicker
+          className="edit-field__input"
+            format="DD/MM/YYYY"
+            placeholder="בחר תאריך"
+            disabledDate={disabledDate}
+            style={{ width: "100%" }}
+            inputReadOnly
+          />
+        </ConfigProvider>
+      </Form.Item>
+
+      <Form.Item
+        name="desiredTime"
+        label="שעת הגעה רצויה"
+        rules={validationMap.desiredTime}
+        required={false}
+      >
+        <TimePicker
+        className="edit-field__input"
+          format="HH:mm"
+          needConfirm={false}
+          showNow={false}
+          placeholder="בחר שעת הגעה"
+          style={{ width: "100%" }}
+          disabledTime={disabledTimes}
+          disabled={!pickupEnabled}
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="appointmentTypes"
+        label="סוג התור"
         rules={validationMap.appointmentTypes}
-      />
-      <EditField
-      name="notes"
-        title="הערות"
-        type="textarea"
-        hint="הקלד הערות"
-        value={notes}
-        onTextChange={onChange("notes")}
-        error={errors.notes}
+        required={false}
+      >
+        <Select
+          mode="multiple"
+          options={appointmentOptions.map((x: string) => ({ value: x, label: x }))}
+          placeholder="בחר סוג תור"
+          allowClear
+          tagRender={tagRender}
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="notes"
+        label="הערות"
         rules={validationMap.notes}
-      />
+        required={false}
+      >
+        <TextArea placeholder="הקלד הערות" autoSize={{ minRows: 1, maxRows: 2 }} maxLength={300} />
+      </Form.Item>
     </FormSection>
   );
 }
