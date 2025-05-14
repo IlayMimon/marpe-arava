@@ -18,7 +18,7 @@ export interface Break {
 export interface Station {
   stationName: string;
   arrivalTime: string;
-  participants: string[];
+  participants?: string[];
 }
 
 export default DriverData;

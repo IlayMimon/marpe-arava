@@ -2,7 +2,7 @@ import React from 'react';
 import formatDate from '../../functions/formatDate';
 import DriverData from '../../types/DriverOrganizationTypes';
 import DriverOrganizationCardContent from './DriverOrganizationCardContent';
-import driverOrganizationCardDetails from './driverOrganizationCardDetails';
+import DriverOrganizationCardDetails from "./DriverOrganizationCardDetails";
 
 interface DriverOrganizationCardProps {
   driverData: DriverData;
@@ -12,23 +12,14 @@ interface DriverOrganizationCardProps {
 }
 
 const DriverOrganizationCard = ({ driverData, index, chosenDate, ref }: DriverOrganizationCardProps) => {
-  const details = driverOrganizationCardDetails(driverData, index);
-
   return (
-    <div ref={ref} className="driver-organization-card">
+    <div key={chosenDate.valueOf()} ref={ref} className="driver-organization-card">
       <div className="driver-organization-card__date">
         <span className="driver-organization-card__date__text">{formatDate(chosenDate)}</span>
       </div>
-      <div className="driver-organization-card__details__container">
-        {details.map((detail) => (
-          <div className="driver-organization-card__details">
-            {detail.icon}
-            <span className="driver-organization-card__details__text">{detail.text}</span>
-          </div>
-        ))}
-      </div>
+      <DriverOrganizationCardDetails driverData={driverData} index={index} />
       <div className="driver-organization-card-content__container">
-        <DriverOrganizationCardContent driverData={driverData} />
+        <DriverOrganizationCardContent driverData={driverData} cardIndex={index} />
       </div>
     </div>
   );

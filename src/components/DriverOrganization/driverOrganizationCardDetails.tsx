@@ -1,24 +1,21 @@
-import { ReactNode } from 'react';
-import getTimeDifference from '../../functions/getTimeDifference';
-import { IconUserCircle, IconRoute, IconRoute2, IconClock } from '@tabler/icons-react';
-import DriverData from '../../types/DriverOrganizationTypes';
+import getTimeDifference from "../../functions/getTimeDifference";
+import { IconUserCircle, IconRoute, IconRoute2, IconClock } from "@tabler/icons-react";
+import DriverData from "../../types/DriverOrganizationTypes";
 
-interface IDetail {
-  icon: ReactNode;
-  text: string;
+interface DriverOrganizationCardDetailsProps {
+  driverData: DriverData;
+  index: number;
 }
 
-// separated from DriverOrganizationCard.tsx because it's long and repetitive
-
-const driverOrganizationCardDetails = (driverData: DriverData, index: number): IDetail[] => {
-  return [
+const DriverOrganizationCardDetails = ({ driverData, index }: DriverOrganizationCardDetailsProps) => {
+  const details = [
     {
       icon: <IconUserCircle className="driver-organization-card__details__icon" />,
-      text: driverData.name || 'נהג ' + (index + 1).toString(),
+      text: driverData.name || "נהג " + (index + 1).toString(),
     },
     {
       icon: <IconRoute className="driver-organization-card__details__icon" />,
-      text: driverData.paths.filter((path) => 'pathId' in path).length.toString(),
+      text: driverData.paths.filter((path) => "pathId" in path).length.toString(),
     },
     {
       icon: <IconRoute2 className="driver-organization-card__details__icon" />,
@@ -28,12 +25,23 @@ const driverOrganizationCardDetails = (driverData: DriverData, index: number): I
       icon: <IconClock className="driver-organization-card__details__icon" />,
       text: getTimeDifference(
         driverData.paths
-          .filter((path) => 'pathId' in path)
+          .filter((path) => "pathId" in path)
           .map((path) => path.stations.map((station) => station.arrivalTime))
           .flat()
       ),
     },
   ];
+
+  return (
+    <div className="driver-organization-card__details__container">
+      {details.map((detail) => (
+        <div key={detail.text} className="driver-organization-card__details">
+          {detail.icon}
+          <span className="driver-organization-card__details__text">{detail.text}</span>
+        </div>
+      ))}
+    </div>
+  );
 };
 
-export default driverOrganizationCardDetails;
+export default DriverOrganizationCardDetails;

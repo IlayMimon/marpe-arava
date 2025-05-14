@@ -8,20 +8,24 @@ import { useState } from 'react';
 const driverData: [DriverData, DriverData, DriverData] = [
   {
     distance: 100,
-    name: 'test',
+    name: "test",
     paths: [
       {
         pathId: 1003,
         stations: [
           {
-            stationName: 'מחנה שיזפון',
-            arrivalTime: '07:30',
-            participants: ['john', 'doe'],
+            stationName: "מחנה שיזפון",
+            arrivalTime: "07:30",
+            participants: ["יונתן", "רוברט"],
           },
           {
-            stationName: 'משהו',
-            arrivalTime: '08:30',
-            participants: ['john', 'doe'],
+            stationName: "משהו",
+            arrivalTime: "08:30",
+            participants: ["יונתן", "רוברט"],
+          },
+          {
+            stationName: 'מרפ"א ערבה',
+            arrivalTime: "09:30",
           },
         ],
       },
@@ -29,30 +33,38 @@ const driverData: [DriverData, DriverData, DriverData] = [
         pathId: 1004,
         stations: [
           {
-            stationName: 'מחנה אש',
-            arrivalTime: '09:30',
-            participants: ['john', 'doe'],
+            stationName: 'מרפ"א ערבה',
+            arrivalTime: "09:00",
           },
           {
-            stationName: 'משהו',
-            arrivalTime: '10:00',
-            participants: ['john', 'doe'],
+            stationName: "מחנה אש",
+            arrivalTime: "09:30",
+            participants: ["יונתן", "רוברט"],
+          },
+          {
+            stationName: "משהו",
+            arrivalTime: "10:00",
+            participants: ["יונתן", "רוברט"],
+          },
+          {
+            stationName: 'מרפ"א ערבה',
+            arrivalTime: "10:15",
           },
         ],
       },
-      { startTime: '10:30', endTime: '11:30', title: 'הפסקת צהריים' },
+      { startTime: "10:30", endTime: "11:30", title: "הפסקת צהריים" },
       {
         pathId: 1005,
         stations: [
           {
-            stationName: 'מחנה אש',
-            arrivalTime: '13:30',
-            participants: ['john', 'doe'],
+            stationName: "מחנה אש",
+            arrivalTime: "13:30",
+            participants: ["john", "doe"],
           },
           {
-            stationName: 'משהו',
-            arrivalTime: '16:00',
-            participants: ['john', 'doe'],
+            stationName: "משהו",
+            arrivalTime: "16:00",
+            participants: ["john", "doe"],
           },
         ],
       },
