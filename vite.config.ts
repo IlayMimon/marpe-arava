@@ -6,10 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/sites': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      },
+      '/_api': 'http://localhost:3000/sites/MarpeArava',
+      '^/sites/[^/]+/_api': 'http://localhost:3000',
     },
   },
 });

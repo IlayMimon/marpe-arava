@@ -2,8 +2,8 @@ import httpRequest from '../functions/httpRequest';
 
 const Example = () => {
   const handleRequest = async () => {
-    const data = await httpRequest("/lists/getbytitle('Routes')/items?$top=4999");
-    console.log(data.json());
+    const data = await httpRequest("/_api/web/lists/getbytitle('Routes')/items?$top=4999");
+    console.log(data);
   };
 
   return (

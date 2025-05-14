@@ -1,11 +1,11 @@
-const httpRequest = async (path: string) => {
-  if (path.toLowerCase().startsWith('/_api/web')) {
-    path = '/sites/MarpeArava/' + path;
-  } else {
-    path = `/sites/MarpeArava/_api/web/${path.startsWith('/') ? path.slice(1) : path}`;
-  }
-  // temporary implementation. will be Axios later
-  return await fetch(path);
+import axios, { Method } from 'axios';
+// should only be used directly for non-GET request methods.
+const httpRequest = async <T, B = unknown>(url: string, method: Method = 'GET', body?: B | undefined) => {
+  const config = { url, method, body };
+
+  return await axios<T>(config).then((response) => {
+    return response.data;
+  });
 };
 
 export default httpRequest;
