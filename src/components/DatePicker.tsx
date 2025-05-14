@@ -27,12 +27,15 @@ const DatePicker = () => {
       : current.subtract((current.day() + 4) % 7, "day");
   };
 
-  const goPreviousDay = () => setDate((prevDate) => findPreviousAllowedDay(prevDate));
+  const goPreviousDay = () =>
+    setDate((prevDate) => findPreviousAllowedDay(prevDate));
   const goNextDay = () => setDate((prevDate) => findNextAllowedDay(prevDate));
   const disabledDate = (current: Dayjs) => !isAllowedDay(current.day());
 
   const [date, setDate] = useState<Dayjs>(
-    isAllowedDay(defaultDate.day()) ? defaultDate : findNextAllowedDay(defaultDate)
+    isAllowedDay(defaultDate.day())
+      ? defaultDate
+      : findNextAllowedDay(defaultDate),
   );
   const isToday = useMemo(() => date.isSame(dayjs(), "day"), [date]);
 
