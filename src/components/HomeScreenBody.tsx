@@ -6,16 +6,31 @@ import { TbPlus } from "react-icons/tb";
 const HomeScreenBody = () => {
   const [isShattlesArranged, setIsShattlesArranged] = useState(false);
 
-  const sendWhatsMessage = (messageInfo: {
+  const sendWhatsMessage = async (messageInfo: {
     date: string;
-    number: string;
+    number?: string;
     name: string;
+    contact?: string;
   }) => {
     const phone = `972${messageInfo.number}`;
-    const message = encodeURIComponent(
-      `Hello, ${messageInfo.name}. \n Your appointment for ${messageInfo.date}, `
-    );
-    window.open(`https://web.whatsapp.com/send?phone=${phone}&text=${message}`, "WhatsApp");
+    const message = `Hello, ${messageInfo.name}. \n Your appointment for ${messageInfo.date}, `;
+    const { contact } = messageInfo;
+
+    const body = { message, phone, contact };
+    if (phone) body.phone = phone;
+    else if (contact) body.contact = contact;
+
+    const res = await fetch("http://127.0.0.1:5000/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      alert("✅ Message sent!");
+    } else {
+      alert("❌ Failed to send message");
+    }
   };
 
   return (
@@ -42,7 +57,7 @@ const HomeScreenBody = () => {
                 sendWhatsMessage({
                   date: new Date().toDateString(),
                   name: "אגטסיו",
-                  number: "549465992",
+                  number: "523064674",
                 })
               }
               className="home-screen-body__header__left__button"
