@@ -4,10 +4,10 @@ import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import { FormValues } from "./types/shuttleAssignmentProps";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 
-export type TripDirection = 'outbound' | 'return';
+export type TripDirection = "outbound" | "return";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
@@ -15,13 +15,19 @@ const HomeScreenBody = () => {
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
-  const [tripDirection, setTripDirection] = useState<TripDirection>('outbound');
+  const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
+  const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const handleEscortSubmit = (values: PatientFormValues) => {
+    console.log("Escort Submitted:", values);
+    setEscortModalOpen(false);
+  };
 
   const handleChangeDirection = (direction: TripDirection) => {
-    setTripDirection(direction)
-  }
+    setTripDirection(direction);
+  };
 
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setModalVisible(false);
@@ -47,16 +53,10 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={
-                messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""
-              }
+              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setModalVisible(true)
-                }
+                onClick={() => (isShuttlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true))}
                 disabled={messagesAlreadySent}
                 color="default"
                 variant="filled"
@@ -67,14 +67,6 @@ const HomeScreenBody = () => {
               </Button>
             </Tooltip>
           </BtnPopUpMsg>
-          <ShuttleAssignmentModal
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onSubmit={handleSubmit}
-            medicName={selectedMedic}
-            setMedicName={setSelectedMedic}
-            messagesAlreadySent={messagesAlreadySent}
-          />
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               disabled={!isShuttlesArranged}
@@ -85,8 +77,7 @@ const HomeScreenBody = () => {
               onClick={() => {
                 setMessagesAlreadySent(true);
                 setPopUpMsgOpen(false);
-              }
-              }
+              }}
             >
               שליחת הודעות
             </Button>
@@ -96,18 +87,29 @@ const HomeScreenBody = () => {
             variant="solid"
             icon={<TbPlus />}
             className="home-screen-body__header__left__button"
+            onClick={() => setEscortModalOpen(true)}
           >
             הוספת מטופל
           </Button>
         </div>
       </div>
       <div className="home-screen-body__body">
-        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection}/>
-        {tripDirection === "outbound" ? 
-          <div>going</div> : 
-          <div>returning</div>
-        }
+        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+        {tripDirection === "outbound" ? <div>going</div> : <div>returning</div>}
       </div>
+      <ShuttleAssignmentModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSubmit={handleSubmit}
+        medicName={selectedMedic}
+        setMedicName={setSelectedMedic}
+        messagesAlreadySent={messagesAlreadySent}
+      />
+      <AddPatientModal
+        isOpen={escortModalOpen}
+        onClose={() => setEscortModalOpen(false)}
+        onSubmit={handleEscortSubmit}
+      />
     </div>
   );
 };
