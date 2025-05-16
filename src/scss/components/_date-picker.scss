@@ -22,10 +22,8 @@
     border-color: var(--Border-color-border);
 
     .ant-picker-input {
-
       width: auto !important;
       min-width: 8rem !important;
-
 
       font-size: 1.4rem;
       font-family: Rubik, serif;
@@ -48,7 +46,7 @@
   &__button {
     width: 4rem !important;
     height: 100%;
-    
+
     border: var(--Border) !important;
 
     &--next {
