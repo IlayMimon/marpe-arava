@@ -1,15 +1,19 @@
-import httpRequest from '../functions/httpRequest';
+import { useQueryFetchRequest } from "../hooks/useQueryFetch";
+import { SharepointQueryResultArray } from "../types/spFetchTypes";
+
+interface IExample {
+  something: string;
+}
 
 const Example = () => {
-  const handleRequest = async () => {
-    const data = await httpRequest("/_api/web/lists/getbytitle('Routes')/items?$top=4999");
-    console.log(data);
-  };
+  const { data } = useQueryFetchRequest<SharepointQueryResultArray<IExample>>(
+    "/_api/web/lists/getbytitle('example')/items"
+  );
 
   return (
     <div>
       <h1>Example Component</h1>
-      <button onClick={handleRequest}>example request</button>
+      {data?.d.results.map(({ something }) => <div>{something}</div>)}
     </div>
   );
 };
