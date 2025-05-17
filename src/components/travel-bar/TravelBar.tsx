@@ -4,6 +4,8 @@ import { ColorType, TravelItem, TravelBarProps } from './types';
 import { defaultTravelItems, colorToDriverNumber, availableDrivers, kilometersPerColor } from './dummyData';
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
+import DriverFilterButton from './DriverFilterButton';
+
 const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeFilters, setActiveFilters] = useState<ColorType[]>([]);
@@ -53,7 +55,7 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   };
 
   // Toggle dropdown for driver selection
-  const toggleDropdown = (color: ColorType, event: React.MouseEvent): void => {
+  const toggleDropdown = (color: ColorType, event: React.MouseEvent<HTMLButtonElement>): void => {
     // Prevent the click from reaching the button and toggling the filter
     event.stopPropagation();
 
@@ -98,7 +100,11 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   };
 
   // Check if driver is already assigned to another color
-  const isDriverAssigned = (driverId: number): boolean => {
+  const isDriverAssigned = (driverId: number, currentColor: ColorType): boolean => {
+    // Allow selection of a driver that's already assigned to the current color
+    if (driverAssignments[currentColor] === driverId) return false;
+    
+    // Prevent selection if driver is assigned to any other color
     return Object.values(driverAssignments).includes(driverId);
   };
 
@@ -117,242 +123,133 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   };
 
   const filteredItems = getFilteredItems();
+  
+  // Array of colors to render filter buttons
+  const colors: ColorType[] = ['purple', 'teal', 'yellow'];
 
   return (
     <>
- {isOpen?
- <div className="travel-bar" dir="rtl">
-      <div className="travel-bar__header">
-        <div className="travel-bar__header__back-button" onClick={()=>setIsOpen(false)}>
-          <TbChevronsLeft className="travel-bar__header__back-icon" size={16} />
-          <span className="travel-bar__header__back-text" >נסיעות</span>
-        </div>
-        <div className="travel-bar__header__title">
-          הצג סידור יומי
-        </div>
-      </div>
-
-      <div className="travel-bar__filters">
-        <div className="travel-bar__filters__driver">
-          <div className="travel-bar__filters__driver__dropdown-container">
-            <button
-              className={`travel-bar__filters__driver__button travel-bar__filters__driver__button--purple ${hasDriverAssigned('purple') ? 'travel-bar__filters__driver__button--active--purple' : ''
-                }`}
-              onClick={() => toggleFilter('purple')}
-            >
-              {getAssignedDriverName('purple')}
-            </button>
-            <button
-              className="travel-bar__filters__driver__dropdown-toggle"
-              onClick={(e) => toggleDropdown('purple', e)}
-            >
-              <ChevronDown size={14} />
-            </button>
-
-            {isDropdownOpen['purple'] && (
-              <div className="travel-bar__filters__driver__dropdown">
-                {availableDrivers.map(driver => (
-                  <div
-                    key={driver.id}
-                    className={`travel-bar__filters__driver__dropdown__item ${isDriverAssigned(driver.id) && driverAssignments['purple'] !== driver.id
-                      ? 'travel-bar__filters__driver__dropdown__item--disabled'
-                      : ''
-                      }`}
-                    onClick={() => {
-                      if (!isDriverAssigned(driver.id) || driverAssignments['purple'] === driver.id) {
-                        assignDriver('purple', driver.id);
-                      }
-                    }}
-                  >
-                    {driver.name}
-                  </div>
-                ))}
-              </div>
-            )}
+      {isOpen ? (
+        <div className="travel-bar" dir="rtl">
+          <div className="travel-bar__header">
+            <div className="travel-bar__header__back-button" onClick={() => setIsOpen(false)}>
+              <TbChevronsLeft className="travel-bar__header__back-icon" size={16} />
+              <span className="travel-bar__header__back-text">נסיעות</span>
+            </div>
+            <div className="travel-bar__header__title">
+              הצג סידור יומי
+            </div>
           </div>
-          <div className="travel-bar__filters__driver__kilometers">
-            {kilometersPerColor['purple']}
+
+          <div className="travel-bar__filters">
+            {/* Use the new DriverFilterButton component for each color */}
+            {colors.map(color => (
+              <DriverFilterButton
+                key={color}
+                color={color}
+                isActive={hasDriverAssigned(color)}
+                isDropdownOpen={isDropdownOpen[color]}
+                driverName={getAssignedDriverName(color)}
+                kilometers={kilometersPerColor[color]}
+                toggleFilter={toggleFilter}
+                toggleDropdown={toggleDropdown}
+                assignDriver={assignDriver}
+                isDriverAssigned={isDriverAssigned} availableDrivers={availableDrivers}              />
+            ))}
           </div>
-        </div>
 
-        <div className="travel-bar__filters__driver">
-          <div className="travel-bar__filters__driver__dropdown-container">
-            <button
-              className={`travel-bar__filters__driver__button travel-bar__filters__driver__button--teal ${hasDriverAssigned('teal') ? 'travel-bar__filters__driver__button--active--teal' : ''
-                }`}
-              onClick={() => toggleFilter('teal')}
-            >
-              {getAssignedDriverName('teal')}
-            </button>
-            <button
-              className="travel-bar__filters__driver__dropdown-toggle"
-              onClick={(e) => toggleDropdown('teal', e)}
-            >
-              <ChevronDown size={14} />
-            </button>
+          <div className="travel-bar__list-container">
+            <ul className="travel-bar__list">
+              {filteredItems.map(item => {
+                const driverName = getDriverNameForItem(item);
 
-            {isDropdownOpen['teal'] && (
-              <div className="travel-bar__filters__driver__dropdown">
-                {availableDrivers.map(driver => (
-                  <div
-                    key={driver.id}
-                    className={`travel-bar__filters__driver__dropdown__item ${isDriverAssigned(driver.id) && driverAssignments['teal'] !== driver.id
-                      ? 'travel-bar__filters__driver__dropdown__item--disabled'
-                      : ''
-                      }`}
-                    onClick={() => {
-                      if (!isDriverAssigned(driver.id) || driverAssignments['teal'] === driver.id) {
-                        assignDriver('teal', driver.id);
-                      }
-                    }}
-                  >
-                    {driver.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="travel-bar__filters__driver__kilometers">
-            {kilometersPerColor['teal']}
-          </div>
-        </div>
+                return (
+                  <li className="travel-bar__list__item" key={item.id}>
+                    <div
+                      className="travel-bar__list__item__header"
+                      onClick={() => toggleTripExpansion(item.id)}
+                    >
+                      <div className="travel-bar__list__item__expand-icon">
+                        {expandedTrips.includes(item.id) ?
+                          <ChevronDown size={16} /> :
+                          <ChevronLeft size={16} />
+                        }
+                      </div>
+                      <div className="travel-bar__list__item__trip-id">
+                        {item.tripId}#
+                      </div>
 
-        <div className="travel-bar__filters__driver">
-          <div className="travel-bar__filters__driver__dropdown-container">
-            <button
-              className={`travel-bar__filters__driver__button travel-bar__filters__driver__button--yellow ${hasDriverAssigned('yellow') ? 'travel-bar__filters__driver__button--active--yellow' : ''
-                }`}
-              onClick={() => toggleFilter('yellow')}
-            >
-              {getAssignedDriverName('yellow')}
-            </button>
-            <button
-              className="travel-bar__filters__driver__dropdown-toggle"
-              onClick={(e) => toggleDropdown('yellow', e)}
-            >
-              <ChevronDown size={14} />
-            </button>
+                      <div className="travel-bar__list__item__left">
+                        <div className="travel-bar__list__item__time">
+                          <span>{item.startTime}</span>
+                          <span className="travel-bar__list__item__time__separator">
+                            <FaLongArrowAltLeft />
+                          </span>
+                          <span>{item.endTime}</span>
+                        </div>
+                      </div>
 
-            {isDropdownOpen['yellow'] && (
-              <div className="travel-bar__filters__driver__dropdown">
-                {availableDrivers.map(driver => (
-                  <div
-                    key={driver.id}
-                    className={`travel-bar__filters__driver__dropdown__item ${isDriverAssigned(driver.id) && driverAssignments['yellow'] !== driver.id
-                      ? 'travel-bar__filters__driver__dropdown__item--disabled'
-                      : ''
-                      }`}
-                    onClick={() => {
-                      if (!isDriverAssigned(driver.id) || driverAssignments['yellow'] === driver.id) {
-                        assignDriver('yellow', driver.id);
-                      }
-                    }}
-                  >
-                    {driver.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="travel-bar__filters__driver__kilometers">
-            {kilometersPerColor['yellow']}
-          </div>
-        </div>
-      </div>
-
-      <div className="travel-bar__list-container">
-        <ul className="travel-bar__list">
-          {filteredItems.map(item => {
-            const driverName = getDriverNameForItem(item);
-
-            return (
-              <li className="travel-bar__list__item" key={item.id}>
-                <div
-                  className="travel-bar__list__item__header"
-                  onClick={() => toggleTripExpansion(item.id)}
-                >
-                  <div className="travel-bar__list__item__expand-icon">
-                    {expandedTrips.includes(item.id) ?
-                      <ChevronDown size={16} /> :
-                      <ChevronLeft size={16} />
-                    }
-                  </div>
-                  <div className="travel-bar__list__item__trip-id">
-                    {item.tripId}#
-                  </div>
-
-                  <div className="travel-bar__list__item__left">
-
-
-                    <div className="travel-bar__list__item__time">
-                      <span>{item.startTime}</span>
-                      <span className="travel-bar__list__item__time__separator"><FaLongArrowAltLeft />
-                      </span>
-                      <span>{item.endTime}</span>
-                    </div>
-                  </div>
-
-                  <div className="travel-bar__list__item__right">
-                    <div className="travel-bar__list__item__type">
-                      אזור
-                    </div>
-                    <div className="travel-bar__list__item__location">
-                      {item.code}
+                      <div className="travel-bar__list__item__right">
+                        <div className="travel-bar__list__item__type">
+                          אזור
+                        </div>
+                        <div className="travel-bar__list__item__location">
+                          {item.code}
+                        </div>
+                      </div>
+                      
+                      {driverName && (
+                        <div className="travel-bar__list__item__driver">
+                          {driverName}
+                        </div>
+                      )}
+                      <div className={`travel-bar__list__item__color-indicator travel-bar__list__item__color-indicator--${item.colorType}`}></div>
                     </div>
 
-                  </div>
-                  {driverName && (
-                    <div className="travel-bar__list__item__driver">
-                      {driverName}
-                    </div>
-                  )}
-                  <div className={`travel-bar__list__item__color-indicator travel-bar__list__item__color-indicator--${item.colorType}`}></div>
-                </div>
-
-                {expandedTrips.includes(item.id) && item.stations.length > 0 && (
-                  <div className="travel-bar__list__item__expanded">
-                    <ul className={`travel-bar__list__item__stations travel-bar__list__item__stations--${item.colorType}`}>
-                      {item.stations.map((station, idx) => (
-                        <li
-                          key={idx}
-                          className={`travel-bar__list__item__station travel-bar__list__item__station--${item.colorType}`}
-                        >
-
-                          <div className="travel-bar__list__item__station__name">
-                            {station.name}
-                          </div>
-                          {station.passengers && (
-                            <div className="travel-bar__list__item__station__passengers">
-                              <Users size={14} className="travel-bar__list__item__station__passengers__icon" />
-                              <span className="travel-bar__list__item__station__passengers__count">
-                                {station.passengers}
-                              </span>
-                            </div>
-                          )}
-
-                          <div className="travel-bar__list__item__station__time">
-                            {station.arrivalTime}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-      </div>
-      :<div onClick={()=>setIsOpen(true)} className='side-bar'>
+                    {expandedTrips.includes(item.id) && item.stations.length > 0 && (
+                      <div className="travel-bar__list__item__expanded">
+                        <ul className={`travel-bar__list__item__stations travel-bar__list__item__stations--${item.colorType}`}>
+                          {item.stations.map((station, idx) => (
+                            <li
+                              key={idx}
+                              className={`travel-bar__list__item__station travel-bar__list__item__station--${item.colorType}`}
+                            >
+                              <div className="travel-bar__list__item__station__name">
+                                {station.name}
+                              </div>
+                              {station.passengers && (
+                                <div className="travel-bar__list__item__station__passengers">
+                                  <Users size={14} className="travel-bar__list__item__station__passengers__icon" />
+                                  <span className="travel-bar__list__item__station__passengers__count">
+                                    {station.passengers}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="travel-bar__list__item__station__time">
+                                {station.arrivalTime}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <div onClick={() => setIsOpen(true)} className='side-bar'>
           <div className="side-bar__button-container">
-          <TbChevronsLeft  className="side-bar__button-container__icon"size={16} />
-          <span className="side-bar__button-container__text">נסיעות</span>
+            <TbChevronsLeft className="side-bar__button-container__icon" size={16} />
+            <span className="side-bar__button-container__text">נסיעות</span>
+          </div>
         </div>
-        </div>}
-      </>
-    
+      )}
+    </>
   );
 };
+
 
 export default TravelBar;
