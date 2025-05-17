@@ -1,62 +1,69 @@
+import { Dropdown } from "antd";
+import classNames from "classnames";
 import { ChevronDown } from "lucide-react";
-import { ColorType } from "./types";
-import DriverDropdown from "./DriverDropdown";
+import { DriverFilterButtonProps } from "../types/travelBar";
 
-interface DriverFilterButtonProps {
-    color: ColorType;
-    isActive: boolean;
-    isDropdownOpen: boolean;
-    driverName: string;
-    kilometers: string;
-    toggleFilter: (color: ColorType) => void;
-    toggleDropdown: (color: ColorType, event: React.MouseEvent<HTMLButtonElement>) => void;
-    assignDriver: (color: ColorType, driverId: number) => void;
-    isDriverAssigned: (driverId: number, currentColor: ColorType) => boolean;
-    availableDrivers: Array<{ id: number; name: string }>;
-  }
-  const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
-    color, 
-    isActive, 
-    isDropdownOpen, 
-    driverName, 
-    kilometers, 
-    toggleFilter, 
-    toggleDropdown, 
-    assignDriver, 
-    isDriverAssigned,
-    availableDrivers
-  }) => {
-    return (
-      <div className="travel-bar__filters__driver">
-        <div className="travel-bar__filters__driver__dropdown-container">
-          <button
-            className={`travel-bar__filters__driver__button travel-bar__filters__driver__button--${color} ${
-              isActive ? `travel-bar__filters__driver__button--active--${color}` : ''
-            }`}
-            onClick={() => toggleFilter(color)}
-          >
-            {driverName}
-          </button>
-          <button
-            className="travel-bar__filters__driver__dropdown-toggle"
-            onClick={(e) => toggleDropdown(color, e)}
-          >
-            <ChevronDown size={14} />
-          </button>
-  
-          <DriverDropdown
-            color={color}
-            isOpen={isDropdownOpen}
-            availableDrivers={availableDrivers}
-            assignDriver={assignDriver}
-            isDriverAssigned={isDriverAssigned}
-          />
-        </div>
-        <div className="travel-bar__filters__driver__kilometers">
-          {kilometers}
-        </div>
+const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
+  color,
+  isDriverAssigned,
+  isActive,
+  selectedDriver,
+  placeholder,
+  kilometers,
+  toggleFilter,
+  assignDriver,
+  isDriverAssignedFunc,
+  drivers,
+}) => {
+  const items = drivers.map((driver) => ({
+    key: driver.id,
+    disabled: isDriverAssignedFunc(driver.id, color),
+    label: (
+      <div
+        style={{ height: "100%", width: "100%" }}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!isDriverAssignedFunc(driver.id, color)) {
+            assignDriver(color, driver.id);
+          }
+        }}
+      >
+        {driver.name}
       </div>
-    );
-  };
-  
-  export default DriverFilterButton;
+    ),
+  }));
+
+  return (
+    <div
+      className={classNames("driver-filter-button", { ["driver-filter-button--active"]: isActive })}
+      onClick={() => toggleFilter(color)}
+    >
+      <Dropdown className="driver-filter-button__dropdown" menu={{ items }} trigger={["click"]}>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          className={classNames(
+            "driver-filter-button__button",
+            `driver-filter-button__button--${color}`,
+            {
+              [`driver-filter-button__button--active`]: isDriverAssigned,
+              [`driver-filter-button__button--active--${color}`]: isDriverAssigned,
+            }
+          )}
+        >
+          <span className="driver-filter-button__button__text">
+            {selectedDriver?.name || placeholder}
+          </span>
+          <ChevronDown className="driver-filter-button__button__dropdown-icon" />
+        </button>
+      </Dropdown>
+
+      <div className="driver-filter-button__kilometers">{kilometers}</div>
+    </div>
+  );
+};
+
+export default DriverFilterButton;

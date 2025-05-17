@@ -1,109 +1,68 @@
-import { useState } from 'react';
-import {  ChevronDown, ChevronLeft, Users } from 'lucide-react';
-import { ColorType, TravelItem, TravelBarProps } from './types';
-import { defaultTravelItems, colorToDriverNumber, availableDrivers, kilometersPerColor } from './dummyData';
+import { useState } from "react";
+import { ChevronDown, ChevronLeft, Users } from "lucide-react";
+import { ColorType, TravelItem, TravelBarProps, Driver } from "../types/travelBar";
+import { defaultTravelItems, drivers, kilometersPerColor } from "./dummyData";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
-import DriverFilterButton from './DriverFilterButton';
+import DriverFilterButton from "./DriverFilterButton";
+import classNames from "classnames";
 
 const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [activeFilters, setActiveFilters] = useState<ColorType[]>([]);
-  const [travelItems] = useState<TravelItem[]>(initialItems.sort((a, b) => {
-    return a.startTime.localeCompare(b.startTime);
-  }));
-  const [expandedTrips, setExpandedTrips] = useState<number[]>([1123]); // Pre-expanded trip 1123
+  const [colorFilter, setColorFilter] = useState<ColorType>();
+  const [travelItems] = useState<TravelItem[]>(
+    initialItems.sort((a, b) => {
+      return a.startTime.localeCompare(b.startTime);
+    })
+  );
+  const [expandedTrips, setExpandedTrips] = useState<number[]>([]);
   const [driverAssignments, setDriverAssignments] = useState<Record<ColorType, number | null>>({
-    'purple': null, // Changed to null for no initial selection
-    'teal': null,   // Changed to null for no initial selection
-    'yellow': null  // Changed to null for no initial selection
-  });
-  const [isDropdownOpen, setIsDropdownOpen] = useState<Record<ColorType, boolean>>({
-    'purple': false,
-    'teal': false,
-    'yellow': false
+    purple: null,
+    teal: null,
+    yellow: null,
   });
 
-  // Toggle filter for a color
   const toggleFilter = (color: ColorType): void => {
-    // Simple toggle behavior whether driver is assigned or not
-    setActiveFilters(prev => {
-      if (prev.includes(color)) {
-        return prev.filter(c => c !== color);
-      } else {
-        return [...prev, color];
-      }
-    });
+    setColorFilter((prevColor) => (prevColor === color ? undefined : color));
   };
 
-  // Get filtered items based on active filters
   const getFilteredItems = (): TravelItem[] => {
-    if (activeFilters.length === 0) {
-      return travelItems;
-    } else {
-      return travelItems.filter(item => activeFilters.includes(item.colorType));
-    }
+    return colorFilter ? travelItems.filter((item) => colorFilter === item.colorType) : travelItems;
   };
 
-  // Toggle trip expansion
   const toggleTripExpansion = (tripId: number): void => {
-    setExpandedTrips(prev =>
-      prev.includes(tripId)
-        ? prev.filter(id => id !== tripId)
-        : [...prev, tripId]
+    setExpandedTrips((prev) =>
+      prev.includes(tripId) ? prev.filter((id) => id !== tripId) : [...prev, tripId]
     );
-  };
-
-  // Toggle dropdown for driver selection
-  const toggleDropdown = (color: ColorType, event: React.MouseEvent<HTMLButtonElement>): void => {
-    // Prevent the click from reaching the button and toggling the filter
-    event.stopPropagation();
-
-    // Close all other dropdowns first
-    const newDropdownState: Record<ColorType, boolean> = {
-      'purple': false,
-      'teal': false,
-      'yellow': false
-    };
-
-    // Toggle the clicked dropdown
-    newDropdownState[color] = !isDropdownOpen[color];
-
-    setIsDropdownOpen(newDropdownState);
   };
 
   // Assign driver to a color route
   const assignDriver = (color: ColorType, driverId: number): void => {
-    setDriverAssignments(prev => ({
-      ...prev,
-      [color]: driverId
-    }));
-
-    // Add this color to active filters when a driver is assigned
-    if (!activeFilters.includes(color)) {
-      setActiveFilters(prev => [...prev, color]);
-    }
-
-    // Close the dropdown after selection
-    setIsDropdownOpen(prev => ({
-      ...prev,
-      [color]: false
-    }));
+    setDriverAssignments((prev) =>
+      prev[color] !== driverId
+        ? {
+            ...prev,
+            [color]: driverId,
+          }
+        : {
+            ...prev,
+            [color]: null,
+          }
+    );
   };
 
   // Get assigned driver name for a color
-  const getAssignedDriverName = (color: ColorType): string => {
+  const getAssignedDriver = (color: ColorType): Driver | undefined => {
     const driverId = driverAssignments[color];
-    if (driverId === null) return colorToDriverNumber[color]; // Just returns "נהג" if no driver assigned
-    const driverFound = availableDrivers.find(driver => driver.id === driverId);
-    return driverFound ? driverFound.name : 'נהג';
+    const driverFound = drivers.find((driver) => driver.id === driverId);
+    return driverFound;
   };
 
   // Check if driver is already assigned to another color
   const isDriverAssigned = (driverId: number, currentColor: ColorType): boolean => {
     // Allow selection of a driver that's already assigned to the current color
     if (driverAssignments[currentColor] === driverId) return false;
-    
+
     // Prevent selection if driver is assigned to any other color
     return Object.values(driverAssignments).includes(driverId);
   };
@@ -113,55 +72,51 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
     return driverAssignments[color] !== null;
   };
 
-  // Get the assigned driver name for a specific travel item
-  const getDriverNameForItem = (item: TravelItem): string | null => {
-    const driverId = driverAssignments[item.colorType];
-    if (driverId === null) return null;
-
-    const driverFound = availableDrivers.find(driver => driver.id === driverId);
-    return driverFound ? driverFound.name : null;
+  const getDriverIndexByColor = (color: ColorType) => {
+    return `נהג ${colors.indexOf(color) + 1}`;
   };
 
   const filteredItems = getFilteredItems();
-  
+
   // Array of colors to render filter buttons
-  const colors: ColorType[] = ['purple', 'teal', 'yellow'];
+  const colors: ColorType[] = ["purple", "teal", "yellow"];
 
   return (
     <>
       {isOpen ? (
-        <div className="travel-bar" dir="rtl">
+        <div className="travel-bar">
           <div className="travel-bar__header">
             <div className="travel-bar__header__back-button" onClick={() => setIsOpen(false)}>
               <TbChevronsLeft className="travel-bar__header__back-icon" size={16} />
               <span className="travel-bar__header__back-text">נסיעות</span>
             </div>
-            <div className="travel-bar__header__title">
-              הצג סידור יומי
-            </div>
+            <div className="travel-bar__header__title">הצג סידור יומי</div>
           </div>
 
           <div className="travel-bar__filters">
-            {/* Use the new DriverFilterButton component for each color */}
-            {colors.map(color => (
+            {colors.map((color) => (
               <DriverFilterButton
                 key={color}
                 color={color}
-                isActive={hasDriverAssigned(color)}
-                isDropdownOpen={isDropdownOpen[color]}
-                driverName={getAssignedDriverName(color)}
+                isActive={color === colorFilter}
+                isDriverAssigned={hasDriverAssigned(color)}
+                selectedDriver={getAssignedDriver(color)}
+                placeholder={getDriverIndexByColor(color)}
                 kilometers={kilometersPerColor[color]}
                 toggleFilter={toggleFilter}
-                toggleDropdown={toggleDropdown}
                 assignDriver={assignDriver}
-                isDriverAssigned={isDriverAssigned} availableDrivers={availableDrivers}              />
+                isDriverAssignedFunc={isDriverAssigned}
+                drivers={drivers}
+              />
             ))}
           </div>
 
           <div className="travel-bar__list-container">
             <ul className="travel-bar__list">
-              {filteredItems.map(item => {
-                const driverName = getDriverNameForItem(item);
+              {filteredItems.map((item) => {
+                const driverName = drivers.find(
+                  (driver) => driver.id === driverAssignments[item.colorType]
+                );
 
                 return (
                   <li className="travel-bar__list__item" key={item.id}>
@@ -170,14 +125,13 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                       onClick={() => toggleTripExpansion(item.id)}
                     >
                       <div className="travel-bar__list__item__expand-icon">
-                        {expandedTrips.includes(item.id) ?
-                          <ChevronDown size={16} /> :
+                        {expandedTrips.includes(item.id) ? (
+                          <ChevronDown size={16} />
+                        ) : (
                           <ChevronLeft size={16} />
-                        }
+                        )}
                       </div>
-                      <div className="travel-bar__list__item__trip-id">
-                        {item.tripId}#
-                      </div>
+                      <div className="travel-bar__list__item__trip-id">{item.tripId}#</div>
 
                       <div className="travel-bar__list__item__left">
                         <div className="travel-bar__list__item__time">
@@ -190,36 +144,46 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                       </div>
 
                       <div className="travel-bar__list__item__right">
-                        <div className="travel-bar__list__item__type">
-                          אזור
-                        </div>
-                        <div className="travel-bar__list__item__location">
-                          {item.code}
-                        </div>
+                        <div className="travel-bar__list__item__type">אזור</div>
+                        <div className="travel-bar__list__item__location">{item.code}</div>
                       </div>
-                      
-                      {driverName && (
-                        <div className="travel-bar__list__item__driver">
-                          {driverName}
-                        </div>
-                      )}
-                      <div className={`travel-bar__list__item__color-indicator travel-bar__list__item__color-indicator--${item.colorType}`}></div>
+
+                      <div className="travel-bar__list__item__driver">
+                        {driverName?.name || getDriverIndexByColor(item.colorType)}
+                      </div>
+                      <div
+                        className={classNames(
+                          "travel-bar__list__item__color-indicator",
+                          `travel-bar__list__item__color-indicator--${item.colorType}`
+                        )}
+                      />
                     </div>
 
                     {expandedTrips.includes(item.id) && item.stations.length > 0 && (
                       <div className="travel-bar__list__item__expanded">
-                        <ul className={`travel-bar__list__item__stations travel-bar__list__item__stations--${item.colorType}`}>
-                          {item.stations.map((station, idx) => (
+                        <ul
+                          className={classNames(
+                            "travel-bar__list__item__stations",
+                            `travel-bar__list__item__stations--${item.colorType}`
+                          )}
+                        >
+                          {item.stations.map((station, index) => (
                             <li
-                              key={idx}
-                              className={`travel-bar__list__item__station travel-bar__list__item__station--${item.colorType}`}
+                              key={index}
+                              className={classNames(
+                                "travel-bar__list__item__station",
+                                `travel-bar__list__item__station--${item.colorType}`
+                              )}
                             >
                               <div className="travel-bar__list__item__station__name">
                                 {station.name}
                               </div>
                               {station.passengers && (
                                 <div className="travel-bar__list__item__station__passengers">
-                                  <Users size={14} className="travel-bar__list__item__station__passengers__icon" />
+                                  <Users
+                                    size={14}
+                                    className="travel-bar__list__item__station__passengers__icon"
+                                  />
                                   <span className="travel-bar__list__item__station__passengers__count">
                                     {station.passengers}
                                   </span>
@@ -234,13 +198,13 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                       </div>
                     )}
                   </li>
-                )
+                );
               })}
             </ul>
           </div>
         </div>
       ) : (
-        <div onClick={() => setIsOpen(true)} className='side-bar'>
+        <div onClick={() => setIsOpen(true)} className="side-bar">
           <div className="side-bar__button-container">
             <TbChevronsLeft className="side-bar__button-container__icon" size={16} />
             <span className="side-bar__button-container__text">נסיעות</span>
@@ -250,6 +214,5 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
     </>
   );
 };
-
 
 export default TravelBar;

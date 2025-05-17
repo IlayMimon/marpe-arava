@@ -3,8 +3,7 @@
   --Text-color-text-secondary: rgba(0, 0, 0, 0.65);
   --Text-color-text-tertiary: rgba(0, 0, 0, 0.45);
 
-  --control-item-bg-active: #e6f4ff;
-
+  --Primary-color-primary: #1677FF;
   --Colors-orange-6: #fa8c16;
   --Colors-orange-3: #ffd591;
   --Colors-purple-6: #722ed1;
@@ -15,12 +14,17 @@
   --Colors-cyan-3: #87e8d3;
   --Colors-geekblue-6: #2f54eb;
   --Colors-geekblue-3: #adc6ff;
-
-  --Border: 1px solid var(--Border-color-border);
+  
   --Border-color-border: #d9d9d9;
-  --Border-color-border-secondary: white;
+  --Border-color-border-secondary: #f0f0f0;
+  --Border: 1px solid var(--Border-color-border);
+  --Border-secondary: 1px solid var(--Border-color-border-secondary);
+  
   --Background-color-bg-layout: #f5f5f5;
-
+  --Background-color-bg-text-hover: rgba(0, 0, 0, 0.06);
+  --Background-color-bg-text-active: rgba(0, 0, 0, 0.15);
+  --control-item-bg-active: #e6f4ff;
+  
   --Scroll-thubm-color: #888;
   --Scroll-thubm-color-hover: #555;
 }
