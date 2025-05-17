@@ -9,4 +9,10 @@ export default defineConfig({
       "@tabler/icons-react": "@tabler/icons-react/dist/esm/icons/index.mjs",
     },
   },
+  server: {
+    proxy: {
+      '/_api': 'http://localhost:3000/sites/MarpeArava',
+      '^/sites/[^/]+/_api': 'http://localhost:3000',
+    },
+  },
 });

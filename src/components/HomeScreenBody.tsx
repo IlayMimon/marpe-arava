@@ -6,6 +6,9 @@ import TravelBar from "./travel-bar/TravelBar";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import { FormValues } from "./types/shuttleAssignmentProps";
+import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
+
+export type TripDirection = 'outbound' | 'return';
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
@@ -13,6 +16,11 @@ const HomeScreenBody = () => {
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
+  const [tripDirection, setTripDirection] = useState<TripDirection>('outbound');
+
+  const handleChangeDirection = (direction: TripDirection) => {
+    setTripDirection(direction)
+  }
 
   const handleSubmit = (values: FormValues) => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
@@ -94,8 +102,16 @@ const HomeScreenBody = () => {
           </Button>
         </div>
       </div>
-      <div className="home-screen-body__body">   
-               <TravelBar />
+      <div className="home-screen-body__container">
+
+      <div className="home-screen-body__container__body">
+        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection}/>
+        {tripDirection === "outbound" ? 
+          <div>going</div> : 
+          <div>returning</div>
+        }
+      </div>
+        <TravelBar />
       </div>
     </div>
   );
