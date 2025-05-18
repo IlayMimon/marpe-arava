@@ -8,8 +8,6 @@ interface DriverOrganizationHeaderProps {
   sendToDrivers: () => void;
 }
 
-// TODO change SVG line to be CSS or save as separate file
-
 const DriverOrganizationHeader = ({
   paramedic,
   isSendDisabled,

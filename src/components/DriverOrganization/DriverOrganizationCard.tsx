@@ -1,7 +1,6 @@
-import React from 'react';
-import formatDate from '../../functions/formatDate';
-import DriverData from '../../types/DriverOrganizationTypes';
-import DriverOrganizationCardContent from './DriverOrganizationCardContent';
+import formatDate from "../../functions/formatDate";
+import DriverData from "../../types/DriverOrganizationTypes";
+import DriverOrganizationCardContent from "./DriverOrganizationCardContent";
 import DriverOrganizationCardDetails from "./DriverOrganizationCardDetails";
 
 interface DriverOrganizationCardProps {
