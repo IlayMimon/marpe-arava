@@ -1,17 +1,20 @@
-import { createRef, useMemo } from "react";
+import { createRef, useMemo, Dispatch, SetStateAction } from "react";
 import DriverData from "../../types/DriverOrganizationTypes";
 import DriverOrganizationCard from "./DriverOrganizationCard";
 import DriverOrganizationHeader from "./DriverOrganizationHeader";
 import downloadDom from "../../functions/downloadDom";
+import { Modal as AntModal } from "antd";
 
 interface DriverOrganizationProps {
   // explicitly defined 3 times so if given less/more it will show a type error
   data: [DriverData, DriverData, DriverData];
   paramedic: string;
   chosenDate: Date;
+  isModalOpen: boolean;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const DriverOrganization = ({ data, paramedic, chosenDate }: DriverOrganizationProps) => {
+const DriverOrganization = ({ data, paramedic, chosenDate, isModalOpen, setIsModalOpen }: DriverOrganizationProps) => {
   // in a loop to avoid repeating code. useMemo for efficiency between renders
   const [allCards, ...rest] = useMemo(() => Array.from({ length: 4 }, () => createRef<HTMLDivElement>()), []);
 
@@ -28,19 +31,29 @@ const DriverOrganization = ({ data, paramedic, chosenDate }: DriverOrganizationP
   };
 
   return (
-    <div className="driver-organization">
-      <DriverOrganizationHeader
-        downloadImages={downloadImages}
-        sendToDrivers={() => "not yet implemented"}
-        isSendDisabled={!data.every((driver) => driver.name)}
-        paramedic={paramedic}
-      />
-      <div ref={allCards} className="driver-organization-card__container">
-        {data.map((driverData, index) => (
-          <DriverOrganizationCard ref={rest[index]} driverData={driverData} index={index} chosenDate={chosenDate} />
-        ))}
+    <AntModal
+      open={isModalOpen}
+      footer={null}
+      closeIcon={false}
+      onCancel={() => setIsModalOpen(false)}
+      width="131.5rem"
+      centered
+      className="driver-organization__modal"
+    >
+      <div className="driver-organization">
+        <DriverOrganizationHeader
+          downloadImages={downloadImages}
+          sendToDrivers={() => "not yet implemented"}
+          isSendDisabled={!data.every((driver) => driver.name)}
+          paramedic={paramedic}
+        />
+        <div ref={allCards} className="driver-organization-card__container">
+          {data.map((driverData, index) => (
+            <DriverOrganizationCard ref={rest[index]} driverData={driverData} index={index} chosenDate={chosenDate} />
+          ))}
+        </div>
       </div>
-    </div>
+    </AntModal>
   );
 };
 
