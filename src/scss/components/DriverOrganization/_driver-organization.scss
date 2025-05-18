@@ -1,6 +1,6 @@
-@use './driver-organization-header';
-@use './driver-organization-card';
-@use './driver-organization-card-content';
+@use "./driver-organization-header";
+@use "./driver-organization-card";
+@use "./driver-organization-card-content";
 
 .driver-organization {
   height: 84rem;
@@ -8,6 +8,7 @@
     padding: 0;
   }
 
+  // for some reason the original font-family declaration gets overwritten in modal
   & * {
     font-family: var(--Font-family, Rubik) !important;
   }

@@ -16,6 +16,11 @@ const DriverOrganization = ({ data, paramedic, chosenDate }: DriverOrganizationP
   const [allCards, ...rest] = useMemo(() => Array.from({ length: 4 }, () => createRef<HTMLDivElement>()), []);
 
   const downloadImages = () => {
+    if (navigator.userAgent.toLowerCase().includes("firefox")) {
+      alert("הורדת תמונה לא עובדת בדפדפן זה. אנא השתמשו בכרום");
+      return;
+    }
+
     [allCards, ...rest].forEach((ref, index) => {
       const fileName = index === 0 ? "all-drivers" : "driver-" + index.toString();
       downloadDom(ref, fileName);
@@ -24,7 +29,12 @@ const DriverOrganization = ({ data, paramedic, chosenDate }: DriverOrganizationP
 
   return (
     <div className="driver-organization">
-      <DriverOrganizationHeader downloadImages={downloadImages} isSendDisabled={data.every((driver) => driver.name)} paramedic={paramedic} />
+      <DriverOrganizationHeader
+        downloadImages={downloadImages}
+        sendToDrivers={() => "not yet implemented"}
+        isSendDisabled={!data.every((driver) => driver.name)}
+        paramedic={paramedic}
+      />
       <div ref={allCards} className="driver-organization-card__container">
         {data.map((driverData, index) => (
           <DriverOrganizationCard ref={rest[index]} driverData={driverData} index={index} chosenDate={chosenDate} />
