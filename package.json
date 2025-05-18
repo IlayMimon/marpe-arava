@@ -7,11 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
     "@tabler/icons-react": "^3.31.0",
+    "@tanstack/react-query": "^5.76.1",
+    "axios": "^1.9.0",
     "antd": "^5.24.9",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.13",
@@ -31,6 +34,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "prettier": "^3.5.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0"

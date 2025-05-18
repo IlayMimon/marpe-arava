@@ -1,10 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './scss/main.scss'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./scss/main.scss";
+import App from "./App.tsx";
+import QueryProvider from './components/QueryProvider.tsx';
+import axios from 'axios';
+
+if (import.meta.env.PROD) {
+  axios.defaults.baseURL = window.location.pathname;
+  axios.interceptors.request.use((config) => {
+    if (!config.url || !/^\/?_api/g.test(config.url)) {
+      config.baseURL = undefined;
+    }
+    return config;
+  });
+}
 
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <App />
-    </StrictMode>
-)
+  <StrictMode>
+    <QueryProvider>
+      <App />
+    </QueryProvider>
+  </StrictMode>
+);
