@@ -10,7 +10,7 @@ from urllib.parse import quote
 import time
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/send-message', methods=['POST'])
 def send_message():
@@ -24,29 +24,27 @@ def send_message():
     encoded_message = quote(message)
     url = f"https://web.whatsapp.com/send?phone={phone}"
 
-    # --- Chrome Options ---
     options = Options()
-    options.binary_location = r"C:\Users\Agustin Holcman\Desktop\chrome-win64\chrome.exe"
-    options.add_argument(r"user-data-dir=C:\Users\Agustin Holcman\AppData\Local\Google\Chrome\User Data")
-    options.add_argument("profile-directory=Profile 2")
+    # version .94
+    options.binary_location = r"C:\Users\agush\OneDrive\Desktop\chrome-win64\chrome.exe"
+    options.add_argument(r"user-data-dir=C:\Users\agush\AppData\Local\Google\Chrome\User Data")
+    options.add_argument("profile-directory=Profile 1")
     options.add_argument("--start-maximized")
-
-    # --- Start Driver ---
+    
     try:
         driver = webdriver.Chrome(options=options)
     except Exception as e:
+        print('chrome failed to start')
         return {"status": "error", "message": f"Chrome failed to start: {e}"}, 500
 
     try:
         print("🌐 Opening WhatsApp chat...")
         driver.get(url)
 
-        # Step 1: Wait for the message box
         msg_box = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.XPATH, '//footer//div[@contenteditable="true"]'))
         )
 
-        # Step 2: Focus and send
         msg_box.click()
         time.sleep(1)
         msg_box.send_keys(message)

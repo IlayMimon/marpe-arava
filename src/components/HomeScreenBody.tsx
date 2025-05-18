@@ -34,7 +34,7 @@ const HomeScreenBody = () => {
     contact?: string;
   }) => {
     const phone = `972${messageInfo.number}`;
-    const message = `Hello, ${messageInfo.name}. \n Your appointment for ${messageInfo.date}, `;
+    const message = `Hello, ${messageInfo.name}. \n You are japshan ${messageInfo.date}, `;
     const { contact } = messageInfo;
 
     const body = { message, phone, contact };
@@ -104,7 +104,7 @@ const HomeScreenBody = () => {
           />
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
-              disabled={!isShuttlesArranged}
+              // disabled={!isShuttlesArranged}
               color="default"
               variant="filled"
               icon={<IconSend />}
@@ -113,9 +113,9 @@ const HomeScreenBody = () => {
                 setPopUpMsgOpen(false);
                 
                 sendWhatsMessage({
-                  date: new Date().toDateString(),
-                  name: "אגטסיו",
-                  number: "523064674",
+                  date: 'a',
+                  name: "Liam Liber",
+                  number: "542772450",
                 })}
               }
               className="home-screen-body__header__left__button"
