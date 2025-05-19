@@ -2,13 +2,29 @@ import { Menu } from 'antd';
 import { TableColumn, TableRow } from '../components/Table/TableTypes';
 import { TbDotsVertical, TbPencil, TbEyeOff } from 'react-icons/tb';
 const useGetTableColumns = () => {
+  const handleStopTracking = () => {
+    console.log('Stop tracking clicked');
+  };
+  const hendleEditColumn = () => {
+    console.log('Edit column clicked');
+  };
   const items = [
     {
       key: 'options',
       icon: <TbDotsVertical />,
       children: [
-        { key: '3', label: 'ערוך עמודה', icon: <TbPencil /> },
-        { key: '4', label: 'הפסק מעקב', icon: <TbEyeOff /> },
+        {
+          key: '3',
+          label: 'ערוך עמודה',
+          icon: <TbPencil />,
+          onClick: hendleEditColumn,
+        },
+        {
+          key: '4',
+          label: 'הפסק מעקב',
+          icon: <TbEyeOff />,
+          onClick: handleStopTracking,
+        },
       ],
     },
   ];
@@ -99,7 +115,7 @@ const useGetTableColumns = () => {
       render: () => (
         <div>
           <Menu
-            style={{ width: 100 }}
+            style={{ width: 0, height: 50, backgroundColor: 'transparent' }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode={'vertical'}
