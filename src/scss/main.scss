@@ -7,7 +7,7 @@
 @use "./base/base";
 
 // Pages
-@use "./pages/home-page.scss";
+@use "./pages/home-page";
 
 // Components
 @use "./components/sidebar-navigation";
@@ -18,6 +18,9 @@
 @use "./components/kpi";
 @use "./components/summarize-numbers";
 @use "./components/medic-select";
+@use "./components/add-patient-modal";
+@use "./components/travelBar/travel-bar";
+@use "./components/travelBar/driver-filter-button";
+@use "./components/side-bar";
 @use "./components/shuttletable/shuttle-table-header";
 @use "./components/ShuttleAssignmentModal/ShuttleAssignmentModal";
-@use "./components/add-patient-modal";

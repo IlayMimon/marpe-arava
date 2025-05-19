@@ -2,6 +2,7 @@ import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
+import TravelBar from "./travel-bar/TravelBar";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
@@ -93,9 +94,12 @@ const HomeScreenBody = () => {
           </Button>
         </div>
       </div>
-      <div className="home-screen-body__body">
-        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
-        {tripDirection === "outbound" ? <div>going</div> : <div>returning</div>}
+      <div className="home-screen-body__container">
+        <div className="home-screen-body__container__body">
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          {tripDirection === "outbound" ? <div>going</div> : <div>returning</div>}
+        </div>
+        <TravelBar />
       </div>
       <ShuttleAssignmentModal
         visible={modalVisible}
