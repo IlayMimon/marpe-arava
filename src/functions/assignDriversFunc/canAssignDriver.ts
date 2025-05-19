@@ -28,4 +28,4 @@ export function canAssignShuttle(driver: Driver, shuttle: Shuttle): boolean {
     // אם עבר 4 שעות - הפסקה 
     return totalDriveTime <= fourHours;
   }
-  
+   

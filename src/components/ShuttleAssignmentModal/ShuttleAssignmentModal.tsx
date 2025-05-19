@@ -52,6 +52,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       .then((values: FormValues) => {
         onSubmit(values);
         form.resetFields();
+        
       })
       .catch(() => {
         message.error("נא למלא את כל השדות החובה כראוי");
