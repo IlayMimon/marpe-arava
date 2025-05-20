@@ -8,7 +8,7 @@ import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 
-export type TripDirection = "outbound" | "return";
+export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);

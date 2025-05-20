@@ -44,18 +44,18 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const [hasDropoff, setHasDropoff] = useState(false);
 
   // Watch all required fields
+  const pickupStation = Form.useWatch("pickupStation", form);
+  const dropoffStation = Form.useWatch("dropoffStation", form);
   const fullName = Form.useWatch("fullName", form);
   const phone = Form.useWatch("phone", form);
   const appointmentDate = Form.useWatch("appointmentDate", form);
   const appointmentTime = Form.useWatch("appointmentTime", form);
   const appointmentTypes = Form.useWatch("appointmentTypes", form);
-  const pickupStation = Form.useWatch("pickupStation", form);
-  const dropoffStation = Form.useWatch("dropoffStation", form);
 
   const isFormValid = () => {
     return (
       !!fullName?.trim() &&
-      /^\d{10}$/.test(phone || "") &&
+      /^05\d{8}$/.test(phone || "") &&
       Array.isArray(appointmentTypes) &&
       appointmentTypes.length > 0 &&
       !!appointmentDate &&
@@ -119,7 +119,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="טלפון"
               rules={[
                 { required: true, message: "יש להזין מספר טלפון" },
-                { pattern: /^\d{10}$/, message: "מספר לא תקין" },
+                { pattern: /^05\d{8}$/, message: "מספר לא תקין" },
               ]}
             >
               <Input maxLength={10} />

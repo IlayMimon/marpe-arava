@@ -1,5 +1,6 @@
 import { IconSparkles } from "@tabler/icons-react";
 import { Button, ConfigProvider, Form, Modal, Select, TimePicker, message } from "antd";
+import { RuleObject } from "antd/es/form";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -18,7 +19,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const validateTimeRange = (_: unknown, endTime: Dayjs) => {
+  const validateTimeRange = (_: RuleObject, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
     const diff = endTime.diff(startTime, "hour", true);
