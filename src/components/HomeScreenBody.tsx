@@ -115,23 +115,19 @@ const HomeScreenBody = () => {
         />
         <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
           {tripDirection === 'outbound' ? (
-            <div>
-              <Table
-                data={data}
-                columns={columns}
-                groupBy={(row) => row.area}
-                rowKey={(row) => row.key}
-              />
-            </div>
+            <Table
+              data={data}
+              columns={columns}
+              // groupBy={(row) => row.area}
+              rowKey={(row) => row.key}
+            />
           ) : (
-            <div>
-              <Table
-                data={data}
-                columns={columns}
-                groupBy={(row) => row.area}
-                rowKey={(row) => row.key}
-              />
-            </div>
+            <Table
+              data={data}
+              columns={columns}
+              // groupBy={(row) => row.area}
+              rowKey={(row) => row.key}
+            />
           )}
           <TravelBar />
         </div>

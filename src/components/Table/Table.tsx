@@ -35,6 +35,7 @@ const Table = <T extends object>({
       groupBy
     );
   }, [data, collapsedGroups, filteredInfo, sortInfo, groupBy]);
+  console.log(groupBy)
 
   const toggleGroup = (groupTitle: string) => {
     setCollapsedGroups((prev) => ({

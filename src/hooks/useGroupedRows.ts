@@ -30,9 +30,11 @@ export const useGroupedRows = <T>(
       return order === "ascend" ? result : -result;
     });
   }
+  console.log('hi', groupBy)
 
   // If no groupBy, return plain data rows
   if (!groupBy) {
+    console.log('nogroup')
     return filteredData.map((item) => ({
       type: "data" as const,
       original: item,
