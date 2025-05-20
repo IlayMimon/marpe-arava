@@ -1,25 +1,21 @@
-import { Table as AntTable } from "antd";
+import { Table as AntTable, ConfigProvider } from "antd";
 import type { ColumnsType, ColumnType, TablePaginationConfig } from "antd/es/table";
-import type { FilterValue, SorterResult, TableCurrentDataSource } from "antd/es/table/interface";
-import { useMemo, useState } from "react";
-import { GenericGroupedTableProps, RenderedCell } from "./TableTypes";
+import type { FilterValue, SorterResult } from "antd/es/table/interface";
+import { useState } from "react";
 import { useSortFilterTableData } from "../../hooks/useSortFilterTableData";
+import { GenericGroupedTableProps, RenderedCell } from "./TableTypes";
+import heIL from "antd/locale/he_IL";
 
-const Table = <T extends object>({
-  data,
-  columns,
-  rowKey,
-}: GenericGroupedTableProps<T>) => {
+const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableProps<T>) => {
   const [sortInfo, setSortInfo] = useState<SorterResult<T>>({});
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
-  
-  const newData = useMemo(() => useSortFilterTableData(data, filteredInfo, sortInfo), [data, filteredInfo, sortInfo]);
-  
+
+  const newData = useSortFilterTableData(data, filteredInfo, sortInfo);
+
   const handleChange = (
     _pagination: TablePaginationConfig,
     filters: Record<string, FilterValue | null>,
-    sorter: SorterResult<T> | SorterResult<T>[],
-    _extra: TableCurrentDataSource<T>
+    sorter: SorterResult<T> | SorterResult<T>[]
   ) => {
     setFilteredInfo(filters);
     if (!Array.isArray(sorter)) {
@@ -46,19 +42,11 @@ const Table = <T extends object>({
           }
         : undefined,
       sortOrder: sortInfo?.columnKey === col.key ? sortInfo.order : null,
-      render: (
-        value: T[keyof T],
-        record: T,
-        index: number
-      ): RenderedCell<T> => {
+      render: (value: T[keyof T], record: T, index: number): RenderedCell<T> => {
         const actualValue =
-          col.dataIndex && record
-            ? (record[col.dataIndex as keyof T] as React.ReactNode)
-            : value;
+          col.dataIndex && record ? (record[col.dataIndex as keyof T] as React.ReactNode) : value;
 
-        return col.render
-          ? col.render(actualValue, record, index)
-          : actualValue ?? null;
+        return col.render ? col.render(actualValue, record, index) : (actualValue ?? null);
       },
     };
 
@@ -66,13 +54,15 @@ const Table = <T extends object>({
   });
 
   return (
-    <AntTable<T>
-      columns={enhancedColumns}
-      dataSource={newData}
-      rowKey={rowKey}
-      pagination={false}
-      onChange={handleChange}
-    />
+    <ConfigProvider locale={heIL} direction="rtl">
+      <AntTable<T>
+        columns={enhancedColumns}
+        dataSource={newData}
+        rowKey={rowKey}
+        pagination={false}
+        onChange={handleChange}
+      />
+    </ConfigProvider>
   );
 };
 

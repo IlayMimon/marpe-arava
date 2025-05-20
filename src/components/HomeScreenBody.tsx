@@ -60,16 +60,10 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={
-                messagesAlreadySent ? 'לא ניתן לשבץ מחדש לאחר הפצת הודעות' : ''
-              }
+              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setModalVisible(true)
-                }
+                onClick={() => (isShuttlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true))}
                 disabled={messagesAlreadySent}
                 color="default"
                 variant="filled"
@@ -108,23 +102,12 @@ const HomeScreenBody = () => {
       </div>
 
       <div className="home-screen-body__body">
-        <ShuttleTableHeader
-          handleChange={handleChangeDirection}
-          tripDirection={tripDirection}
-        />
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
-          {tripDirection === 'outbound' ? (
-            <Table
-              data={data}
-              columns={columns}
-              rowKey={(row) => row.key}
-            />
+        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+        <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+          {tripDirection === "outbound" ? (
+            <Table data={data} columns={columns} rowKey={(row) => row.key} />
           ) : (
-            <Table
-              data={data}
-              columns={columns}
-              rowKey={(row) => row.key}
-            />
+            <Table data={data} columns={columns} rowKey={(row) => row.key} />
           )}
           <TravelBar />
         </div>
