@@ -101,16 +101,16 @@ const HomeScreenBody = () => {
         </div>
       </div>
 
-      <div className="home-screen-body__body">
-        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
-        <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+      <div className="home-screen-body__container">
+        <div className="home-screen-body__container__body">
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.key} />
           ) : (
             <Table data={data} columns={columns} rowKey={(row) => row.key} />
           )}
-          <TravelBar />
         </div>
+        <TravelBar />
       </div>
       <ShuttleAssignmentModal
         visible={modalVisible}
