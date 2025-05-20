@@ -18,7 +18,7 @@ const DriverOrganizationCard = ({ driverData, index, chosenDate, ref }: DriverOr
       </div>
       <DriverOrganizationCardDetails driverData={driverData} index={index} />
       <div className="driver-organization-card-content__container">
-        <DriverOrganizationCardContent driverData={driverData} cardIndex={index} />
+        <DriverOrganizationCardContent driverData={driverData} />
       </div>
     </div>
   );

@@ -1,24 +1,30 @@
 import classNames from "classnames";
 import { Path } from "../../types/DriverOrganizationTypes";
+import { ColorType } from '../types/travelBar';
 
 interface DriverOrganizationCardPathProps {
   path: Path;
   pathIndex: number;
-  cardIndex: number;
+  color: ColorType;
 }
 
-const DriverOrganizationCardPath = ({ path, pathIndex, cardIndex }: DriverOrganizationCardPathProps) => {
+const DriverOrganizationCardPath = ({ path, pathIndex, color }: DriverOrganizationCardPathProps) => {
+  const styleObject = { '--card-color-primary': `var(--Colors-${color}-3)` };
   return (
-    <div key={path.pathId} className={classNames("driver-organization-card-content__path", `index-${cardIndex + 1}`)}>
+    <div
+      key={path.pathId}
+      style={styleObject as React.CSSProperties}
+      className={classNames('driver-organization-card-content__path')}
+    >
       <div className="driver-organization-card-content__path__id__container">
         <span className="driver-organization-card-content__path__id__index">{pathIndex.toString()}</span>
-        <span className="driver-organization-card-content__path__id">{"# " + path.pathId}</span>
+        <span className="driver-organization-card-content__path__id">{'# ' + path.pathId}</span>
       </div>
       {path.stations.map(({ stationName, arrivalTime, participants }, index) => (
         <div
           className={classNames(
-            "driver-organization-card-content__path__station",
-            stationName === 'מרפ"א ערבה' && "--marpe-station"
+            'driver-organization-card-content__path__station',
+            stationName === 'מרפ"א ערבה' && '--marpe-station'
           )}
           key={arrivalTime}
         >
@@ -29,7 +35,7 @@ const DriverOrganizationCardPath = ({ path, pathIndex, cardIndex }: DriverOrgani
             <div className="driver-organization-card-content__path__station__details__name-and-participants">
               <span>{stationName}</span>
               <span className="driver-organization-card-content__path__station__details__name-and-participants__participants">
-                {participants && participants.join(", ") + ` (${participants.length.toString()})`}
+                {participants && participants.join(', ') + ` (${participants.length.toString()})`}
               </span>
             </div>
           </div>

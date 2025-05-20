@@ -6,6 +6,7 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
 import DriverFilterButton from "./DriverFilterButton";
 import classNames from "classnames";
+import DriverOrganization from '../DriverOrganization/DriverOrganization';
 
 const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,6 +22,7 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
     teal: null,
     yellow: null,
   });
+  const [isShowDailyOrganization, setIsShowDailyOrganization] = useState<boolean>(false);
 
   const toggleFilter = (color: ColorType): void => {
     setColorFilter((prevColor) => (prevColor === color ? undefined : color));
@@ -90,7 +92,9 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
               <TbChevronsLeft className="travel-bar__header__back-icon" size={16} />
               <span className="travel-bar__header__back-text">נסיעות</span>
             </div>
-            <div className="travel-bar__header__title">הצג סידור יומי</div>
+            <div onClick={() => setIsShowDailyOrganization(true)} className="travel-bar__header__title">
+              הצג סידור יומי
+            </div>
           </div>
 
           <div className="travel-bar__filters">
@@ -211,6 +215,31 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
           </div>
         </div>
       )}
+      <DriverOrganization
+        data={
+          [
+            {
+              distance: 0,
+              paths: [],
+              color: 'purple'
+            },
+            {
+              distance: 0,
+              paths: [],
+              color: 'teal'
+            },
+            {
+              distance: 0,
+              paths: [],
+              color: 'yellow'
+            },
+          ] /*temp before data*/
+        }
+        paramedic={''}
+        chosenDate={new Date()}
+        isModalOpen={isShowDailyOrganization}
+        setIsModalOpen={setIsShowDailyOrganization}
+      />
     </>
   );
 };

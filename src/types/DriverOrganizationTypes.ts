@@ -1,7 +1,10 @@
+import { ColorType } from "../components/types/travelBar";
+
 interface DriverData {
   name?: string;
   distance: number;
   paths: (Path | Break)[];
+  color: ColorType;
 }
 
 export interface Path {
