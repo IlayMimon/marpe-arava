@@ -1,108 +1,63 @@
 import { Table as AntTable } from "antd";
-import type { ColumnsType, ColumnType } from "antd/es/table";
-import { useState, useMemo } from "react";
-import { useGroupedRows } from "../../hooks/useGroupedRows";
-import {
-  GenericGroupedTableProps,
-  GroupedRow,
-  RenderedCell,
-} from "./TableTypes";
-import { BiSolidDownArrow, BiSolidLeftArrow } from "react-icons/bi";
+import type { ColumnsType, ColumnType, TablePaginationConfig } from "antd/es/table";
+import type { FilterValue, SorterResult, TableCurrentDataSource } from "antd/es/table/interface";
+import { useMemo, useState } from "react";
+import { GenericGroupedTableProps, RenderedCell } from "./TableTypes";
+import { useSortFilterTableData } from "../../hooks/useSortFilterTableData";
 
 const Table = <T extends object>({
   data,
   columns,
-  groupBy,
   rowKey,
 }: GenericGroupedTableProps<T>) => {
-  const [collapsedGroups, setCollapsedGroups] = useState<
-    Record<string, boolean>
-  >({});
-  const [sortInfo, setSortInfo] = useState<any>({});
-  const [filteredInfo, setFilteredInfo] = useState<Record<string, any>>({});
-
-  const handleChange = (_pagination: any, filters: any, sorter: any) => {
+  const [sortInfo, setSortInfo] = useState<SorterResult<T>>({});
+  const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
+  
+  const newData = useMemo(() => useSortFilterTableData(data, filteredInfo, sortInfo), [data, filteredInfo, sortInfo]);
+  
+  const handleChange = (
+    _pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<T> | SorterResult<T>[],
+    _extra: TableCurrentDataSource<T>
+  ) => {
     setFilteredInfo(filters);
-    setSortInfo(sorter);
+    if (!Array.isArray(sorter)) {
+      setSortInfo(sorter);
+    }
   };
 
-  const groupedRows: GroupedRow<T>[] = useMemo(() => {
-    return useGroupedRows(
-      data,
-      collapsedGroups,
-      filteredInfo,
-      sortInfo,
-      groupBy
-    );
-  }, [data, collapsedGroups, filteredInfo, sortInfo, groupBy]);
-  console.log(groupBy)
-
-  const toggleGroup = (groupTitle: string) => {
-    setCollapsedGroups((prev) => ({
-      ...prev,
-      [groupTitle]: !prev[groupTitle],
-    }));
-  };
-
-  const enhancedColumns: ColumnsType<GroupedRow<T>> = columns.map((col, i) => {
-    const baseCol: ColumnType<GroupedRow<T>> = {
+  const enhancedColumns: ColumnsType<T> = columns.map((col) => {
+    const baseCol: ColumnType<T> = {
       key: col.key,
       title: col.title,
       dataIndex: col.dataIndex as string,
       filters: col.filters,
       filteredValue: filteredInfo[col.dataIndex as string] || null,
       onFilter: (value, record) => {
-        if (record.type === "group") return false;
-        const actualValue = record.original?.[col.dataIndex as keyof T];
+        const actualValue = record[col.dataIndex as keyof T];
         return actualValue?.toString().includes(value.toString()) ?? false;
       },
       sorter: col.sorter
         ? (a, b) => {
-            if (a.type === "group" || b.type === "group") return 0;
-            const aValue = a.original?.[col.dataIndex as keyof T];
-            const bValue = b.original?.[col.dataIndex as keyof T];
+            const aValue = a[col.dataIndex as keyof T];
+            const bValue = b[col.dataIndex as keyof T];
             return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
           }
         : undefined,
       sortOrder: sortInfo?.columnKey === col.key ? sortInfo.order : null,
       render: (
-        value: any,
-        record: GroupedRow<T>,
+        value: T[keyof T],
+        record: T,
         index: number
-      ): RenderedCell<GroupedRow<T>> => {
-        if (record.type === "group") {
-          if (i === 0) {
-            return {
-              children: (
-                <div
-                  className="group-label"
-                  onClick={() => toggleGroup(record.groupTitle)}
-                >
-                  {collapsedGroups?.[record.groupTitle] ? (
-                    <BiSolidLeftArrow />
-                  ) : (
-                    <BiSolidDownArrow />
-                  )}
-                  {record.groupTitle}
-                </div>
-              ),
-              props: { colSpan: columns.length },
-            };
-          } else {
-            return {
-              children: null,
-              props: { colSpan: 0 },
-            };
-          }
-        }
-
+      ): RenderedCell<T> => {
         const actualValue =
-          col.dataIndex && record.original
-            ? (record.original[col.dataIndex as keyof T] as React.ReactNode)
+          col.dataIndex && record
+            ? (record[col.dataIndex as keyof T] as React.ReactNode)
             : value;
 
         return col.render
-          ? col.render(actualValue, record.original, index)
+          ? col.render(actualValue, record, index)
           : actualValue ?? null;
       },
     };
@@ -111,24 +66,12 @@ const Table = <T extends object>({
   });
 
   return (
-    <AntTable<GroupedRow<T>>
+    <AntTable<T>
       columns={enhancedColumns}
-      dataSource={groupedRows}
-      rowKey={(record) => {
-        if (record.type === "group") {
-          return `group-${record.groupTitle}`;
-        }
-
-        if (!record.original) {
-          console.error("Missing original data in GroupedRow:", record);
-          return "unknown-row";
-        }
-
-        return rowKey(record.original);
-      }}
+      dataSource={newData}
+      rowKey={rowKey}
       pagination={false}
       onChange={handleChange}
-      rowClassName={(record) => (record.type === "group" ? "group-row" : "")}
     />
   );
 };

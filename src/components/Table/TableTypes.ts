@@ -15,10 +15,6 @@ export interface GenericGroupedTableProps<T> {
   rowKey: (record: T) => string;
 }
 
-export type GroupedRow<T> =
-  | { type: "group"; groupTitle: string }
-  | { type: "data"; original: T };
-
 export type CellType<RecordType> = {
   colSpan?: number;
   rowSpan?: number;
