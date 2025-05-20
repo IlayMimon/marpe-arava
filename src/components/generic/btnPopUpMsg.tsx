@@ -1,6 +1,6 @@
 import React from "react";
 import { Popconfirm } from "antd";
-import { BtnPopUpMsgProps } from "../types/BtnPopUpMsgProps";
+import { BtnPopUpMsgProps } from "../../types/BtnPopUpMsgProps";
 
 const BtnPopUpMsg: React.FC<BtnPopUpMsgProps> = ({
   title,
