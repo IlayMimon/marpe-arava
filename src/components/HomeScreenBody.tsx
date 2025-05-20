@@ -9,6 +9,7 @@ import ShuttleTableHeader from './ShuttleTable/ShuttleTableHeader';
 import ShuttleAssignmentModal from './ShuttleAssignmentModal/ShuttleAssignmentModal';
 import BtnPopUpMsg from './generic/btnPopUpMsg';
 import { FormValues } from './types/shuttleAssignmentProps';
+import TravelBar from './travel-bar/TravelBar';
 
 export type TripDirection = 'outbound' | 'return';
 
@@ -112,25 +113,28 @@ const HomeScreenBody = () => {
           handleChange={handleChangeDirection}
           tripDirection={tripDirection}
         />
-        {tripDirection === 'outbound' ? (
-          <div>
-            <Table
-              data={data}
-              columns={columns}
-              groupBy={(row) => row.area}
-              rowKey={(row) => row.key}
-            />
-          </div>
-        ) : (
-          <div>
-            <Table
-              data={data}
-              columns={columns}
-              groupBy={(row) => row.area}
-              rowKey={(row) => row.key}
-            />
-          </div>
-        )}
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
+          {tripDirection === 'outbound' ? (
+            <div>
+              <Table
+                data={data}
+                columns={columns}
+                groupBy={(row) => row.area}
+                rowKey={(row) => row.key}
+              />
+            </div>
+          ) : (
+            <div>
+              <Table
+                data={data}
+                columns={columns}
+                groupBy={(row) => row.area}
+                rowKey={(row) => row.key}
+              />
+            </div>
+          )}
+          <TravelBar />
+        </div>
       </div>
     </div>
   );
