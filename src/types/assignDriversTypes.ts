@@ -1,8 +1,8 @@
 export type Shuttle = {
-    id: number;
-    startTime: Date;
-    arrivalTime: Date;
-    distanceKm: number;
+    Id: number;
+    StartTime: Date;
+    ArrivalTime: Date;
+    totalDistance: number;
   };
   
   export type Driver = {
@@ -13,9 +13,9 @@ export type Shuttle = {
   
   export type DriverAssignment = {
     shuttleId: number;
-    startTime: Date;
-    arrivalTime: Date;
-    distanceKm: number;
+    StartTime: Date;
+    ArrivalTime: Date;
+    totalDistance: number;
   };
   
   export type ShuttleAssignment = {

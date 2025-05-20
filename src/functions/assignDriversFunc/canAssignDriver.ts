@@ -1,14 +1,14 @@
-import { Driver, Shuttle } from "../../components/types/assignDriversTypes";
+import { Driver, Shuttle } from "../../types/assignDriversTypes";
 
 export function canAssignShuttle(driver: Driver, shuttle: Shuttle): boolean {
     // מיון לפי זמן
-    const assignments = driver.schedule.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    const assignments = driver.schedule.sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime());
   
     // בדוק האם יש חפיפה בזמנים
     for (const assignment of assignments) {
       if (
-        shuttle.startTime < assignment.arrivalTime &&  
-        shuttle.arrivalTime > assignment.startTime   
+        shuttle.StartTime < assignment.ArrivalTime &&  
+        shuttle.ArrivalTime > assignment.StartTime   
       ) {
         return false;
       }
@@ -17,12 +17,12 @@ export function canAssignShuttle(driver: Driver, shuttle: Shuttle): boolean {
     // חישוב זמן נהיגה רצוף
     const fourHours = 4 * 60 * 60 * 1000;
     const recentAssignments = assignments.filter(
-      a => shuttle.startTime.getTime() - a.arrivalTime.getTime() <= 30 * 60 * 1000
+      a => shuttle.StartTime.getTime() - a.ArrivalTime.getTime() <= 30 * 60 * 1000
     );
   
     let totalDriveTime = 0;
     for (const a of recentAssignments) {
-      totalDriveTime += a.arrivalTime.getTime() - a.startTime.getTime();
+      totalDriveTime += a.ArrivalTime.getTime() - a.StartTime.getTime();
     }
   
     // אם עבר 4 שעות - הפסקה 

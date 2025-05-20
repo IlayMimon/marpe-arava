@@ -1,15 +1,15 @@
 import { canAssignShuttle } from "./canAssignDriver";
-import { Driver, Shuttle, ShuttleAssignment } from "../../components/types/assignDriversTypes";
+import { Driver, Shuttle, ShuttleAssignment } from "../../types/assignDriversTypes";
 
 function getTotalKm(driver: Driver): number {
-    return driver.schedule.reduce((sum, a) => sum + a.distanceKm, 0);
+    return driver.schedule.reduce((sum, a) => sum + a.totalDistance, 0);
   }
   
 export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]): ShuttleAssignment[] {
     const result: ShuttleAssignment[] = [];
     
     // מיון השאטלים לפי זמן התחלה
-    const sortedShuttles = shuttles.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    const sortedShuttles = shuttles.sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime());
   
     for (const shuttle of sortedShuttles) {
       let assigned = false;
@@ -20,14 +20,14 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]):
       for (const driver of sortedDrivers) {
         if (canAssignShuttle(driver, shuttle)) {
           driver.schedule.push({
-            shuttleId: shuttle.id,
-            startTime: shuttle.startTime,
-            arrivalTime: shuttle.arrivalTime,
-            distanceKm: shuttle.distanceKm
+            shuttleId: shuttle.Id,
+            StartTime: shuttle.StartTime,
+            ArrivalTime: shuttle.ArrivalTime,
+            totalDistance: shuttle.totalDistance
           });
   
           result.push({
-            shuttleId: shuttle.id,
+            shuttleId: shuttle.Id,
             driverId: driver.id,
             driverName: driver.name
           });
@@ -38,7 +38,7 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]):
       }
   
       if (!assigned) {
-        console.warn(`לא נמצא נהג זמין לנסיעה ${shuttle.id}`);
+        console.warn(`לא נמצא נהג זמין לנסיעה ${shuttle.Id}`);
       }
     }
     for (const driver of drivers) {

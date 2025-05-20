@@ -14,6 +14,9 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import { FormValues, Props } from "../types/shuttleAssignmentProps";
+import { useQueryFetchRequest } from "../../hooks/useQueryFetch";
+import {SharePointResponse} from "../../components/types/SharePointResponse";
+import {Shuttle} from '../../types/assignDriversTypes'
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -25,7 +28,19 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   setMedicName,
 }) => {
   const [form] = Form.useForm();
+   const { data } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
+            "/_api/web/lists/getbytitle('Shuttles')/items"
+          );
+           const shuttles = data?.d.results.map((shuttle) => {
+            return {
+              Id: shuttle.Id,
+              StartTime: shuttle.StartTime,
+              ArrivalTime: shuttle.ArrivalTime,
+              totalDistance: shuttle.totalDistance,
+            };
+          });
 
+          console.log("shuttles", shuttles);
   const validateTimeRange = (_: any, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
