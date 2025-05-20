@@ -7,7 +7,7 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import { FormValues } from "./types/shuttleAssignmentProps";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
-
+import { addItemToList } from "../functions/postToSharepoint";
 export type TripDirection = "outbound" | "return";
 
 const HomeScreenBody = () => {
@@ -26,6 +26,19 @@ const HomeScreenBody = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setModalVisible(false);
+  };
+
+  const sendExampleForm = async () => {
+    const exampleData = {
+      Time: new Date().toISOString(),
+      StationId: 8,
+      Phone: "0546666666",
+      IsReturnShuttleRequired: false,
+      RequestedServicesId: [15, 14]
+    };
+    
+    await addItemToList('ShuttleRequests', exampleData)
+
   };
 
   return (
@@ -70,6 +83,15 @@ const HomeScreenBody = () => {
             setMedicName={setSelectedMedic}
             messagesAlreadySent={messagesAlreadySent}
           />
+          <Button
+            color="default"
+            variant="filled"
+            icon={<IconSend />}
+            className="home-screen-body__header__left__button"
+            onClick={sendExampleForm}
+            >
+            שליחת טופס לדוגמה
+          </Button>
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               disabled={!isShuttlesArranged}
