@@ -1,5 +1,5 @@
-import { useQueryFetchRequest } from "../hooks/useQueryFetch";
-import { SharepointQueryResultArray } from "../types/spFetchTypes";
+import { useQueryFetchRequest } from '../hooks/useQueryFetch';
+import { SharepointQueryResultArray } from '../store/types/spFetchTypes';
 
 interface IExample {
   something: string;

@@ -1,9 +1,11 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./scss/main.scss";
-import App from "./App.tsx";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './scss/main.scss';
+import App from './App.tsx';
 import QueryProvider from './components/QueryProvider.tsx';
 import axios from 'axios';
+import { Provider as ReduxProvider } from 'react-redux';
+import store from './store/store.ts';
 
 if (import.meta.env.PROD) {
   axios.defaults.baseURL = window.location.pathname;
@@ -18,7 +20,9 @@ if (import.meta.env.PROD) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryProvider>
-      <App />
+      <ReduxProvider store={store}>
+        <App />
+      </ReduxProvider>
     </QueryProvider>
   </StrictMode>
 );
