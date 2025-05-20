@@ -1,17 +1,17 @@
-import { IconSend, IconSparkles } from '@tabler/icons-react';
-import { Button, message, Tooltip } from 'antd';
-import { useState } from 'react';
-import { TbPlus } from 'react-icons/tb';
-import Table from './Table/Table';
-import useGetTableData from '../hooks/useGetTableData';
-import useGetTableColumns from '../hooks/useGetTableColumns';
-import ShuttleTableHeader from './ShuttleTable/ShuttleTableHeader';
-import ShuttleAssignmentModal from './ShuttleAssignmentModal/ShuttleAssignmentModal';
-import BtnPopUpMsg from './generic/btnPopUpMsg';
-import { FormValues } from './types/shuttleAssignmentProps';
-import TravelBar from './travel-bar/TravelBar';
+import { IconSend, IconSparkles } from "@tabler/icons-react";
+import { Button, message, Tooltip } from "antd";
+import { useState } from "react";
+import { TbPlus } from "react-icons/tb";
+import TravelBar from "./travel-bar/TravelBar";
+import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
+import BtnPopUpMsg from "./generic/btnPopUpMsg";
+import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import useGetTableColumns from "../hooks/useGetTableColumns";
+import useGetTableData from "../hooks/useGetTableData";
+import Table from "./Table/Table";
 
-export type TripDirection = 'outbound' | 'return';
+export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
@@ -19,14 +19,20 @@ const HomeScreenBody = () => {
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
-  const [tripDirection, setTripDirection] = useState<TripDirection>('outbound');
+  const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
+  const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const handleEscortSubmit = (values: PatientFormValues) => {
+    console.log("Escort Submitted:", values);
+    setEscortModalOpen(false);
+  };
 
   const handleChangeDirection = (direction: TripDirection) => {
     setTripDirection(direction);
   };
 
-  const handleSubmit = (values: FormValues) => {
-    message.success('שיבוץ הנסיעות בוצע בהצלחה');
+  const handleSubmit = () => {
+    message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setModalVisible(false);
   };
@@ -74,15 +80,7 @@ const HomeScreenBody = () => {
               </Button>
             </Tooltip>
           </BtnPopUpMsg>
-          <ShuttleAssignmentModal
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onSubmit={handleSubmit}
-            medicName={selectedMedic}
-            setMedicName={setSelectedMedic}
-            messagesAlreadySent={messagesAlreadySent}
-          />
-          <Tooltip title={isShuttlesArranged ? '' : 'נדרש לשבץ נסיעות'}>
+          <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               disabled={!isShuttlesArranged}
               color="default"
@@ -102,6 +100,7 @@ const HomeScreenBody = () => {
             variant="solid"
             icon={<TbPlus />}
             className="home-screen-body__header__left__button"
+            onClick={() => setEscortModalOpen(true)}
           >
             הוספת מטופל
           </Button>
@@ -118,20 +117,31 @@ const HomeScreenBody = () => {
             <Table
               data={data}
               columns={columns}
-              // groupBy={(row) => row.area}
               rowKey={(row) => row.key}
             />
           ) : (
             <Table
               data={data}
               columns={columns}
-              // groupBy={(row) => row.area}
               rowKey={(row) => row.key}
             />
           )}
           <TravelBar />
         </div>
       </div>
+      <ShuttleAssignmentModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSubmit={handleSubmit}
+        medicName={selectedMedic}
+        setMedicName={setSelectedMedic}
+        messagesAlreadySent={messagesAlreadySent}
+      />
+      <AddPatientModal
+        isOpen={escortModalOpen}
+        onClose={() => setEscortModalOpen(false)}
+        onSubmit={handleEscortSubmit}
+      />
     </div>
   );
 };

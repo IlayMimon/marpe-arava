@@ -1,19 +1,12 @@
 import { IconSparkles } from "@tabler/icons-react";
-import {
-  Button,
-  ConfigProvider,
-  Form,
-  Modal,
-  Select,
-  TimePicker,
-  message,
-} from "antd";
+import { Button, ConfigProvider, Form, Modal, Select, TimePicker, message } from "antd";
+import { RuleObject } from "antd/es/form";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { FormValues, Props } from "../types/shuttleAssignmentProps";
+import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -26,7 +19,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const validateTimeRange = (_: any, endTime: Dayjs) => {
+  const validateTimeRange = (_: RuleObject, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
     const diff = endTime.diff(startTime, "hour", true);
@@ -66,19 +59,18 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       onCancel={onCancel}
       footer={
         <div className="ShuttleAssignmentModal__footer">
+          <Button key="cancel" onClick={onCancel}>
+            ביטול
+          </Button>
 
-        <Button key="cancel" onClick={onCancel}>
-          ביטול
-        </Button>
-
-        <Button
-          type="primary"
-          className="ShuttleAssignmentModal__assign-btn"
-          onClick={handleSubmit}
-        >
-          <IconSparkles />
-          שבץ נסיעות
-        </Button>
+          <Button
+            type="primary"
+            className="ShuttleAssignmentModal__assign-btn"
+            onClick={handleSubmit}
+          >
+            <IconSparkles />
+            שבץ נסיעות
+          </Button>
         </div>
       }
     >
