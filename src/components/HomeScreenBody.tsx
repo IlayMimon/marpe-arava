@@ -38,7 +38,7 @@ const HomeScreenBody = () => {
   };
 
   const data = useGetTableData();
-  const columns = useGetTableColumns();
+  const columns = useGetTableColumns(tripDirection);
 
   return (
     <div className="home-screen-body">
