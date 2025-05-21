@@ -5,10 +5,10 @@ import { TbPlus } from "react-icons/tb";
 import TravelBar from "./travel-bar/TravelBar";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import { FormValues } from "./types/shuttleAssignmentProps";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 
-export type TripDirection = "outbound" | "return";
+export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
@@ -17,12 +17,18 @@ const HomeScreenBody = () => {
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
+  const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const handleEscortSubmit = (values: PatientFormValues) => {
+    console.log("Escort Submitted:", values);
+    setEscortModalOpen(false);
+  };
 
   const handleChangeDirection = (direction: TripDirection) => {
     setTripDirection(direction);
   };
 
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setModalVisible(false);
@@ -62,14 +68,6 @@ const HomeScreenBody = () => {
               </Button>
             </Tooltip>
           </BtnPopUpMsg>
-          <ShuttleAssignmentModal
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onSubmit={handleSubmit}
-            medicName={selectedMedic}
-            setMedicName={setSelectedMedic}
-            messagesAlreadySent={messagesAlreadySent}
-          />
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               disabled={!isShuttlesArranged}
@@ -90,6 +88,7 @@ const HomeScreenBody = () => {
             variant="solid"
             icon={<TbPlus />}
             className="home-screen-body__header__left__button"
+            onClick={() => setEscortModalOpen(true)}
           >
             הוספת מטופל
           </Button>
@@ -102,6 +101,19 @@ const HomeScreenBody = () => {
         </div>
         <TravelBar />
       </div>
+      <ShuttleAssignmentModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSubmit={handleSubmit}
+        medicName={selectedMedic}
+        setMedicName={setSelectedMedic}
+        messagesAlreadySent={messagesAlreadySent}
+      />
+      <AddPatientModal
+        isOpen={escortModalOpen}
+        onClose={() => setEscortModalOpen(false)}
+        onSubmit={handleEscortSubmit}
+      />
     </div>
   );
 };
