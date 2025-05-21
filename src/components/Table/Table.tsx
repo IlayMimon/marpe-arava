@@ -61,6 +61,7 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
         rowKey={rowKey}
         pagination={false}
         onChange={handleChange}
+        style={{ height: "100%", overflowY: "auto" }}
       />
     </ConfigProvider>
   );
