@@ -7,6 +7,7 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import { addItemToList } from "../functions/postToSharepoint";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -19,8 +20,29 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const handleEscortSubmit = (values: PatientFormValues) => {
-    console.log("Escort Submitted:", values);
+  const handleEscortSubmit = async (values: PatientFormValues) => {
+
+
+    // const exampleData = {
+    //   Time: new Date().toISOString(),
+    //   StationId: 8,
+    //   Phone: "0546666666",
+    //   IsReturnShuttleRequired: false,
+    //   RequestedServicesId: [15, 14]
+    // };
+
+    const patientFormData = {
+      Time: values.appointmentTime.toISOString(),
+      StationId: values.pickupStation,
+      Phone: values.phone,
+      IsReturnShuttleRequired: !!values.dropoffStation,
+      ReturnStationId: values.dropoffStation,
+      RequestedServicesId: values.appointmentTypes
+    }
+    
+    await addItemToList('ShuttleRequests', patientFormData)
+
+    console.log("Escort Submitted:", patientFormData);
     setEscortModalOpen(false);
   };
 
