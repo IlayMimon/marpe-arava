@@ -7,6 +7,7 @@ import { TbChevronsLeft } from "react-icons/tb";
 import DriverFilterButton from "./DriverFilterButton";
 import classNames from "classnames";
 import DriverOrganization from '../DriverOrganization/DriverOrganization';
+import driverOrganizationDataMapping from "../../functions/driverOrganizationDataMapping";
 
 const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -216,26 +217,8 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
         </div>
       )}
       <DriverOrganization
-        data={
-          [
-            {
-              distance: 0,
-              paths: [],
-              color: 'purple'
-            },
-            {
-              distance: 0,
-              paths: [],
-              color: 'teal'
-            },
-            {
-              distance: 0,
-              paths: [],
-              color: 'yellow'
-            },
-          ] /*temp before data*/
-        }
-        paramedic={''}
+        data={driverOrganizationDataMapping(travelItems, drivers, kilometersPerColor)}
+        paramedic={"חובש 1"}
         chosenDate={new Date()}
         isModalOpen={isShowDailyOrganization}
         setIsModalOpen={setIsShowDailyOrganization}

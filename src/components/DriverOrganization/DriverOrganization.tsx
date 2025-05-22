@@ -6,8 +6,7 @@ import downloadDom from "../../functions/downloadDom";
 import { Modal as AntModal } from "antd";
 
 interface DriverOrganizationProps {
-  // explicitly defined 3 times so if given less/more it will show a type error
-  data: [DriverData, DriverData, DriverData];
+  data: DriverData[];
   paramedic: string;
   chosenDate: Date;
   isModalOpen: boolean;
