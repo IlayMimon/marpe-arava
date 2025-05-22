@@ -37,7 +37,8 @@ const HomeScreenBody = () => {
       Phone: values.phone,
       IsReturnShuttleRequired: !!values.dropoffStation,
       ReturnStationId: values.dropoffStation,
-      RequestedServicesId: values.appointmentTypes
+      RequestedServicesId: values.appointmentTypes,
+      FullName: values.fullName
     }
     
     await addItemToList('ShuttleRequests', patientFormData)
