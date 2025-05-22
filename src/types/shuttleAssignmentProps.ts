@@ -3,7 +3,7 @@ import { Dayjs } from "dayjs";
 export interface Props {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (values: FormValues) => void;
+  onSubmit: () => void;
   medicName: string | null;
   setMedicName: (name: string) => void;
   messagesAlreadySent: boolean;

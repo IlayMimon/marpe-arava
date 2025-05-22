@@ -17,9 +17,14 @@ import { TbArrowNarrowLeft } from "react-icons/tb";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { useQueryFetchRequest } from "../../hooks/useQueryFetch";
 import {SharePointResponse} from "../../components/types/SharePointResponse";
-import {Shuttle} from '../../types/assignDriversTypes'
+import {Shuttle, Driver, DriverAssignment} from '../../types/assignDriversTypes'
 dayjs.extend(customParseFormat);
 const { Option } = Select;
+
+type UpdateItemParams = {
+  itemId: number;
+  newValues: Partial<{ Title: string; Status: string }>;
+};
 
 const ShuttleAssignmentModal: React.FC<Props> = ({
   visible,
@@ -29,19 +34,41 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   setMedicName,
 }) => {
   const [form] = Form.useForm();
-   const { data } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
-            "/_api/web/lists/getbytitle('Shuttles')/items"
-          );
-           const shuttles = data?.d.results.map((shuttle) => {
-            return {
-              Id: shuttle.Id,
-              StartTime: shuttle.StartTime,
-              ArrivalTime: shuttle.ArrivalTime,
-              totalDistance: shuttle.totalDistance,
-            };
-          });
+  const drivers: Driver[] = [];
+  const getShuttles = () => {
+    const { data } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
+      "/_api/web/lists/getbytitle('Shuttles')/items", true, "GET"
+    );
+    const shuttles = data?.d.results.map((shuttle) => {
+      return {
+        Id: shuttle.Id,
+        StartTime: shuttle.StartTime,
+        ArrivalTime: shuttle.ArrivalTime,
+        totalDistance: shuttle.totalDistance,
+      };
+    });
+    
+    console.log("shuttles", shuttles);
+    return shuttles;
+  }
 
-          console.log("shuttles", shuttles);
+  const shuttles: Shuttle[] = getShuttles() || [];
+  const initDrivers = (numberOfDrivers: number) => {
+    const driver: Driver = {
+      id: 0,
+      name: "",
+      schedule: [],
+    }
+    for (let i = 0; i < numberOfDrivers; i++) {
+      drivers.push({
+        ...driver,
+        id: i,
+        name: `Driver ${i + 1}`,
+      });
+    }
+
+    return drivers;
+  };
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
@@ -51,6 +78,20 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     }
     return Promise.resolve();
   };
+
+  // Function to run the automation by modifying sharepoint list
+  const runAutomation = () => {
+    console.log("Running automation...");
+    const { data } = useQueryFetchRequest<SharePointResponse<DriverAssignment>>(
+      "/_api/web/lists/getbytitle('Drivers')/items(10)", true, "PATCH", {
+      body: JSON.stringify({
+        Title: "Updated Driver Title",
+        Status: "Updated"
+      }),
+    });
+    console.log("Updated driver data", data);
+  }
+
 
   useEffect(() => {
     form.setFieldValue("medicName", medicName);
@@ -66,13 +107,20 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     form
       .validateFields()
       .then((values: FormValues) => {
-        onSubmit(values);
+        const { startTime, endTime, vehicleCount, medicName } = values;
+        initDrivers(vehicleCount);
         form.resetFields();
-        
+      })
+      .then(() => {
+        console.log("Drivers", drivers);
+        runAutomation();
+        onSubmit();
       })
       .catch(() => {
         message.error("נא למלא את כל השדות החובה כראוי");
       });
+
+    
   };
 
   return (
@@ -104,7 +152,13 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
           form={form}
           layout="vertical"
           onValuesChange={handleValuesChange}
-          initialValues={{ vehicleCount: 3 }}
+          initialValues={
+          {
+            startTime: dayjs("06:30", "HH:mm"),
+            endTime: dayjs("18:30", "HH:mm"),
+            vehicleCount: 3,
+          }
+          }
         >
           <Form.Item
             label="שעות פעילות השאטלים"
@@ -117,7 +171,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
                 rules={[{ required: true, message: "יש לבחור שעת התחלה" }]}
                 className="ShuttleAssignmentModal__timePicker__container__startTime"
               >
-                <TimePicker format="HH:mm" placeholder="התחלה" />
+                <TimePicker  format="HH:mm" placeholder="התחלה" />
               </Form.Item>
 
               <TbArrowNarrowLeft className="ShuttleAssignmentModal__timePicker__container__arrowIcon" />
@@ -138,7 +192,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
           <Form.Item
             label="מספר נהגים"
             name="vehicleCount"
-            rules={[{ required: true, message: "יש לבחור מספר רכבים" }]}
+            rules={[{ required: true, message: "יש לבחור מספר נהגים" }]}
           >
             <Select>
               {[1, 2, 3, 4, 5].map((num) => (

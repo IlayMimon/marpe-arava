@@ -6,7 +6,7 @@ import httpRequest from '../functions/httpRequest';
 export const useQueryFetchRequest = <T, B = unknown>(
   url: string,
   enabled = true,
-  method: Method = "GET",
+  method: Method,
   body?: B,
   interval?: number
 ) => {
