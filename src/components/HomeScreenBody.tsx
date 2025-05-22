@@ -25,15 +25,6 @@ const HomeScreenBody = () => {
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
 
-
-    // const exampleData = {
-    //   Time: new Date().toISOString(),
-    //   StationId: 8,
-    //   Phone: "0546666666",
-    //   IsReturnShuttleRequired: false,
-    //   RequestedServicesId: [15, 14]
-    // };
-
     const patientFormData = {
       Time: values.appointmentTime.toISOString(),
       StationId: values.pickupStation,

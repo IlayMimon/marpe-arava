@@ -59,10 +59,6 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const {data: stationsData} = useQueryFetchRequest<SharepointQueryResultArray<IStation>>(
     "/_api/web/lists/getbytitle('Stations')/items"
   );
-  
-  useEffect(() => {
-    console.log(stationsData)
-  }, [stationsData])
 
   const isFormValid = () => {
     return (
