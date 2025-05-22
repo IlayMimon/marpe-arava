@@ -18,6 +18,7 @@ import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { useQueryFetchRequest } from "../../hooks/useQueryFetch";
 import {SharePointResponse} from "../../components/types/SharePointResponse";
 import {Shuttle, Driver, DriverAssignment} from '../../types/assignDriversTypes'
+import { useUpdateSharePointItem } from "../../hooks/useUpdateSharePointItem";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -82,17 +83,25 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   // Function to run the automation by modifying sharepoint list
   const runAutomation = () => {
     console.log("Running automation...");
-    const { data } = useQueryFetchRequest<SharePointResponse<DriverAssignment>>(
-      "/_api/web/lists/getbytitle('Drivers')/items(10)", true, "PATCH", {
-      body: JSON.stringify({
-        Title: "Updated Driver Title",
-        Status: "Updated"
-      }),
+    const updateItem = useUpdateSharePointItem();
+    updateItem.mutate({
+      listName: "Drivers",
+      itemId: 10,
+      values: {
+        "Title": "עודכן מ-React",
+      },
     });
-    console.log("Updated driver data", data);
+    // const { data } = useQueryFetchRequest(
+    //   "/_api/web/lists/getbytitle('Drivers')/items(10)", true, "PATCH", {
+    //   body: JSON.stringify({
+    //     Title: "Updated Driver Title",
+    //     Status: "Updated"
+    //   }),
+    // });
+    // console.log("Updated driver data", data);
   }
 
-
+  // runAutomation();
   useEffect(() => {
     form.setFieldValue("medicName", medicName);
   }, [medicName]);
@@ -221,3 +230,4 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 };
 
 export default ShuttleAssignmentModal;
+
