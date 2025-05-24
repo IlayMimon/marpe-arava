@@ -1,4 +1,4 @@
-import { ColorType } from "./travelBar";
+import { ColorType, StationInfo } from "./travelBar";
 
 interface DriverData {
   name?: string;
@@ -9,19 +9,13 @@ interface DriverData {
 
 export interface Path {
   pathId: number;
-  stations: Station[];
+  stations: StationInfo[];
 }
 
 export interface Break {
   startTime: string;
   endTime: string;
   title: string;
-}
-
-export interface Station {
-  stationName: string;
-  arrivalTime: string;
-  participants?: string[];
 }
 
 export default DriverData;

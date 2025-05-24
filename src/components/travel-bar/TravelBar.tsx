@@ -190,7 +190,7 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                                     className="travel-bar__list__item__station__passengers__icon"
                                   />
                                   <span className="travel-bar__list__item__station__passengers__count">
-                                    {station.passengers}
+                                    {station.passengers.length}
                                   </span>
                                 </div>
                               )}

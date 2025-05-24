@@ -28,37 +28,34 @@ const DriverOrganizationCardPath = ({
           {"# " + path.pathId}
         </span>
       </div>
-      {path.stations.map(
-        ({ stationName, arrivalTime, participants }, index) => (
-          <div
-            className={classNames(
-              "driver-organization-card-content__path__station",
-              stationName === 'מרפ"א ערבה' && "--marpe-station"
-            )}
-            key={arrivalTime}
-          >
-            <div className="driver-organization-card-content__path__station__details">
-              <span className="driver-organization-card-content__path__station__details__arrival-time">
-                {arrivalTime}
+      {path.stations.map(({ name, arrivalTime, passengers }, index) => (
+        <div
+          className={classNames(
+            "driver-organization-card-content__path__station",
+            name === 'מרפ"א ערבה' && "--marpe-station"
+          )}
+          key={arrivalTime}
+        >
+          <div className="driver-organization-card-content__path__station__details">
+            <span className="driver-organization-card-content__path__station__details__arrival-time">
+              {arrivalTime}
+            </span>
+            <div className="driver-organization-card-content__path__station__details__name-and-passengers">
+              <span>{name}</span>
+              <span className="driver-organization-card-content__path__station__details__name-and-passengers__passengers">
+                {passengers &&
+                  passengers.join(", ") + ` (${passengers.length.toString()})`}
               </span>
-              <div className="driver-organization-card-content__path__station__details__name-and-participants">
-                <span>{stationName}</span>
-                <span className="driver-organization-card-content__path__station__details__name-and-participants__participants">
-                  {participants &&
-                    participants.join(", ") +
-                      ` (${participants.length.toString()})`}
-                </span>
-              </div>
-            </div>
-            <div className="driver-organization-card-content__path__station__circle-and-line__container">
-              <div className="driver-organization-card-content__path__station__circle-and-line__circle --path-circle"></div>
-              {!(path.stations.length === index + 1) && (
-                <div className="driver-organization-card-content__path__station__circle-and-line__line"></div>
-              )}
             </div>
           </div>
-        )
-      )}
+          <div className="driver-organization-card-content__path__station__circle-and-line__container">
+            <div className="driver-organization-card-content__path__station__circle-and-line__circle --path-circle"></div>
+            {!(path.stations.length === index + 1) && (
+              <div className="driver-organization-card-content__path__station__circle-and-line__line"></div>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

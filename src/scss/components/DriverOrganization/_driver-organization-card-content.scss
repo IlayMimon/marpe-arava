@@ -72,10 +72,10 @@
         gap: 1.2rem;
         transform: translateY(-7px);
 
-        &__name-and-participants {
+        &__name-and-passengers {
           display: flex;
           flex-direction: column;
-          &__participants {
+          &__passengers {
             color: var(--Text-color-text-secondary, rgba(0, 0, 0, 0.65));
           }
         }
