@@ -1,5 +1,5 @@
-import { ColorType, Driver, TravelItem } from "../components/types/travelBar";
 import DriverData from "../types/DriverOrganizationTypes";
+import { ColorType, Driver, TravelItem } from "../types/travelBar";
 
 const driverOrganizationDataMapping = (
   items: TravelItem[],
@@ -19,7 +19,9 @@ const driverOrganizationDataMapping = (
           }),
         };
       }),
-      distance: parseInt(kilometersPerColor[driverItems[0].colorType].match(/\d+/)![0]),
+      distance: parseInt(
+        kilometersPerColor[driverItems[0].colorType].match(/\d+/)![0]
+      ),
       color: driverItems[0].colorType,
     };
   });

@@ -4,7 +4,7 @@ import {
   IconRoute2,
   IconUserCircle,
 } from "@tabler/icons-react";
-import getTimeDifference from "../../functions/getTimeDifference";
+import getTotalDrivingTime from "../../functions/getTimeDifference";
 import DriverData from "../../types/DriverOrganizationTypes";
 
 interface DriverOrganizationCardDetailsProps {
@@ -35,11 +35,18 @@ const DriverOrganizationCardDetails = ({
     },
     {
       icon: <IconClock className="driver-organization-card__details__icon" />,
-      text: getTimeDifference(
+      text: getTotalDrivingTime(
         driverData.paths
           .filter((path) => "pathId" in path)
-          .map((path) => path.stations.map((station) => station.arrivalTime))
-          .flat()
+          .map((path) => {
+            const times = path.stations.map((station) => station.arrivalTime);
+            return times.length === 0
+              ? { first: "00:00", last: "00:00" }
+              : {
+                  first: times[0],
+                  last: times[times.length - 1],
+                };
+          })
       ),
     },
   ];

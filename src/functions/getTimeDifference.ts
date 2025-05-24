@@ -1,19 +1,31 @@
-const getTimeDifference = (times: string[]): string => {
-  const minutesArray = times.map((time) => {
-    const [hours, minutes] = time.split(':').map(Number);
+const getTotalDrivingTime = (
+  times: { first: string; last: string }[]
+): string => {
+  if (!times.length) return "אין נתונים";
+
+  const toMinutes = (timeStr: string): number => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
-  });
+  };
 
-  const earliest = Math.min(...minutesArray);
-  const latest = Math.max(...minutesArray);
+  const totalMinutes = times
+    .map((time) => {
+      const firstMinutes = toMinutes(time.first);
+      const lastMinutes = toMinutes(time.last);
+      return lastMinutes - firstMinutes;
+    })
+    .reduce((total, num) => total + num, 0);
 
-  const diff = latest - earliest;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
-  const hours = Math.floor(diff / 60);
-  const minutes = diff % 60;
+  if (!Number.isFinite(hours) || Number.isNaN(minutes)) return "אירעה שגיאה";
 
-  if (!Number.isFinite(hours) || Number.isNaN(minutes)) return 'אירעה שגיאה';
-  return `${hours}ש’ ${minutes}דק’`;
+  const parts = [];
+  if (hours > 0) parts.push(`${hours} ש’`);
+  if (minutes > 0) parts.push(`${minutes} דק’`);
+
+  return parts.length > 0 ? parts.join(" ") : "0 דק’";
 };
 
-export default getTimeDifference;
+export default getTotalDrivingTime;

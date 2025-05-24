@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronLeft, Users } from "lucide-react";
-import { ColorType, TravelItem, TravelBarProps, Driver } from "../types/travelBar";
+import { ColorType, TravelItem, TravelBarProps, Driver } from "../../types/travelBar";
 import { defaultTravelItems, drivers, kilometersPerColor } from "./dummyData";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
