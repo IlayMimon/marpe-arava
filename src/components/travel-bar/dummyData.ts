@@ -9,8 +9,8 @@ export const drivers: Driver[] = [
 // Kilometers per color/driver
 export const kilometersPerColor: Record<ColorType, string> = {
   purple: '251 ק"מ',
-  teal: '283 ק"מ',
-  yellow: '244 ק"מ',
+  cyan: '283 ק"מ',
+  orange: '244 ק"מ',
 };
 
 // Default data for bus drives
@@ -23,8 +23,8 @@ export const defaultTravelItems: TravelItem[] = [
     code: "א",
     colorType: "purple",
     stations: [
-      { name: 'מרכ"א עמק', arrivalTime: "07:30", isOrigin: true },
-      { name: 'מרכ"א עמק', arrivalTime: "08:20", isDestination: true },
+      { name: 'מרפ"א ערבה', arrivalTime: "07:30", isOrigin: true },
+      { name: 'מרפ"א ערבה', arrivalTime: "08:20", isDestination: true },
     ],
   },
   {
@@ -35,7 +35,7 @@ export const defaultTravelItems: TravelItem[] = [
     code: "ב",
     colorType: "purple",
     stations: [
-      { name: 'מרכ"א עמק', arrivalTime: "07:30", isOrigin: true },
+      { name: 'מרפ"א ערבה', arrivalTime: "07:30", isOrigin: true },
       { name: "תחנה מרכזית", arrivalTime: "08:35", isDestination: true },
     ],
   },
@@ -47,7 +47,7 @@ export const defaultTravelItems: TravelItem[] = [
     code: "ב",
     colorType: "purple",
     stations: [
-      { name: 'מרכ"א עמק', arrivalTime: "08:50", isOrigin: true },
+      { name: 'מרפ"א ערבה', arrivalTime: "08:50", isOrigin: true },
       {
         name: "תחנה מרכזית",
         arrivalTime: "09:20",
@@ -68,7 +68,7 @@ export const defaultTravelItems: TravelItem[] = [
         arrivalTime: "09:52",
         passengers: ["איליי", "טל", "עידן"],
       },
-      { name: 'מרכ"א עמק', arrivalTime: "10:00", isDestination: true },
+      { name: 'מרפ"א ערבה', arrivalTime: "10:00", isDestination: true },
     ],
   },
   {
@@ -77,8 +77,31 @@ export const defaultTravelItems: TravelItem[] = [
     startTime: "09:30",
     endTime: "09:55",
     code: "א",
-    colorType: "teal",
-    stations: [],
+    colorType: "cyan",
+    stations: [
+      { name: 'מרפ"א ערבה', arrivalTime: "08:50", isOrigin: true },
+      {
+        name: "תחנה מרכזית",
+        arrivalTime: "09:20",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      {
+        name: "בסיס חצבה תא 10",
+        arrivalTime: "09:50",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      {
+        name: "בסיס חצבה תא 10",
+        arrivalTime: "09:51",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      {
+        name: "בסיס חצבה תא 10",
+        arrivalTime: "09:52",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      { name: 'מרפ"א ערבה', arrivalTime: "10:00", isDestination: true },
+    ],
   },
   {
     id: 1126,
@@ -86,7 +109,7 @@ export const defaultTravelItems: TravelItem[] = [
     startTime: "10:05",
     endTime: "10:55",
     code: "ב",
-    colorType: "teal",
+    colorType: "cyan",
     stations: [],
   },
   {
@@ -95,8 +118,31 @@ export const defaultTravelItems: TravelItem[] = [
     startTime: "10:30",
     endTime: "12:00",
     code: "א",
-    colorType: "yellow",
-    stations: [],
+    colorType: "orange",
+    stations: [
+      { name: 'מרפ"א ערבה', arrivalTime: "08:50", isOrigin: true },
+      {
+        name: "תחנה מרכזית",
+        arrivalTime: "09:20",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      {
+        name: "בסיס חצבה תא 10",
+        arrivalTime: "09:50",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      {
+        name: "בסיס חצבה תא 10",
+        arrivalTime: "09:51",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      {
+        name: "בסיס חצבה תא 10",
+        arrivalTime: "09:52",
+        passengers: ["איליי", "טל", "עידן"],
+      },
+      { name: 'מרפ"א ערבה', arrivalTime: "10:00", isDestination: true },
+    ],
   },
   {
     id: 1128,
@@ -113,7 +159,7 @@ export const defaultTravelItems: TravelItem[] = [
     startTime: "12:00",
     endTime: "13:30",
     code: "א",
-    colorType: "teal",
+    colorType: "cyan",
     stations: [],
   },
 ];

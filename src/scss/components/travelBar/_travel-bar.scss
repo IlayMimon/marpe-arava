@@ -167,11 +167,11 @@ $color-text-dark: #595959;
           background-color: var(--Colors-purple-3);
         }
 
-        &--teal {
+        &--cyan {
           background-color: var(--Colors-cyan-3);
         }
 
-        &--yellow {
+        &--orange {
           background-color: var(--Colors-orange-3);
         }
       }
@@ -218,7 +218,9 @@ $color-text-dark: #595959;
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background-color: var(--Colors-purple-3); // Default color, will be overridden
+          background-color: var(
+            --Colors-purple-3
+          ); // Default color, will be overridden
           z-index: 2;
         }
 
@@ -230,7 +232,9 @@ $color-text-dark: #595959;
           top: 50%;
           height: 100%; // Height to reach the next dot
           width: 2px;
-          background-color: var(--Colors-purple-3); // Default color, will be overridden
+          background-color: var(
+            --Colors-purple-3
+          ); // Default color, will be overridden
           z-index: 1;
         }
 
@@ -248,21 +252,21 @@ $color-text-dark: #595959;
           background-color: var(--Colors-purple-3);
         }
 
-        // Teal color styles
-        &--teal::before {
+        // cyan color styles
+        &--cyan::before {
           background-color: var(--Colors-cyan-3);
         }
 
-        &--teal::after {
+        &--cyan::after {
           background-color: var(--Colors-cyan-3);
         }
 
-        // Yellow color styles
-        &--yellow::before {
+        // orange color styles
+        &--orange::before {
           background-color: var(--Colors-orange-3);
         }
 
-        &--yellow::after {
+        &--orange::after {
           background-color: var(--Colors-orange-3);
         }
 

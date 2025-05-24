@@ -1,4 +1,4 @@
-export type ColorType = "purple" | "teal" | "yellow";
+export type ColorType = "purple" | "cyan" | "orange";
 
 export interface StationInfo {
   name: string;
