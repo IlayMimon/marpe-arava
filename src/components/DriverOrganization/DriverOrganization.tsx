@@ -56,15 +56,17 @@ const DriverOrganization = ({
           isSendDisabled={!data.every((driver) => driver.name)}
           paramedic={paramedic}
         />
-        <div ref={allCards} className="driver-organization-card__container">
-          {data.map((driverData, index) => (
-            <DriverOrganizationCard
-              ref={rest[index]}
-              driverData={driverData}
-              index={index}
-              chosenDate={chosenDate}
-            />
-          ))}
+        <div className="driver-organization-card__scroll">
+          <div ref={allCards} className="driver-organization-card__scroll__container">
+            {data.map((driverData, index) => (
+              <DriverOrganizationCard
+                ref={rest[index]}
+                driverData={driverData}
+                index={index}
+                chosenDate={chosenDate}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </AntModal>
