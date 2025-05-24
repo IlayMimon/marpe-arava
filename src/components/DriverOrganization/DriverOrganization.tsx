@@ -1,9 +1,9 @@
-import { createRef, useMemo, Dispatch, SetStateAction } from "react";
+import { Modal as AntModal } from "antd";
+import { createRef, Dispatch, SetStateAction, useMemo } from "react";
+import downloadDom from "../../functions/downloadDom";
 import DriverData from "../../types/DriverOrganizationTypes";
 import DriverOrganizationCard from "./DriverOrganizationCard";
 import DriverOrganizationHeader from "./DriverOrganizationHeader";
-import downloadDom from "../../functions/downloadDom";
-import { Modal as AntModal } from "antd";
 
 interface DriverOrganizationProps {
   data: DriverData[];
@@ -13,9 +13,18 @@ interface DriverOrganizationProps {
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const DriverOrganization = ({ data, paramedic, chosenDate, isModalOpen, setIsModalOpen }: DriverOrganizationProps) => {
+const DriverOrganization = ({
+  data,
+  paramedic,
+  chosenDate,
+  isModalOpen,
+  setIsModalOpen,
+}: DriverOrganizationProps) => {
   // in a loop to avoid repeating code. useMemo for efficiency between renders
-  const [allCards, ...rest] = useMemo(() => Array.from({ length: 4 }, () => createRef<HTMLDivElement>()), []);
+  const [allCards, ...rest] = useMemo(
+    () => Array.from({ length: 4 }, () => createRef<HTMLDivElement>()),
+    []
+  );
 
   const downloadImages = () => {
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
@@ -24,7 +33,8 @@ const DriverOrganization = ({ data, paramedic, chosenDate, isModalOpen, setIsMod
     }
 
     [allCards, ...rest].forEach((ref, index) => {
-      const fileName = index === 0 ? "all-drivers" : "driver-" + index.toString();
+      const fileName =
+        index === 0 ? "all-drivers" : "driver-" + index.toString();
       downloadDom(ref, fileName);
     });
   };
@@ -48,7 +58,12 @@ const DriverOrganization = ({ data, paramedic, chosenDate, isModalOpen, setIsMod
         />
         <div ref={allCards} className="driver-organization-card__container">
           {data.map((driverData, index) => (
-            <DriverOrganizationCard ref={rest[index]} driverData={driverData} index={index} chosenDate={chosenDate} />
+            <DriverOrganizationCard
+              ref={rest[index]}
+              driverData={driverData}
+              index={index}
+              chosenDate={chosenDate}
+            />
           ))}
         </div>
       </div>

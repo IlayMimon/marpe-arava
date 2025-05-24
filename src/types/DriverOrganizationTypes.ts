@@ -1,4 +1,4 @@
-import { ColorType } from "../components/types/travelBar";
+import { ColorType } from "./travelBar";
 
 interface DriverData {
   name?: string;

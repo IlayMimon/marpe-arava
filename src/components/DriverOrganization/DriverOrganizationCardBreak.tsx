@@ -10,7 +10,9 @@ const DriverOrganizationCardBreak = ({
   return (
     <div className="driver-organization-card-content__break">
       <span className="driver-organization-card-content__break__times">{`${endTime} - ${startTime}`}</span>
-      <span className="driver-organization-card-content__break__title">{title}</span>
+      <span className="driver-organization-card-content__break__title">
+        {title}
+      </span>
       <span></span>
     </div>
   );

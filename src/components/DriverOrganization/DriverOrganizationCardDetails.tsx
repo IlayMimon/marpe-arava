@@ -1,5 +1,10 @@
+import {
+  IconClock,
+  IconRoute,
+  IconRoute2,
+  IconUserCircle,
+} from "@tabler/icons-react";
 import getTimeDifference from "../../functions/getTimeDifference";
-import { IconUserCircle, IconRoute, IconRoute2, IconClock } from "@tabler/icons-react";
 import DriverData from "../../types/DriverOrganizationTypes";
 
 interface DriverOrganizationCardDetailsProps {
@@ -7,15 +12,22 @@ interface DriverOrganizationCardDetailsProps {
   index: number;
 }
 
-const DriverOrganizationCardDetails = ({ driverData, index }: DriverOrganizationCardDetailsProps) => {
+const DriverOrganizationCardDetails = ({
+  driverData,
+  index,
+}: DriverOrganizationCardDetailsProps) => {
   const details = [
     {
-      icon: <IconUserCircle className="driver-organization-card__details__icon" />,
+      icon: (
+        <IconUserCircle className="driver-organization-card__details__icon" />
+      ),
       text: driverData.name || "נהג " + (index + 1).toString(),
     },
     {
       icon: <IconRoute className="driver-organization-card__details__icon" />,
-      text: driverData.paths.filter((path) => "pathId" in path).length.toString(),
+      text: driverData.paths
+        .filter((path) => "pathId" in path)
+        .length.toString(),
     },
     {
       icon: <IconRoute2 className="driver-organization-card__details__icon" />,
@@ -37,7 +49,9 @@ const DriverOrganizationCardDetails = ({ driverData, index }: DriverOrganization
       {details.map((detail) => (
         <div key={detail.text} className="driver-organization-card__details">
           {detail.icon}
-          <span className="driver-organization-card__details__text">{detail.text}</span>
+          <span className="driver-organization-card__details__text">
+            {detail.text}
+          </span>
         </div>
       ))}
     </div>

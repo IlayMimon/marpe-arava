@@ -10,11 +10,22 @@ interface DriverOrganizationCardProps {
   ref: React.RefObject<HTMLDivElement | null>;
 }
 
-const DriverOrganizationCard = ({ driverData, index, chosenDate, ref }: DriverOrganizationCardProps) => {
+const DriverOrganizationCard = ({
+  driverData,
+  index,
+  chosenDate,
+  ref,
+}: DriverOrganizationCardProps) => {
   return (
-    <div key={chosenDate.valueOf()} ref={ref} className="driver-organization-card">
+    <div
+      key={chosenDate.valueOf()}
+      ref={ref}
+      className="driver-organization-card"
+    >
       <div className="driver-organization-card__date">
-        <span className="driver-organization-card__date__text">{formatDate(chosenDate)}</span>
+        <span className="driver-organization-card__date__text">
+          {formatDate(chosenDate)}
+        </span>
       </div>
       <DriverOrganizationCardDetails driverData={driverData} index={index} />
       <div className="driver-organization-card-content__container">
