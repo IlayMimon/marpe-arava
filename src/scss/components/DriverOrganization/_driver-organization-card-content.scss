@@ -125,24 +125,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
-    height: 4rem;
-    margin: 0 3rem;
-
-    background: repeating-linear-gradient(
-      300deg,
-      rgba(0, 0, 0, 0.04),
-      rgba(0, 0, 0, 0.04) 2px,
-      rgba(0, 0, 0, 0.02) 2px,
-      rgba(0, 0, 0, 0.02) 10px
-    );
-
-    & > span {
-      flex: 1;
-    }
+    gap: 1rem;
 
     &__times {
-      margin-right: 2.2rem;
       font-weight: 500;
       color: var(--Text-color-text-secondary, rgba(0, 0, 0, 0.65));
     }

@@ -15,13 +15,18 @@ const driverOrganizationDataMapping = (
         (driver) => driver.id === driverAssignments[driverColor as ColorType]
       )?.name,
       paths: driverItems.map((path) => {
-        return {
-          ...path,
-          pathId: parseInt(path.tripId),
-          stations: path.stations.map((station) => {
-            return { ...station, stationName: station.name };
-          }),
-        };
+        return path.tripId === "0"
+          ? {
+              startTime: path.startTime,
+              endTime: path.endTime,
+              title: path.code,
+            }
+          : {
+              pathId: parseInt(path.tripId),
+              stations: path.stations.map((station) => {
+                return { ...station, stationName: station.name };
+              }),
+            };
       }),
       distance: parseInt(
         kilometersPerColor[driverItems[0].colorType].match(/\d+/)![0]

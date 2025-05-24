@@ -40,6 +40,15 @@ export const defaultTravelItems: TravelItem[] = [
     ],
   },
   {
+    id: 1000,
+    tripId: "0",
+    startTime: "08:35",
+    endTime: "08:50",
+    code: "הפסקת צהריים",
+    colorType: "purple",
+    stations: [],
+  },
+  {
     id: 1123,
     tripId: "1122",
     startTime: "08:50",
