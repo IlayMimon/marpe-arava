@@ -9,20 +9,6 @@
   }
 
   &__path {
-    &.index-1 {
-      --card-color-primary: var(--Colors-gold-3, #ffe58f);
-      --card-color-background: var(--Colors-gold-1, #fffbe6);
-    }
-
-    &.index-2 {
-      --card-color-primary: 1px solid var(--Colors-cyan-3, #87e8d3);
-      --card-color-background: var(--Colors-cyan-1, #e6fffb);
-    }
-
-    &.index-3 {
-      --card-color-primary: 1px solid var(--Colors-purple-3, #d3adf7);
-      --card-color-background: var(--Colors-purple-1, #f9f0ff);
-    }
 
     &__id {
       font-size: 1.6rem;

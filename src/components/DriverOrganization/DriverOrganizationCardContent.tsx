@@ -13,16 +13,23 @@ const DriverOrganizationCardContent = ({
 
   return (
     <div className="driver-organization-card-content">
-      {driverData.paths.map((path) => {
+      {driverData.paths.map((path, index) => {
         if ("pathId" in path) {
           return (
             <DriverOrganizationCardPath
+              key={path.pathId + index}
               color={driverData.color}
               path={path}
               pathIndex={paths.indexOf(path) + 1}
             />
           );
-        } else return <DriverOrganizationCardBreak pathBreak={path} />;
+        } else
+          return (
+            <DriverOrganizationCardBreak
+              pathBreak={path}
+              key={path.title + index}
+            />
+          );
       })}
     </div>
   );

@@ -57,9 +57,13 @@ const DriverOrganization = ({
           paramedic={paramedic}
         />
         <div className="driver-organization-card__scroll">
-          <div ref={allCards} className="driver-organization-card__scroll__container">
+          <div
+            ref={allCards}
+            className="driver-organization-card__scroll__container"
+          >
             {data.map((driverData, index) => (
               <DriverOrganizationCard
+                key={driverData.color + index}
                 ref={rest[index]}
                 driverData={driverData}
                 index={index}

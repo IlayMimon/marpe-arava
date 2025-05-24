@@ -18,7 +18,7 @@ const DriverOrganizationCardPath = ({
     <div
       key={path.pathId}
       style={styleObject as React.CSSProperties}
-      className={classNames("driver-organization-card-content__path")}
+      className="driver-organization-card-content__path"
     >
       <div className="driver-organization-card-content__path__id__container">
         <span className="driver-organization-card-content__path__id__index">
