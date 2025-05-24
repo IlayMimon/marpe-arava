@@ -217,7 +217,7 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
         </div>
       )}
       <DriverOrganization
-        data={driverOrganizationDataMapping(travelItems, drivers, kilometersPerColor)}
+        data={driverOrganizationDataMapping(travelItems, driverAssignments, kilometersPerColor)}
         paramedic={"חובש 1"}
         chosenDate={new Date()}
         isModalOpen={isShowDailyOrganization}

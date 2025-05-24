@@ -1,15 +1,19 @@
+import { drivers } from "../components/travel-bar/dummyData";
 import DriverData from "../types/DriverOrganizationTypes";
-import { ColorType, Driver, TravelItem } from "../types/travelBar";
+import { ColorType, TravelItem } from "../types/travelBar";
 
 const driverOrganizationDataMapping = (
   items: TravelItem[],
-  drivers: Driver[],
+  driverAssignments: Record<ColorType, number | null>,
   kilometersPerColor: Record<ColorType, string>
 ): DriverData[] => {
-  return drivers.map((driver) => {
-    const driverItems = items.filter((item) => item.driverId === driver.id);
+  return Object.keys(driverAssignments).map((driverColor) => {
+    const driverItems = items.filter((item) => item.colorType === driverColor);
 
     return {
+      name: drivers.find(
+        (driver) => driver.id === driverAssignments[driverColor as ColorType]
+      )?.name,
       paths: driverItems.map((path) => {
         return {
           ...path,

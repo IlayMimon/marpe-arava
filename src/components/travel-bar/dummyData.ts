@@ -22,7 +22,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "08:20",
     code: "א",
     colorType: "purple",
-    driverId: 1,
     stations: [
       { name: 'מרכ"א עמק', arrivalTime: "07:30", isOrigin: true },
       { name: 'מרכ"א עמק', arrivalTime: "08:20", isDestination: true },
@@ -35,7 +34,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "08:35",
     code: "ב",
     colorType: "purple",
-    driverId: 3,
     stations: [
       { name: 'מרכ"א עמק', arrivalTime: "07:30", isOrigin: true },
       { name: "תחנה מרכזית", arrivalTime: "08:35", isDestination: true },
@@ -48,7 +46,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "10:00",
     code: "ב",
     colorType: "purple",
-    driverId: 3,
     stations: [
       { name: 'מרכ"א עמק', arrivalTime: "08:50", isOrigin: true },
       {
@@ -81,7 +78,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "09:55",
     code: "א",
     colorType: "teal",
-    driverId: 2,
     stations: [],
   },
   {
@@ -91,7 +87,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "10:55",
     code: "ב",
     colorType: "teal",
-    driverId: 2,
     stations: [],
   },
   {
@@ -101,7 +96,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "12:00",
     code: "א",
     colorType: "yellow",
-    driverId: 1,
     stations: [],
   },
   {
@@ -111,7 +105,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "11:50",
     code: "א",
     colorType: "purple",
-    driverId: 3,
     stations: [],
   },
   {
@@ -121,7 +114,6 @@ export const defaultTravelItems: TravelItem[] = [
     endTime: "13:30",
     code: "א",
     colorType: "teal",
-    driverId: 2,
     stations: [],
   },
 ];
