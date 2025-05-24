@@ -28,7 +28,12 @@ export type PatientFormValues = {
   notes?: string;
 };
 
-const appointmentOptions = ["בית מרקחת", "צילום רנטגן", "אורטופד", "רופא משפחה"];
+const appointmentOptions = [
+  "בית מרקחת",
+  "צילום רנטגן",
+  "אורטופד",
+  "רופא משפחה",
+];
 const pickupStations = ["איסוף 1", "איסוף 2", "איסוף 3", "איסוף 4"];
 const dropoffStations = ["הורדה 1", "הורדה 2", "הורדה 3", "הורדה 4"];
 
@@ -38,7 +43,11 @@ type IAddPatientModalProps = {
   onSubmit: (values: PatientFormValues) => void;
 };
 
-const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
+const AddPatientModal = ({
+  isOpen: visible,
+  onClose,
+  onSubmit,
+}: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(true);
   const [hasDropoff, setHasDropoff] = useState(false);
@@ -144,14 +153,23 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                   {
                     validator: () => {
                       if (!hasPickup && !hasDropoff) {
-                        return Promise.reject(new Error("יש לבחור לפחות תחנת איסוף או תחנת פיזור"));
+                        return Promise.reject(
+                          new Error("יש לבחור לפחות תחנת איסוף או תחנת פיזור")
+                        );
                       }
                       return Promise.resolve();
                     },
                   },
                 ]}
               >
-                <Select disabled={!hasPickup} placeholder="בחר תחנה">
+                <Select
+                  disabled={!hasPickup}
+                  placeholder="בחר תחנה"
+                  onChange={(station) => {
+                    !hasDropoff &&
+                      form.setFieldsValue({ dropoffStation: station });
+                  }}
+                >
                   {pickupStations.map((station) => (
                     <Option key={station} value={station}>
                       {station}
@@ -167,7 +185,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                 onChange={(e) => {
                   setHasDropoff(e.target.checked);
                   if (!e.target.checked) {
-                    form.setFieldsValue({ dropoffStation: null });
+                    form.setFieldsValue({ dropoffStation: pickupStation });
                   }
                   form.validateFields(["pickupStation", "dropoffStation"]);
                 }}
@@ -202,7 +220,11 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="שעת הגעה רצויה"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker
+                format="HH:mm"
+                style={{ width: "100%" }}
+                showNow={false}
+              />
             </Form.Item>
 
             <Form.Item
@@ -222,9 +244,14 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
             <Form.Item
               name="notes"
               label="הערות"
-              rules={[{ max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)" }]}
+              rules={[
+                { max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)" },
+              ]}
             >
-              <Input.TextArea placeholder="הקלד הערה" autoSize={{ maxRows: 1 }} />
+              <Input.TextArea
+                placeholder="הקלד הערה"
+                autoSize={{ maxRows: 1 }}
+              />
             </Form.Item>
           </div>
         </Form>
