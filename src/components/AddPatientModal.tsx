@@ -12,7 +12,7 @@ import {
 } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQueryFetchRequest } from "../hooks/useQueryFetch";
 import { SharepointQueryResultArray } from "../types/spFetchTypes";
 import { IService } from "../types/IService";
@@ -38,11 +38,7 @@ type IAddPatientModalProps = {
   onSubmit: (values: PatientFormValues) => void;
 };
 
-const AddPatientModal = ({
-  isOpen: visible,
-  onClose,
-  onSubmit,
-}: IAddPatientModalProps) => {
+const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(true);
   const [hasDropoff, setHasDropoff] = useState(false);
@@ -56,13 +52,13 @@ const AddPatientModal = ({
   const appointmentTime = Form.useWatch("appointmentTime", form);
   const appointmentTypes = Form.useWatch("appointmentTypes", form);
 
-  const { data: servicesData } = useQueryFetchRequest<
-    SharepointQueryResultArray<IService>
-  >("/_api/web/lists/getbytitle('Services')/items");
+  const { data: servicesData } = useQueryFetchRequest<SharepointQueryResultArray<IService>>(
+    "/_api/web/lists/getbytitle('Services')/items"
+  );
 
-  const { data: stationsData } = useQueryFetchRequest<
-    SharepointQueryResultArray<IStation>
-  >("/_api/web/lists/getbytitle('Stations')/items");
+  const { data: stationsData } = useQueryFetchRequest<SharepointQueryResultArray<IStation>>(
+    "/_api/web/lists/getbytitle('Stations')/items"
+  );
 
   const isFormValid = () => {
     return (
@@ -156,9 +152,7 @@ const AddPatientModal = ({
                   {
                     validator: () => {
                       if (!hasPickup && !hasDropoff) {
-                        return Promise.reject(
-                          new Error("יש לבחור לפחות תחנת איסוף או תחנת פיזור")
-                        );
+                        return Promise.reject(new Error("יש לבחור לפחות תחנת איסוף או תחנת פיזור"));
                       }
                       return Promise.resolve();
                     },
@@ -169,8 +163,9 @@ const AddPatientModal = ({
                   disabled={!hasPickup}
                   placeholder="בחר תחנה"
                   onChange={(station) => {
-                    !hasDropoff &&
+                    if (!hasDropoff) {
                       form.setFieldsValue({ dropoffStation: station });
+                    }
                   }}
                 >
                   {stationsData?.d.results.map((station) => (
@@ -223,11 +218,7 @@ const AddPatientModal = ({
               label="שעת הגעה רצויה"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >
-              <TimePicker
-                format="HH:mm"
-                style={{ width: "100%" }}
-                showNow={false}
-              />
+              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
 
             <Form.Item
@@ -247,14 +238,9 @@ const AddPatientModal = ({
             <Form.Item
               name="notes"
               label="הערות"
-              rules={[
-                { max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)" },
-              ]}
+              rules={[{ max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)" }]}
             >
-              <Input.TextArea
-                placeholder="הקלד הערה"
-                autoSize={{ maxRows: 1 }}
-              />
+              <Input.TextArea placeholder="הקלד הערה" autoSize={{ maxRows: 1 }} />
             </Form.Item>
           </div>
         </Form>
