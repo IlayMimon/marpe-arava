@@ -1,5 +1,5 @@
+import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
-import { SharePointResponse } from "./types";
 
 type ShuttleDetailsPerRequest = {
     ID: number
@@ -11,7 +11,7 @@ type ShuttleDetailsPerRequest = {
 };
 
 const useGetShuttleDetailsPerRequest = () => {
-    const { data } = useQueryFetchRequest<SharePointResponse<ShuttleDetailsPerRequest>>(
+    const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleDetailsPerRequest>>(
         "/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items"
     );
 
