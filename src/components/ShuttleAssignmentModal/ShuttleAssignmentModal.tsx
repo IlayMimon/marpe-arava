@@ -3,30 +3,25 @@ import {
   Button,
   ConfigProvider,
   Form,
+  FormRule,
   Modal,
   Select,
   TimePicker,
-  message,
-  FormRule
+  message
 } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { FormValues, Props } from "../../types/shuttleAssignmentProps";
-import { useQueryFetchRequest } from "../../hooks/useQueryFetch";
-import {SharePointResponse} from "../../components/types/SharePointResponse";
 import { getShuttles } from "../../functions/getSuttles";
-import {Shuttle, Driver, DriverAssignment} from '../../types/assignDriversTypes'
 import { useUpdateSharePointItem } from "../../hooks/useUpdateSharePointItem";
+import { Driver, Shuttle } from '../../types/assignDriversTypes';
+import { FormValues, Props } from "../../types/shuttleAssignmentProps";
+import useGetMedics from "../../hooks/data/useGetMedics";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
-type UpdateItemParams = {
-  itemId: number;
-  newValues: Partial<{ Title: string; Status: string }>;
-};
 
 const ShuttleAssignmentModal: React.FC<Props> = ({
   visible,
@@ -38,6 +33,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   const [form] = Form.useForm();
   const drivers: Driver[] = [];
   const shuttles: Shuttle[] = getShuttles() || [];
+  const medics = useGetMedics();
   
   const initDrivers = (numberOfDrivers: number) => {
     const driver: Driver = {
@@ -199,8 +195,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
             </Select>
           </Form.Item>
         </Form>
+      </ConfigProvider>
       </Modal>
-    </ConfigProvider>
   );
 };
 
