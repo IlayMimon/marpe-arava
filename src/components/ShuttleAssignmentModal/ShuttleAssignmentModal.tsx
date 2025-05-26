@@ -36,9 +36,6 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   const shuttles: Shuttle[] = getShuttles() || [];
   const medics = useGetMedics();
 
-  
-
-
   const initDrivers = (numberOfDrivers: number) => {
     const driver: Driver = {
       id: 0,
@@ -64,22 +61,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     }
     return Promise.resolve();
   };
-  // Function to run the automation by modifying sharepoint list
-  const runAutomation = () => {
-    console.log("Running automation...");
-    const updateItem = useUpdateSharePointItem();
-    updateItem.mutate({
-      listName: "Drivers",
-      itemId: 10,
-      values: {
-        __metadata: {
-            type: "SP.Data.DriversListItem", // חשוב מאוד
-        },
-        Title: "עודכן מ-React",
-      },
-    });
-  }
-
+  
   useEffect(() => {
     form.setFieldValue("medicName", medicName);
     

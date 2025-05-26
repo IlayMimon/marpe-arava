@@ -4,17 +4,17 @@ import useGetMedics from "../hooks/data/useGetMedics";
 const { Option } = Select;
 
 const MedicSelect = () => {
-  const [medic, setMedic] = useState<string>();
+  const [selectedMedic, setSelectedMedic] = useState<string>();
   const medics = useGetMedics();
 
   const handleChange = (value: string) => {
-    setMedic(value);
+    setSelectedMedic(value);
   };
 
   return (
     <div className="medic-select">
       <Select
-        value={medic}
+        value={selectedMedic}
         placeholder="בחר חובש אחראי"
         allowClear
         onChange={(medic) => handleChange(medic)}

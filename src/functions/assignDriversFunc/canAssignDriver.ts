@@ -16,8 +16,9 @@ export function canAssignShuttle(driver: Driver, shuttle: Shuttle): boolean {
   
     // חישוב זמן נהיגה רצוף
     const fourHours = 4 * 60 * 60 * 1000;
+    const HalfAnHour = 30 * 60 * 1000;
     const recentAssignments = assignments.filter(
-      a => shuttle.StartTime.getTime() - a.ArrivalTime.getTime() <= 30 * 60 * 1000
+      a => shuttle.StartTime.getTime() - a.ArrivalTime.getTime() <= HalfAnHour
     );
   
     let totalDriveTime = 0;
