@@ -153,15 +153,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                   },
                 ]}
               >
-                <Select
-                  disabled={!hasPickup}
-                  placeholder="בחר תחנה"
-                  onChange={(station) => {
-                    if (!hasDropoff) {
-                      form.setFieldsValue({ dropoffStation: station });
-                    }
-                  }}
-                >
+                <Select disabled={!hasPickup} placeholder="בחר תחנה">
                   {stationsData?.map((station) => (
                     <Option key={station.ID} value={station.ID}>
                       {station.Title}
@@ -176,8 +168,10 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                 checked={hasDropoff}
                 onChange={(e) => {
                   setHasDropoff(e.target.checked);
-                  if (!e.target.checked) {
+                  if (e.target.checked) {
                     form.setFieldsValue({ dropoffStation: pickupStation });
+                  } else {
+                    form.setFieldsValue({ dropoffStation: null });
                   }
                   form.validateFields(["pickupStation", "dropoffStation"]);
                 }}
