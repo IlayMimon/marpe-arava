@@ -17,7 +17,6 @@ export type TripDirection = "outbound" | "inbound";
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
@@ -128,8 +127,6 @@ const HomeScreenBody = () => {
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         onSubmit={handleSubmit}
-        medicName={selectedMedic}
-        setMedicName={setSelectedMedic}
         messagesAlreadySent={messagesAlreadySent}
       />
       <AddPatientModal

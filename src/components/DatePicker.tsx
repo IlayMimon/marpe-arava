@@ -4,40 +4,40 @@ import heIL from "antd/lib/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/he";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useHomePageContextContext } from "../contexts/HomePage";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("he");
 
-const defaultDate = dayjs();
 const allowedDays = [1, 2, 3]; // Sunday, Monday, Tuesday
 
 const DatePicker = () => {
+  const { selectedDate, setSelectedDate } = useHomePageContextContext();
+
   const isAllowedDay = (day: number) => allowedDays.includes(day);
 
   const findNextAllowedDay = (current: Dayjs): Dayjs => {
-    return isAllowedDay(current.day() + 1)
-      ? current.add(1, "day")
-      : current.add((8 - current.day()) % 7, "day");
+    let next = current.add(1, "day");
+    while (!isAllowedDay(next.day())) {
+      next = next.add(1, "day");
+    }
+    return next;
   };
 
   const findPreviousAllowedDay = (current: Dayjs): Dayjs => {
-    return isAllowedDay(current.day() - 1)
-      ? current.subtract(1, "day")
-      : current.subtract((current.day() + 4) % 7, "day");
+    let prev = current.subtract(1, "day");
+    while (!isAllowedDay(prev.day())) {
+      prev = prev.subtract(1, "day");
+    }
+    return prev;
   };
 
-  const goPreviousDay = () =>
-    setDate((prevDate) => findPreviousAllowedDay(prevDate));
-  const goNextDay = () => setDate((prevDate) => findNextAllowedDay(prevDate));
+  const goPreviousDay = () => setSelectedDate(findPreviousAllowedDay(selectedDate));
+  const goNextDay = () => setSelectedDate(findNextAllowedDay(selectedDate));
   const disabledDate = (current: Dayjs) => !isAllowedDay(current.day());
 
-  const [date, setDate] = useState<Dayjs>(
-    isAllowedDay(defaultDate.day())
-      ? defaultDate
-      : findNextAllowedDay(defaultDate),
-  );
-  const isToday = useMemo(() => date.isSame(dayjs(), "day"), [date]);
+  const isToday = useMemo(() => selectedDate.isSame(dayjs(), "day"), [selectedDate]);
 
   return (
     <div className="date-picker">
@@ -51,7 +51,7 @@ const DatePicker = () => {
         <AntDatePicker
           className="date-picker__input"
           picker="date"
-          value={date}
+          value={selectedDate}
           inputMode="none"
           inputReadOnly
           allowClear={false}
@@ -64,7 +64,11 @@ const DatePicker = () => {
           }
           suffixIcon={null}
           format="[יום] dd DD.MM.YY"
-          onChange={(val) => val && isAllowedDay(val.day()) && setDate(val)}
+          onChange={(val) => {
+            if (val && isAllowedDay(val.day())) {
+              setSelectedDate(val);
+            }
+          }}
           disabledDate={disabledDate}
         />
       </ConfigProvider>
