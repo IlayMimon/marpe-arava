@@ -22,14 +22,14 @@ const getRequestDigest = async (): Promise<string> => {
 const updateSharePointItem = async ({ listName, itemId, values }: UpdateParams) => {
   const digest = await getRequestDigest();
 //   console.log("digest", digest);
-    const r = await fetch(`/_api/web/lists/getbytitle('${listName}')/items(${itemId})`, {
-  headers: {
-    Accept: "application/json;odata=verbose"
-  }
-});
+//     const r = await fetch(`/_api/web/lists/getbytitle('${listName}')/items(${itemId})`, {
+//   headers: {
+//     Accept: "application/json;odata=verbose"
+//   }
+// });
 
-const data = await r.json();
-const etag = `"${data.d.__metadata.etag.replace(/"/g, '')}"`; ;
+// const data = await r.json();
+// const etag = `"${data.d.__metadata.etag.replace(/"/g, '')}"`; ;
   const res = await fetch(
     `/_api/web/lists/getbytitle('${listName}')/items(${itemId})`,
     {
@@ -37,12 +37,10 @@ const etag = `"${data.d.__metadata.etag.replace(/"/g, '')}"`; ;
       headers: {
         "Accept": "application/json;odata=verbose",
         "Content-Type": "application/json;odata=verbose",
-        "IF-MATCH": "\"b4b68c13-a4ae-4526-98f1-dddd7beae950,1\"",
+        "IF-MATCH": "*",
         "X-RequestDigest": digest,
       },
-      body: JSON.stringify({
-  Title: "עודכן"
-}),
+      body: JSON.stringify(values),
     }
   );
 

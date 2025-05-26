@@ -12,11 +12,12 @@ import {
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { useQueryFetchRequest } from "../../hooks/useQueryFetch";
 import {SharePointResponse} from "../../components/types/SharePointResponse";
+import { getShuttles } from "../../functions/getSuttles";
 import {Shuttle, Driver, DriverAssignment} from '../../types/assignDriversTypes'
 import { useUpdateSharePointItem } from "../../hooks/useUpdateSharePointItem";
 dayjs.extend(customParseFormat);
@@ -36,24 +37,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
   const drivers: Driver[] = [];
-  const getShuttles = () => {
-    const { data } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
-      "/_api/web/lists/getbytitle('Shuttles')/items", true, "GET"
-    );
-    const shuttles = data?.d.results.map((shuttle) => {
-      return {
-        Id: shuttle.Id,
-        StartTime: shuttle.StartTime,
-        ArrivalTime: shuttle.ArrivalTime,
-        totalDistance: shuttle.totalDistance,
-      };
-    });
-    
-    console.log("shuttles", shuttles);
-    return shuttles;
-  }
-
   const shuttles: Shuttle[] = getShuttles() || [];
+  
   const initDrivers = (numberOfDrivers: number) => {
     const driver: Driver = {
       id: 0,
@@ -79,7 +64,6 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     }
     return Promise.resolve();
   };
-
   // Function to run the automation by modifying sharepoint list
   const runAutomation = () => {
     console.log("Running automation...");
@@ -88,22 +72,17 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       listName: "Drivers",
       itemId: 10,
       values: {
-        "Title": "עודכן מ-React",
+        __metadata: {
+            type: "SP.Data.DriversListItem", // חשוב מאוד
+        },
+        Title: "עודכן מ-React",
       },
     });
-    // const { data } = useQueryFetchRequest(
-    //   "/_api/web/lists/getbytitle('Drivers')/items(10)", true, "PATCH", {
-    //   body: JSON.stringify({
-    //     Title: "Updated Driver Title",
-    //     Status: "Updated"
-    //   }),
-    // });
-    // console.log("Updated driver data", data);
   }
 
-  // runAutomation();
   useEffect(() => {
     form.setFieldValue("medicName", medicName);
+    
   }, [medicName]);
 
   const handleValuesChange = (changedValues: FormValues) => {
@@ -116,20 +95,18 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     form
       .validateFields()
       .then((values: FormValues) => {
+        // console.log("Form values:", values);
         const { startTime, endTime, vehicleCount, medicName } = values;
         initDrivers(vehicleCount);
         form.resetFields();
       })
       .then(() => {
-        console.log("Drivers", drivers);
-        runAutomation();
+        
         onSubmit();
       })
       .catch(() => {
         message.error("נא למלא את כל השדות החובה כראוי");
       });
-
-    
   };
 
   return (
