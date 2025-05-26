@@ -1,10 +1,10 @@
 import { Table as AntTable, ConfigProvider } from "antd";
 import type { ColumnsType, ColumnType, TablePaginationConfig } from "antd/es/table";
 import type { FilterValue, SorterResult } from "antd/es/table/interface";
+import heIL from "antd/locale/he_IL";
 import { useState } from "react";
 import { useSortFilterTableData } from "../../hooks/useSortFilterTableData";
 import { GenericGroupedTableProps, RenderedCell } from "./TableTypes";
-import heIL from "antd/locale/he_IL";
 
 const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableProps<T>) => {
   const [sortInfo, setSortInfo] = useState<SorterResult<T>>({});

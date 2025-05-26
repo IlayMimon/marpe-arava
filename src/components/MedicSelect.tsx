@@ -1,8 +1,11 @@
 import { Select } from "antd";
 import { useState } from "react";
+import useGetMedics from "../hooks/data/useGetMedics";
+const { Option } = Select;
 
 const MedicSelect = () => {
   const [medic, setMedic] = useState<string>();
+  const medics = useGetMedics();
 
   const handleChange = (value: string) => {
     setMedic(value);
@@ -15,18 +18,11 @@ const MedicSelect = () => {
         placeholder="בחר חובש אחראי"
         allowClear
         onChange={(medic) => handleChange(medic)}
-        options={[
-          { value: "1", label: "חובש 1" },
-          { value: "2", label: "חובש 2" },
-          { value: "3", label: "חובש 3" },
-          { value: "4", label: "חובש 4" },
-          { value: "5", label: "חובש 5" },
-          { value: "6", label: "חובש 6" },
-          { value: "7", label: "חובש 7" },
-          { value: "8", label: "חובש 8" },
-          { value: "9", label: "חובש 9" },
-        ]}
-      />
+      >
+        {medics?.map((medic) => (
+          <Option value={medic.ID}>{medic.Title}</Option>
+        ))}
+      </Select>
     </div>
   );
 };
