@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/he";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useMemo } from "react";
-import { useHomePageContextContext } from "../contexts/HomePage";
+import { useHomePageContext } from "../contexts/HomePage";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("he");
@@ -13,7 +13,7 @@ dayjs.locale("he");
 const allowedDays = [1, 2, 3]; // Sunday, Monday, Tuesday
 
 const DatePicker = () => {
-  const { selectedDate, setSelectedDate } = useHomePageContextContext();
+  const { selectedDate, setSelectedDate } = useHomePageContext();
 
   const isAllowedDay = (day: number) => allowedDays.includes(day);
 

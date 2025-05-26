@@ -1,7 +1,6 @@
 import { Dayjs } from "dayjs";
 import { createContext, useContext } from "react";
 
-
 type HomePageContextType = {
   selectedDate: Dayjs;
   setSelectedDate: (date: Dayjs) => void;
@@ -9,8 +8,11 @@ type HomePageContextType = {
 
 export const HomePageContext = createContext<HomePageContextType | undefined>(undefined);
 
-export const useHomePageContextContext = () => {
+export const useHomePageContext = () => {
   const context = useContext(HomePageContext);
-  if (!context) throw new Error("useHomePageContextTypeContext must be used within HomePageContextTypeProvider");
+  if (!context)
+    throw new Error(
+      "useHomePageContextTypeContext must be used within HomePageContextTypeProvider"
+    );
   return context;
 };

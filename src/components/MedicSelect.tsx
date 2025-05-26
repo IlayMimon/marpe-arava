@@ -1,16 +1,16 @@
 import { Select } from "antd";
 import { useCallback, useEffect, useState } from "react";
-import { useHomePageContextContext } from "../contexts/HomePage";
+import { useHomePageContext } from "../contexts/HomePage";
 import useGetMedics from "../hooks/data/useGetMedics";
 import useGetMedicsPerDate from "../hooks/data/useGetMedicsPerDate";
 import { addItemToList, patchItemInList, removeItemFromLsit } from "../functions/postToSharepoint";
 const { Option } = Select;
 
 const MedicSelect = () => {
-  const { selectedDate } = useHomePageContextContext();
+  const { selectedDate } = useHomePageContext();
   const [medicId, setMedicId] = useState<number | undefined>(undefined);
   const medics = useGetMedics();
-  const {medicsPerDate} = useGetMedicsPerDate(selectedDate);
+  const { medicsPerDate, isLoading } = useGetMedicsPerDate(selectedDate);
   const existingEntry = medicsPerDate?.[0];
 
   const handleChange = useCallback(
@@ -33,19 +33,19 @@ const MedicSelect = () => {
     [existingEntry, selectedDate]
   );
 
-  useEffect(() => {
+  useEffect(() => { 
     if (existingEntry?.medicId) {
-      handleChange(existingEntry?.medicId);
+      setMedicId(existingEntry?.medicId);
     } else {
       setMedicId(undefined);
     }
-  }, [existingEntry, handleChange, setMedicId]);
+  }, [existingEntry, setMedicId]);
 
   return (
     <div className="medic-select">
       <Select
         value={medicId}
-        placeholder="בחר חובש אחראי"
+        placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}
         allowClear
         onChange={(medicId) => handleChange(medicId)}
       >

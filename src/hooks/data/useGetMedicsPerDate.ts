@@ -15,13 +15,13 @@ const useGetMedicsPerDate = (date: dayjs.Dayjs) => {
   const filter = `$filter=Date ge datetime'${startOfDay}' and Date lt datetime'${nextDay}'`;
   const select = `$select=ID,medicId,Date`;
 
-  const { data, refetch } = useQueryFetchRequest<SharepointQueryResultArray<MedicPerDate>>(
-    `/_api/web/lists/getbytitle('MedicPerDate')/items?${select}&${filter}`
-  );
+  const { data, refetch, isLoading } = useQueryFetchRequest<
+    SharepointQueryResultArray<MedicPerDate>
+  >(`/_api/web/lists/getbytitle('MedicPerDate')/items?${select}&${filter}`);
 
   const medicsPerDate = data?.d.results;
 
-  return {medicsPerDate, refetchMedicsPerDate: refetch};
+  return { medicsPerDate, refetch, isLoading };
 };
 
 export default useGetMedicsPerDate;

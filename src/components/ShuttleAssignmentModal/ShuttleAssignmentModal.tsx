@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import useGetMedics from "../../hooks/data/useGetMedics";
-import { useHomePageContextContext } from "../../contexts/HomePage";
+import { useHomePageContext } from "../../contexts/HomePage";
 import useGetMedicsPerDate from "../../hooks/data/useGetMedicsPerDate";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
@@ -17,15 +17,15 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
   const [form] = Form.useForm();
   const medics = useGetMedics();
 
-  const { selectedDate } = useHomePageContextContext();
-  const { medicsPerDate, refetchMedicsPerDate } = useGetMedicsPerDate(selectedDate);
+  const { selectedDate } = useHomePageContext();
+  const { medicsPerDate, refetch, isLoading } = useGetMedicsPerDate(selectedDate);
   const existingMedicId = medicsPerDate?.[0]?.medicId;
 
   useEffect(() => {
     if (visible) {
-      refetchMedicsPerDate();
+      refetch();
     }
-  }, [visible, refetchMedicsPerDate]);
+  }, [visible, refetch]);
 
   useEffect(() => {
     if (existingMedicId) {
@@ -134,7 +134,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
             name="medicName"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
-            <Select placeholder="בחר חובש אחראי">
+            <Select placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}>
               {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
             </Select>
           </Form.Item>
