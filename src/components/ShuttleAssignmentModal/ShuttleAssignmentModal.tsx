@@ -19,6 +19,7 @@ import { useUpdateSharePointItem } from "../../hooks/useUpdateSharePointItem";
 import { Driver, Shuttle } from '../../types/assignDriversTypes';
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import useGetMedics from "../../hooks/data/useGetMedics";
+import { patchItemInList } from "../../functions/postToSharepoint";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -34,7 +35,10 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   const drivers: Driver[] = [];
   const shuttles: Shuttle[] = getShuttles() || [];
   const medics = useGetMedics();
+
   
+
+
   const initDrivers = (numberOfDrivers: number) => {
     const driver: Driver = {
       id: 0,
@@ -91,12 +95,12 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     form
       .validateFields()
       .then((values: FormValues) => {
-        // console.log("Form values:", values);
         const { startTime, endTime, vehicleCount, medicName } = values;
         initDrivers(vehicleCount);
         form.resetFields();
+        const result = patchItemInList('Drivers', {Title: 'test'}, 10, '*')
       })
-      .then(() => {
+      .finally(() => {
         
         onSubmit();
       })
