@@ -13,10 +13,8 @@ import {
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { useQueryFetchRequest } from "../hooks/useQueryFetch";
-import { SharepointQueryResultArray } from "../types/spFetchTypes";
-import { IService } from "../types/IService";
-import { IStation } from "../types/IStation";
+import useGetServices from "../hooks/data/useGetServices";
+import useGetStations from "../hooks/data/useGetStations";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -52,13 +50,9 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const appointmentTime = Form.useWatch("appointmentTime", form);
   const appointmentTypes = Form.useWatch("appointmentTypes", form);
 
-  const { data: servicesData } = useQueryFetchRequest<SharepointQueryResultArray<IService>>(
-    "/_api/web/lists/getbytitle('Services')/items"
-  );
+  const servicesData = useGetServices();
 
-  const { data: stationsData } = useQueryFetchRequest<SharepointQueryResultArray<IStation>>(
-    "/_api/web/lists/getbytitle('Stations')/items"
-  );
+  const stationsData = useGetStations();
 
   const isFormValid = () => {
     return (
@@ -168,8 +162,8 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                     }
                   }}
                 >
-                  {stationsData?.d.results.map((station) => (
-                    <Option key={station.Id} value={station.Id}>
+                  {stationsData?.map((station) => (
+                    <Option key={station.ID} value={station.ID}>
                       {station.Title}
                     </Option>
                   ))}
@@ -192,8 +186,8 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               </Checkbox>
               <Form.Item name="dropoffStation">
                 <Select disabled={!hasDropoff} placeholder="בחר תחנה">
-                  {stationsData?.d.results.map((station) => (
-                    <Option key={station.Id} value={station.Id}>
+                  {stationsData?.map((station) => (
+                    <Option key={station.ID} value={station.ID}>
                       {station.Title}
                     </Option>
                   ))}
@@ -227,8 +221,8 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               rules={[{ required: true, message: "יש לבחור לפחות תור אחד" }]}
             >
               <Select mode="multiple" placeholder="בחר תורים">
-                {servicesData?.d.results.map((service) => (
-                  <Option key={service.Id} value={service.Id}>
+                {servicesData?.map((service) => (
+                  <Option key={service.ID} value={service.ID}>
                     {service.Title}
                   </Option>
                 ))}
