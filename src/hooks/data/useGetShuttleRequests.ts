@@ -15,7 +15,7 @@ type ShuttleRequests = {
 
 const useGetShuttleRequests = () => {
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleRequests>>(
-        "/_api/web/lists/getbytitle('ShuttleRequests')/items"
+        "/_api/web/lists/getbytitle('ShuttleRequests')/items?$select=ID,Title,FullName,Phone,RequestedServicesId,IsReturnShuttleRequired,ReturnStationId,StationId,Time"
     );
 
     const shuttleRequests = data?.d.results

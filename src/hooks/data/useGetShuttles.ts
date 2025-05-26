@@ -8,15 +8,13 @@ type Shuttle = {
   ArrivalTime: Date
   Details: string
   RequestsId: number[]
-  AuthorId: number
   DriverId: number | null
-  EditorId: number
   totalDistance: number
 };
 
 const useGetShuttles = () => {
   const { data } = useQueryFetchRequest<SharepointQueryResultArray<Shuttle>>(
-    "/_api/web/lists/getbytitle('shuttles')/items"
+    "/_api/web/lists/getbytitle('shuttles')/items?$select=ID,Title,StartTime,ArrivalTime,Details,RequestsId,DriverId,totalDistance"
   );
 
   const shuttles = data?.d.results
