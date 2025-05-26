@@ -1,83 +1,55 @@
-import { Menu } from "antd";
-import { TableColumn, TableRow } from "../components/Table/TableTypes";
-import { TbDotsVertical, TbPencil, TbEyeOff } from "react-icons/tb";
 import { TripDirection } from "../components/HomeScreenBody";
+import RowActions from "../components/RowActions";
+import { TableColumn, TableRow } from "../components/Table/TableTypes";
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  const handleStopTracking = () => {
-    console.log("Stop tracking clicked");
-  };
-  const hendleEditColumn = () => {
-    console.log("Edit column clicked");
-  };
-
-  const items = [
-    {
-      key: "options",
-      icon: <TbDotsVertical />,
-      children: [
-        {
-          key: "3",
-          label: "ערוך עמודה",
-          icon: <TbPencil />,
-          onClick: hendleEditColumn,
-        },
-        {
-          key: "4",
-          label: "הפסק מעקב",
-          icon: <TbEyeOff />,
-          onClick: handleStopTracking,
-        },
-      ],
-    },
-  ];
-
+  
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
       ? [
-          {
-            key: "pickupTime",
-            title: "שעת איסוף",
-            dataIndex: "pickupTime",
-          },
-          {
-            key: "estimatedArrival",
-            title: "הגעה משוערת",
-            dataIndex: "estimatedArrival",
-          },
-          {
-            key: "desiredArrival",
-            title: "הגעה רצויה",
-            dataIndex: "desiredArrival",
-          },
-          {
-            key: "outboundGap",
-            title: "פער",
-            dataIndex: "outboundGap",
-          },
-        ]
+        {
+          key: "pickupTime",
+          title: "שעת איסוף",
+          dataIndex: "pickupTime",
+        },
+        {
+          key: "estimatedArrival",
+          title: "הגעה משוערת",
+          dataIndex: "estimatedArrival",
+        },
+        {
+          key: "desiredArrival",
+          title: "הגעה רצויה",
+          dataIndex: "desiredArrival",
+        },
+        {
+          key: "outboundGap",
+          title: "פער",
+          dataIndex: "outboundGap",
+        },
+      ]
       : [
-          {
-            key: "estimatedFinish",
-            title: "סיום משוער",
-            dataIndex: "estimatedFinish",
-          },
-          {
-            key: "finishTime",
-            title: "שעת סיום",
-            dataIndex: "finishTime",
-          },
-          {
-            key: "inboundTime",
-            title: "שעת חזרה",
-            dataIndex: "inboundTime",
-          },
-          {
-            key: "inboundGap",
-            title: "פער",
-            dataIndex: "inboundGap",
-          },
-        ];
+        {
+          key: "estimatedFinish",
+          title: "סיום משוער",
+          dataIndex: "estimatedFinish",
+        },
+        {
+          key: "finishTime",
+          title: "שעת סיום",
+          dataIndex: "finishTime",
+        },
+        {
+          key: "inboundTime",
+          title: "שעת חזרה",
+          dataIndex: "inboundTime",
+        },
+        {
+          key: "inboundGap",
+          title: "פער",
+          dataIndex: "inboundGap",
+        },
+      ];
 
   const columns: TableColumn<TableRow>[] = [
     {
@@ -145,16 +117,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       title: "פעולות",
       dataIndex: "actions",
       render: () => (
-        <div>
-          <Menu
-            style={{ width: 0, height: 50, backgroundColor: "transparent" }}
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            mode={"vertical"}
-            theme={"light"}
-            items={items}
-          />
-        </div>
+        <RowActions />
       ),
     },
   ];

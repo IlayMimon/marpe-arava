@@ -35,18 +35,19 @@ const tagOptions = ["שובץ", "לא שובץ"];
 const appointmentOptions = ["בית מרקחת", "צילום רנטגן", "אורטופד", "רופא משפחה"];
 const pickupStations = ["איסוף 1", "איסוף 2", "איסוף 3", "איסוף 4"];
 const dropoffStations = ["הורדה 1", "הורדה 2", "הורדה 3", "הורדה 4"];
+const masads = ["1", "2", "3", "4"];
 
 type IAddPatientModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (values: PatientFormValues) => void;
-  handleChange: (direction: TripDirection) => void;
 };
 
-const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, handleChange }: IAddPatientModalProps) => {
+const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(true);
   const [hasDropoff, setHasDropoff] = useState(false);
+  const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
 
   // Watch all required fields
   const pickupStation = Form.useWatch("pickupStation", form);
@@ -101,6 +102,11 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, handleChange }: 
           onFinish={(submitValues) => {
             onSubmit(submitValues);
             handleReset();
+          }}
+          initialValues={{
+            fullName: "שם ברירת מחדל",
+            phone: "0501234567",
+            // add other fields as needed
           }}
         >
           <Text strong>פרטי החייל</Text>
@@ -214,26 +220,30 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, handleChange }: 
             </div>
           </div>
 
-          <Text strong>פרטי התור</Text>
           <Segmented
             dir="ltr"
             className="shuttle-table-header__segmented"
             options={[
               { label: "הלוך", value: "outbound" },
-              { label: "חזור", value: "return" },
+              { label: "חזור", value: "inbound" },
             ]}
             block
-            value={"outbound"}
-            onChange={(direction) => handleChange(direction as TripDirection)}
+            value={tripDirection}
+            onChange={(direction: TripDirection) => setTripDirection(direction)}
           />
 
           <div className="add-patient-modal__form-section">
             <Form.Item
-              name="appointmentDate"
-              label="תאריך התור"
-              rules={[{ required: true, message: "יש לבחור תאריך" }]}
+              name="DriveNumber"
+              label='מס"ד נסיעה'
             >
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" />
+              <Select placeholder='בחר מס"ד'>
+                {masads.map((masad) => (
+                  <Option key={masad} value={masad}>
+                    {masad}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
 
 
