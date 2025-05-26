@@ -1,10 +1,11 @@
 import { Select } from "antd";
 import { useState } from "react";
-import { dummyMedics } from "./HomeScreenBody";
+import useGetMedics from "../hooks/data/useGetMedics";
 const { Option } = Select;
 
 const MedicSelect = () => {
   const [medic, setMedic] = useState<string>();
+  const medics = useGetMedics();
 
   const handleChange = (value: string) => {
     setMedic(value);
@@ -18,8 +19,8 @@ const MedicSelect = () => {
         allowClear
         onChange={(medic) => handleChange(medic)}
       >
-        {dummyMedics.map((medic) => (
-          <Option value={medic.id}>{medic.name}</Option>
+        {medics?.map((medic) => (
+          <Option value={medic.ID}>{medic.Title}</Option>
         ))}
       </Select>
     </div>

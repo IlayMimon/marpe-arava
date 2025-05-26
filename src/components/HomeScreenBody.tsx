@@ -13,11 +13,6 @@ import useGetTableData from "../hooks/useGetTableData";
 import Table from "./Table/Table";
 
 export type TripDirection = "outbound" | "inbound";
-export const dummyMedics = [
-  {id: 1, name: "אלכס"},
-  {id: 2, name: "יונתן"},
-  {id: 3, name: "מיכל"},
-];
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
@@ -29,7 +24,6 @@ const HomeScreenBody = () => {
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
-
     const patientFormData = {
       Time: values.appointmentTime.toISOString(),
       StationId: values.pickupStation,
@@ -37,10 +31,10 @@ const HomeScreenBody = () => {
       IsReturnShuttleRequired: !!values.dropoffStation,
       ReturnStationId: values.dropoffStation,
       RequestedServicesId: values.appointmentTypes,
-      FullName: values.fullName
-    }
-    
-    await addItemToList('ShuttleRequests', patientFormData)
+      FullName: values.fullName,
+    };
+
+    await addItemToList("ShuttleRequests", patientFormData);
 
     console.log("Escort Submitted:", patientFormData);
     setEscortModalOpen(false);
@@ -79,16 +73,10 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={
-                messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""
-              }
+              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setModalVisible(true)
-                }
+                onClick={() => (isShuttlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true))}
                 disabled={messagesAlreadySent}
                 color="default"
                 variant="filled"
@@ -128,10 +116,7 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader
-            handleChange={handleChangeDirection}
-            tripDirection={tripDirection}
-          />
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.key} />
           ) : (

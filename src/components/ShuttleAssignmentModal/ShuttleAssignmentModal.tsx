@@ -1,13 +1,5 @@
 import { IconSparkles } from "@tabler/icons-react";
-import {
-  Button,
-  ConfigProvider,
-  Form,
-  Modal,
-  Select,
-  TimePicker,
-  message,
-} from "antd";
+import { Button, ConfigProvider, Form, Modal, Select, TimePicker, message } from "antd";
 import { RuleObject } from "antd/es/form";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
@@ -15,7 +7,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
-import { dummyMedics } from "../HomeScreenBody";
+import useGetMedics from "../../hooks/data/useGetMedics";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -27,6 +19,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   setMedicName,
 }) => {
   const [form] = Form.useForm();
+  const medics = useGetMedics();
 
   const validateTimeRange = (_: RuleObject, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
@@ -127,13 +120,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
             name="medicName"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
-            <Select
-              placeholder="בחר חובש"
-              onChange={(medicId) => setMedicName(medicId)}
-            >
-              {dummyMedics.map((medic) => (
-                <Option value={medic.id}>{medic.name}</Option>
-              ))}
+            <Select placeholder="בחר חובש" onChange={(medicId) => setMedicName(medicId)}>
+              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
             </Select>
           </Form.Item>
         </Form>
