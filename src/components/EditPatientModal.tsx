@@ -6,6 +6,7 @@ import {
   Form,
   Input,
   Modal,
+  Segmented,
   Select,
   TimePicker,
   Typography,
@@ -13,6 +14,7 @@ import {
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { TripDirection } from "./HomeScreenBody";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -27,7 +29,7 @@ export type PatientFormValues = {
   appointmentTime: dayjs.Dayjs;
   notes?: string;
 };
-const tagOptions = ["שובץ"];
+const tagOptions = ["שובץ", "לא שובץ"];
 
 
 const appointmentOptions = ["בית מרקחת", "צילום רנטגן", "אורטופד", "רופא משפחה"];
@@ -38,9 +40,10 @@ type IAddPatientModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (values: PatientFormValues) => void;
+  handleChange: (direction: TripDirection) => void;
 };
 
-const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
+const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, handleChange }: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(true);
   const [hasDropoff, setHasDropoff] = useState(false);
@@ -82,16 +85,13 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
         onCancel={onClose}
         title="עריכת פרטי מטופל"
         footer={[
-          <Button key="clear" onClick={handleReset}>
-            נקה טופס
-          </Button>,
           <Button
             key="submit"
             type="primary"
             disabled={!isFormValid()}
             onClick={() => form.submit()}
           >
-            הוסף מטופל
+            עדכן פרטים
           </Button>,
         ]}
       >
@@ -162,22 +162,22 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
                 </Select>
               </Form.Item>
               <Form.Item
-              name="tags"
-              label="תגיות"
-              initialValue={[]}
-            >
-              <Select
-                mode="multiple"
-                placeholder="בחר תגיות"
-                style={{ width: '100%' }}
+                name="status"
+                label="סטטוס"
+                initialValue={[]}
               >
-                {tagOptions.map(tag => (
-                  <Option key={tag} value={tag}>
-                    {tag}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
+                <Select
+                  mode="multiple"
+                  placeholder="בחר סטטוס"
+                  style={{ width: '100%' }}
+                >
+                  {tagOptions.map(tag => (
+                    <Option key={tag} value={tag}>
+                      {tag}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
             </div>
 
             <div>
@@ -202,19 +202,30 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
                   ))}
                 </Select>
               </Form.Item>
-              
+
               <Form.Item
-              name="notes"
-              label="הערות"
-              rules={[{ max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)" }]}
-            >
-              <Input.TextArea placeholder="הקלד הערה" autoSize={{ maxRows: 1 }} />
-            </Form.Item>
-            
+                name="notes"
+                label="הערות"
+                rules={[{ max: 300, message: "ההערה ארוכה מדי (מקסימום 300 תווים)" }]}
+              >
+                <Input.TextArea placeholder="הקלד הערה" autoSize={{ maxRows: 1 }} />
+              </Form.Item>
+
             </div>
           </div>
 
           <Text strong>פרטי התור</Text>
+          <Segmented
+            dir="ltr"
+            className="shuttle-table-header__segmented"
+            options={[
+              { label: "הלוך", value: "outbound" },
+              { label: "חזור", value: "return" },
+            ]}
+            block
+            value={"outbound"}
+            onChange={(direction) => handleChange(direction as TripDirection)}
+          />
 
           <div className="add-patient-modal__form-section">
             <Form.Item
@@ -225,7 +236,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
               <DatePicker style={{ width: "100%" }} format="DD/MM/YY" />
             </Form.Item>
 
-          
+
 
             <Form.Item
               name="appointmentTypes"
@@ -257,7 +268,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
               <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
 
-          
+
           </div>
         </Form>
       </Modal>
