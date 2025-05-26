@@ -7,6 +7,10 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import { addItemToList } from "../functions/postToSharepoint";
+import useGetTableColumns from "../hooks/useGetTableColumns";
+import useGetTableData from "../hooks/useGetTableData";
+import Table from "./Table/Table";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -19,8 +23,19 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const handleEscortSubmit = (values: PatientFormValues) => {
-    console.log("Escort Submitted:", values);
+  const handleEscortSubmit = async (values: PatientFormValues) => {
+    const patientFormData = {
+      Time: values.appointmentTime.toISOString(),
+      StationId: values.pickupStation,
+      Phone: values.phone,
+      IsReturnShuttleRequired: !!values.dropoffStation,
+      ReturnStationId: values.dropoffStation,
+      RequestedServicesId: values.appointmentTypes,
+      FullName: values.fullName,
+    };
+
+    await addItemToList("ShuttleRequests", patientFormData);
+
     setEscortModalOpen(false);
   };
 
@@ -33,6 +48,9 @@ const HomeScreenBody = () => {
     setIsShuttlesArranged(true);
     setModalVisible(false);
   };
+
+  const data = useGetTableData();
+  const columns = useGetTableColumns(tripDirection);
 
   return (
     <div className="home-screen-body">
@@ -94,10 +112,15 @@ const HomeScreenBody = () => {
           </Button>
         </div>
       </div>
+
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
           <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
-          {tripDirection === "outbound" ? <div>going</div> : <div>returning</div>}
+          {tripDirection === "outbound" ? (
+            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+          ) : (
+            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+          )}
         </div>
         <TravelBar />
       </div>

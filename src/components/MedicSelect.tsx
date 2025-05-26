@@ -1,21 +1,12 @@
 import { Select } from "antd";
 import { useState } from "react";
-import { useQueryFetchRequest } from "../hooks/useQueryFetch";
-import {SharePointResponse} from "../components/types/SharePointResponse";
-type medic = {
-  Title: string;
-}
+import useGetMedics from "../hooks/data/useGetMedics";
+const { Option } = Select;
+
 const MedicSelect = () => {
   const [medic, setMedic] = useState<string>();
-  const { data } = useQueryFetchRequest<SharePointResponse<medic>>(
-    "/_api/web/lists/getbytitle('medics')/items"
-  );
-  const medicOptions = data?.d.results.map((medic) => {
-    return {
-      value: medic.Title,
-      label: medic.Title,
-    };
-  });
+  const medics = useGetMedics();
+
   const handleChange = (value: string) => {
     setMedic(value);
   };
@@ -27,8 +18,11 @@ const MedicSelect = () => {
         placeholder="בחר חובש אחראי"
         allowClear
         onChange={(medic) => handleChange(medic)}
-        options={medicOptions}
-      />
+      >
+        {medics?.map((medic) => (
+          <Option value={medic.ID}>{medic.Title}</Option>
+        ))}
+      </Select>
     </div>
   );
 };

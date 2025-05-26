@@ -194,15 +194,13 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
             name="medicName"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
-            <Select placeholder="בחר חובש">
-              <Option value="משה כהן">משה כהן</Option>
-              <Option value="דנה לוי">דנה לוי</Option>
-              <Option value="רועי ישראלי">רועי ישראלי</Option>
+            <Select placeholder="בחר חובש" onChange={(medicId) => setMedicName(medicId)}>
+              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
             </Select>
           </Form.Item>
         </Form>
-      </ConfigProvider>
-    </Modal>
+      </Modal>
+    </ConfigProvider>
   );
 };
 

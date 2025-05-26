@@ -73,14 +73,14 @@ $color-text-dark: #595959;
       }
     }
 
-    &--teal {
+    &--cyan {
       border: solid 1px var(--Colors-cyan-3);
       &:hover {
         background-color: var(--Colors-cyan-3);
       }
     }
 
-    &--yellow {
+    &--orange {
       border: solid 1px var(--Colors-orange-3);
       &:hover {
         background-color: var(--Colors-orange-3);
@@ -95,11 +95,11 @@ $color-text-dark: #595959;
         background-color: var(--Colors-purple-3);
       }
 
-      &--teal {
+      &--cyan {
         background-color: var(--Colors-cyan-3);
       }
 
-      &--yellow {
+      &--orange {
         background-color: var(--Colors-orange-3);
       }
     }

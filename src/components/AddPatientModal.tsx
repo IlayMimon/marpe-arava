@@ -13,6 +13,8 @@ import {
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
 import { useState } from "react";
+import useGetServices from "../hooks/data/useGetServices";
+import useGetStations from "../hooks/data/useGetStations";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -27,10 +29,6 @@ export type PatientFormValues = {
   appointmentTime: dayjs.Dayjs;
   notes?: string;
 };
-
-const appointmentOptions = ["בית מרקחת", "צילום רנטגן", "אורטופד", "רופא משפחה"];
-const pickupStations = ["איסוף 1", "איסוף 2", "איסוף 3", "איסוף 4"];
-const dropoffStations = ["הורדה 1", "הורדה 2", "הורדה 3", "הורדה 4"];
 
 type IAddPatientModalProps = {
   isOpen: boolean;
@@ -51,6 +49,10 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const appointmentDate = Form.useWatch("appointmentDate", form);
   const appointmentTime = Form.useWatch("appointmentTime", form);
   const appointmentTypes = Form.useWatch("appointmentTypes", form);
+
+  const servicesData = useGetServices();
+
+  const stationsData = useGetStations();
 
   const isFormValid = () => {
     return (
@@ -151,10 +153,18 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                   },
                 ]}
               >
-                <Select disabled={!hasPickup} placeholder="בחר תחנה">
-                  {pickupStations.map((station) => (
-                    <Option key={station} value={station}>
-                      {station}
+                <Select
+                  disabled={!hasPickup}
+                  placeholder="בחר תחנה"
+                  onChange={(station) => {
+                    if (!hasDropoff) {
+                      form.setFieldsValue({ dropoffStation: station });
+                    }
+                  }}
+                >
+                  {stationsData?.map((station) => (
+                    <Option key={station.ID} value={station.ID}>
+                      {station.Title}
                     </Option>
                   ))}
                 </Select>
@@ -167,7 +177,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                 onChange={(e) => {
                   setHasDropoff(e.target.checked);
                   if (!e.target.checked) {
-                    form.setFieldsValue({ dropoffStation: null });
+                    form.setFieldsValue({ dropoffStation: pickupStation });
                   }
                   form.validateFields(["pickupStation", "dropoffStation"]);
                 }}
@@ -176,9 +186,9 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               </Checkbox>
               <Form.Item name="dropoffStation">
                 <Select disabled={!hasDropoff} placeholder="בחר תחנה">
-                  {dropoffStations.map((station) => (
-                    <Option key={station} value={station}>
-                      {station}
+                  {stationsData?.map((station) => (
+                    <Option key={station.ID} value={station.ID}>
+                      {station.Title}
                     </Option>
                   ))}
                 </Select>
@@ -211,9 +221,9 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               rules={[{ required: true, message: "יש לבחור לפחות תור אחד" }]}
             >
               <Select mode="multiple" placeholder="בחר תורים">
-                {appointmentOptions.map((type) => (
-                  <Option key={type} value={type}>
-                    {type}
+                {servicesData?.map((service) => (
+                  <Option key={service.ID} value={service.ID}>
+                    {service.Title}
                   </Option>
                 ))}
               </Select>
