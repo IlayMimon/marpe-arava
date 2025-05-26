@@ -36,7 +36,6 @@ const HomeScreenBody = () => {
 
     await addItemToList("ShuttleRequests", patientFormData);
 
-    console.log("Escort Submitted:", patientFormData);
     setEscortModalOpen(false);
   };
 

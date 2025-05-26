@@ -40,7 +40,6 @@ export const postToSharepoint = async <T = unknown>(path: string, body: unknown,
   const response = axios.post<T>(path, body, {
     headers: {
       Accept: 'application/json;odata=verbose',
-      'Content-Type': 'application/json;odata=verbose',
       'X-RequestDigest': requestDigest!.value,
       'X-HTTP-Method': method || 'POST',
       'IF-MATCH': etag || '',
