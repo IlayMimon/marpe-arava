@@ -16,6 +16,7 @@ import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import useGetMedics from "../../hooks/data/useGetMedics";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
+import { getShuttles } from "../../functions/getSuttles";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -29,7 +30,6 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
   const medics = useGetMedics();
-
   
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");

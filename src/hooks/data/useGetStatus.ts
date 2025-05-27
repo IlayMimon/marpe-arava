@@ -5,13 +5,11 @@ import { useQueryFetchRequest } from "../useQueryFetch";
 
 
 const useGetStatus = () => {
-  const { data, refetch } = useQueryFetchRequest<SharepointQueryResultArray<Status>>(
+  const { refetch } = useQueryFetchRequest<SharepointQueryResultArray<Status>>(
     "/_api/web/lists/getbytitle('Status')/items?$select=isOver,status,step,isAssigned",
   );
 
-  const status = data?.d.results[0];
-
-  return { status, refetch };
+  return { refetch };
 }
 
 export default useGetStatus;

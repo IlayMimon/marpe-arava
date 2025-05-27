@@ -19,6 +19,7 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]):
   
       for (const driver of sortedDrivers) {
         if (canAssignShuttle(driver, shuttle)) {
+          // אם הנהג יכול לקבל את השאטל, מוסיף אותו ללוח הזמנים של הנהג
           driver.schedule.push({
             shuttleId: shuttle.Id,
             StartTime: shuttle.StartTime,
@@ -42,8 +43,9 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]):
       }
     }
     for (const driver of drivers) {
-        console.log(driver.id, driver.name, getTotalKm(driver));
+        console.log(driver.id, driver.name, driver.schedule,getTotalKm(driver));
     }
+    
     return result;
   }
   
