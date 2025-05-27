@@ -31,11 +31,11 @@ export type RenderedCell<RecordType> =
     };
 
 export type TableRow = {
-  key: number;
+  id: number;
   fullName: string;
   status: string;
   phone: string;
-  appointmentType: string | string[];
+  appointmentType: string[];
   rideId: string | number;
   pickupStation: string;
   area: string;

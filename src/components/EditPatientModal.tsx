@@ -4,11 +4,15 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { TripDirection } from "./HomeScreenBody";
 import { TableRow } from "./Table/TableTypes";
+import useGetServices from "../hooks/data/useGetServices";
+import useGetStations from "../hooks/data/useGetStations";
+import useGetShuttles from "../hooks/data/useGetShuttles";
 
 const { Text } = Typography;
 const { Option } = Select;
 
 export type PatientFormValues = {
+  id: number;
   fullName: string;
   phone: string;
   pickupStation?: string | null;
@@ -18,12 +22,6 @@ export type PatientFormValues = {
   appointmentTime: dayjs.Dayjs;
   notes?: string;
 };
-
-const tagOptions = ["שובץ", "לא שובץ"];
-const appointmentOptions = ["בית מרקחת", "צילום רנטגן", "אורטופד", "רופא משפחה"];
-const pickupStations = ["איסוף 1", "איסוף 2", "איסוף 3", "איסוף 4"];
-const dropoffStations = ["הורדה 1", "הורדה 2", "הורדה 3", "הורדה 4"];
-const masads = ["1", "2", "3", "4"];
 
 type IAddPatientModalProps = {
   isOpen: boolean;
@@ -38,14 +36,20 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
   const [hasDropoff, setHasDropoff] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
 
+  const statusOptions = ["שובץ", "לא שובץ"];
+  const appointmentOptions = useGetServices()?.map(service => service.Title) || [];
+  const pickupStations = useGetStations()?.map(station => station.Title) || [];
+  const dropoffStations = useGetStations()?.map(station => station.Title) || [];
+  const rideIds = useGetShuttles()?.map(shuttle => shuttle.ID) || [];
+
   // Watch all required fields
   const fullName = Form.useWatch("fullName", form);
   const phone = Form.useWatch("phone", form);
   const pickupStation = Form.useWatch("pickupStation", form);
   const dropoffStation = Form.useWatch("dropoffStation", form);
   const appointmentTypes = Form.useWatch("appointmentType", form);
-  const appointmentDate = Form.useWatch("appointmentDate", form);
-  const appointmentTime = Form.useWatch("appointmentTime", form);
+  const pickupTime = Form.useWatch("pickupTime", form);
+  const desiredArrival = Form.useWatch("desiredArrival", form);
 
   const isFormValid = () => {
     return (
@@ -53,8 +57,8 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
       /^05\d{8}$/.test(phone || "") &&
       Array.isArray(appointmentTypes) &&
       appointmentTypes.length > 0 &&
-      !!appointmentDate &&
-      !!appointmentTime &&
+      !!pickupTime &&
+      !!desiredArrival &&
       (hasPickup || hasDropoff) &&
       (!hasPickup || !!pickupStation) &&
       (!hasDropoff || !!dropoffStation)
@@ -89,12 +93,11 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
           form={form}
           layout="vertical"
           onFinish={(submitValues) => {
-            onSubmit(submitValues);
+            onSubmit({...submitValues, id: initialValues.id});
             handleReset();
           }}
           initialValues={{
             ...initialValues,
-            appointmentTypes: initialValues.appointmentType,
             status: initialValues.status?.split(","),
             desiredArrival: initialValues.desiredArrival ? dayjs(initialValues.desiredArrival, "HH:mm") : undefined,
             pickupTime: initialValues.pickupTime ? dayjs(initialValues.pickupTime, "HH:mm") : undefined,
@@ -167,7 +170,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
                   placeholder="בחר סטטוס"
                   style={{ width: '100%' }}
                 >
-                  {tagOptions.map(tag => (
+                  {statusOptions.map(tag => (
                     <Option key={tag} value={tag}>
                       {tag}
                     </Option>
@@ -228,7 +231,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
               label='מס"ד נסיעה'
             >
               <Select placeholder='בחר מס"ד'>
-                {masads.map((masad) => (
+                {rideIds.map((masad) => (
                   <Option key={masad} value={masad}>
                     {masad}
                   </Option>

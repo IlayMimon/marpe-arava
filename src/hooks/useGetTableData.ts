@@ -30,7 +30,7 @@ const useGetTableData = (tripDirection: TripDirection) => {
       console.log(station?.Title, "station");
 
       const basicPassangerData = {
-        key: request?.ID || index + 1,
+        id: request?.ID || index + 1,
         fullName: request?.FullName || "",
         status: requestDetails.DriverId ? "שובץ" : "לא שובץ",
         phone: request?.Phone || "",

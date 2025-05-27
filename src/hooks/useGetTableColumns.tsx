@@ -78,6 +78,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "appointmentType",
       title: "סוג תור",
       dataIndex: "appointmentType",
+      render: (types: string[]) => types?.join(', '),
     },
     {
       key: "rideId",

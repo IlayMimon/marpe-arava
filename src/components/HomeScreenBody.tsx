@@ -50,12 +50,7 @@ const HomeScreenBody = () => {
   };
 
   const columns = useGetTableColumns(tripDirection);
-  const data = useGetTableData(tripDirection).map((item) => ({
-    ...item,
-    appointmentType: Array.isArray(item.appointmentType)
-      ? item.appointmentType.join(", ")
-      : item.appointmentType,
-  }));
+  const data = useGetTableData(tripDirection)
 
   return (
     <div className="home-screen-body">
@@ -122,9 +117,9 @@ const HomeScreenBody = () => {
         <div className="home-screen-body__container__body">
           <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           )}
         </div>
         <TravelBar />

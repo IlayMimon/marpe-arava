@@ -1,6 +1,7 @@
 import { Menu } from "antd";
 import { useState } from "react";
 import { TbDotsVertical, TbEyeOff, TbPencil } from "react-icons/tb";
+import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
 import { TableRow } from "./Table/TableTypes";
 
@@ -20,8 +21,19 @@ const RowActions = ({ rowData }: RowActionsProps) => {
         console.log("Edit column clicked", rowData);
     };
 
-    const handleSubmitForm = (values: PatientFormValues) => {
+    const handleSubmitForm = async (values: PatientFormValues) => {
         console.log('formValues', values)
+        const patientFormData = {
+          Time: values.appointmentTime,
+          StationId: values.pickupStation,
+          Phone: values.phone,
+          IsReturnShuttleRequired: !!values.dropoffStation,
+          ReturnStationId: values.dropoffStation,
+          RequestedServicesId: values.appointmentTypes,
+          FullName: values.fullName,
+        };
+    
+        await patchItemInList("ShuttleRequests", patientFormData, values.id, "*");
     }
 
     const items = [
