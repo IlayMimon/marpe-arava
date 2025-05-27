@@ -3,7 +3,7 @@ import RowActions from "../components/RowActions";
 import { TableColumn, TableRow } from "../components/Table/TableTypes";
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  
+
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
       ? [
@@ -86,9 +86,9 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       sorter: true,
     },
     {
-      key: "station",
+      key: "pickupStation",
       title: "תחנה",
-      dataIndex: "station",
+      dataIndex: "pickupStation",
     },
     {
       key: "area",
@@ -116,8 +116,8 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "actions",
       title: "פעולות",
       dataIndex: "actions",
-      render: () => (
-        <RowActions />
+      render: (_value, row) => (
+        <RowActions rowData={row} />
       ),
     },
   ];

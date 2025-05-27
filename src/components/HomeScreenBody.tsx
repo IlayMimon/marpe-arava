@@ -49,10 +49,13 @@ const HomeScreenBody = () => {
     setModalVisible(false);
   };
 
-  const data = useGetTableData(tripDirection);
   const columns = useGetTableColumns(tripDirection);
-
-  console.log('dataaaaaa',data)
+  const data = useGetTableData(tripDirection).map((item) => ({
+    ...item,
+    appointmentType: Array.isArray(item.appointmentType)
+      ? item.appointmentType.join(", ")
+      : item.appointmentType,
+  }));
 
   return (
     <div className="home-screen-body">

@@ -1,20 +1,9 @@
-import {
-  Button,
-  Checkbox,
-  ConfigProvider,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Segmented,
-  Select,
-  TimePicker,
-  Typography,
-} from "antd";
+import { Button, Checkbox, ConfigProvider, Form, Input, Modal, Segmented, Select, TimePicker, Typography } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { TripDirection } from "./HomeScreenBody";
+import { TableRow } from "./Table/TableTypes";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -29,9 +18,8 @@ export type PatientFormValues = {
   appointmentTime: dayjs.Dayjs;
   notes?: string;
 };
+
 const tagOptions = ["שובץ", "לא שובץ"];
-
-
 const appointmentOptions = ["בית מרקחת", "צילום רנטגן", "אורטופד", "רופא משפחה"];
 const pickupStations = ["איסוף 1", "איסוף 2", "איסוף 3", "איסוף 4"];
 const dropoffStations = ["הורדה 1", "הורדה 2", "הורדה 3", "הורדה 4"];
@@ -41,22 +29,23 @@ type IAddPatientModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (values: PatientFormValues) => void;
+  initialValues: TableRow
 };
 
-const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
+const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
-  const [hasPickup, setHasPickup] = useState(true);
+  const [hasPickup, setHasPickup] = useState(initialValues.pickupTime !== null);
   const [hasDropoff, setHasDropoff] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
 
   // Watch all required fields
-  const pickupStation = Form.useWatch("pickupStation", form);
-  const dropoffStation = Form.useWatch("dropoffStation", form);
   const fullName = Form.useWatch("fullName", form);
   const phone = Form.useWatch("phone", form);
+  const pickupStation = Form.useWatch("pickupStation", form);
+  const dropoffStation = Form.useWatch("dropoffStation", form);
+  const appointmentTypes = Form.useWatch("appointmentType", form);
   const appointmentDate = Form.useWatch("appointmentDate", form);
   const appointmentTime = Form.useWatch("appointmentTime", form);
-  const appointmentTypes = Form.useWatch("appointmentTypes", form);
 
   const isFormValid = () => {
     return (
@@ -104,9 +93,11 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
             handleReset();
           }}
           initialValues={{
-            fullName: "שם ברירת מחדל",
-            phone: "0501234567",
-            // add other fields as needed
+            ...initialValues,
+            appointmentTypes: initialValues.appointmentType,
+            status: initialValues.status?.split(","),
+            desiredArrival: initialValues.desiredArrival ? dayjs(initialValues.desiredArrival, "HH:mm") : undefined,
+            pickupTime: initialValues.pickupTime ? dayjs(initialValues.pickupTime, "HH:mm") : undefined,
           }}
         >
           <Text strong>פרטי החייל</Text>
@@ -170,7 +161,6 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
               <Form.Item
                 name="status"
                 label="סטטוס"
-                initialValue={[]}
               >
                 <Select
                   mode="multiple"
@@ -234,7 +224,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
 
           <div className="add-patient-modal__form-section">
             <Form.Item
-              name="DriveNumber"
+              name="rideId"
               label='מס"ד נסיעה'
             >
               <Select placeholder='בחר מס"ד'>
@@ -249,7 +239,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
 
 
             <Form.Item
-              name="appointmentTypes"
+              name="appointmentType"
               label="סוג התור"
               rules={[{ required: true, message: "יש לבחור לפחות תור אחד" }]}
             >
@@ -263,7 +253,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
             </Form.Item>
 
             <Form.Item
-              name="appointmentTime"
+              name="desiredArrival"
               label="שעת הגעה רצויה"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >
@@ -271,7 +261,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientMod
             </Form.Item>
 
             <Form.Item
-              name="appointmentTime"
+              name="pickupTime"
               label="שעת איסוף"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >

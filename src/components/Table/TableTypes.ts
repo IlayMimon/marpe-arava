@@ -12,7 +12,7 @@ export interface GenericGroupedTableProps<T> {
   data: T[];
   groupBy?: (record: T) => string;
   columns: TableColumn<T>[];
-  rowKey: (record: T) => string;
+  rowKey: (record: T) => number;
 }
 
 export type CellType<RecordType> = {
@@ -31,21 +31,21 @@ export type RenderedCell<RecordType> =
     };
 
 export type TableRow = {
-  key: string;
+  key: number;
   fullName: string;
   status: string;
   phone: string;
-  appointmentType: string;
+  appointmentType: string | string[];
   rideId: string | number;
-  station: string;
+  pickupStation: string;
   area: string;
-  pickupTime?: Date;
-  estimatedArrival?: Date;
-  desiredArrival?: Date;
+  pickupTime?: string;
+  estimatedArrival?: string;
+  desiredArrival?: string;
   outboundGap?: number;
-  estimatedFinish?: Date;
-  finishTime?: Date;
-  inboundTime?: Date;
+  estimatedFinish?: string;
+  finishTime?: string;
+  inboundTime?: string;
   inboundGap?: number;
   driver: string;
   notes?: string;

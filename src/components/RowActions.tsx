@@ -2,8 +2,13 @@ import { Menu } from "antd";
 import { useState } from "react";
 import { TbDotsVertical, TbEyeOff, TbPencil } from "react-icons/tb";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
+import { TableRow } from "./Table/TableTypes";
 
-const RowActions = () => {
+interface RowActionsProps {
+    rowData: TableRow;
+}
+
+const RowActions = ({ rowData }: RowActionsProps) => {
     const [isEditPatientModalOpen, setisEditPatientModalOpen] = useState(false);
 
     const handleStopTracking = () => {
@@ -12,6 +17,7 @@ const RowActions = () => {
 
     const hendleEditColumn = () => {
         setisEditPatientModalOpen(true);
+        console.log("Edit column clicked", rowData);
     };
 
     const handleSubmitForm = (values: PatientFormValues) => {
@@ -49,7 +55,12 @@ const RowActions = () => {
             items={items}
         />
 
-        <EditPatientModal isOpen={isEditPatientModalOpen} onClose={() => setisEditPatientModalOpen(false)} onSubmit={handleSubmitForm} />
+        <EditPatientModal
+            isOpen={isEditPatientModalOpen}
+            onClose={() => setisEditPatientModalOpen(false)}
+            onSubmit={handleSubmitForm}
+            initialValues={rowData}
+        />
     </>
 }
 
