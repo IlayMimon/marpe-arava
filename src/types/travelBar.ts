@@ -1,3 +1,5 @@
+import { Shuttle } from "../hooks/data/useGetShuttles";
+
 export type ColorType = "purple" | "cyan" | "orange";
 
 export interface StationInfo {
@@ -8,15 +10,10 @@ export interface StationInfo {
   isDestination?: boolean;
 }
 
-export interface TravelItem {
-  id: number;
-  tripId: string;
-  startTime: string;
-  endTime: string;
+export interface TravelItem extends Shuttle {
   code: string;
   colorType: ColorType;
   stations: StationInfo[];
-  driverId?: number;
 }
 
 export interface TravelBarProps {

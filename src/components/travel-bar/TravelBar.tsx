@@ -3,25 +3,40 @@ import { ChevronDown, ChevronLeft, Users } from "lucide-react";
 import {
   ColorType,
   TravelItem,
-  TravelBarProps,
   Driver,
 } from "../../types/travelBar";
-import { defaultTravelItems, drivers, kilometersPerColor } from "./dummyData";
+import { drivers, kilometersPerColor } from "./dummyData";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
 import DriverFilterButton from "./DriverFilterButton";
 import classNames from "classnames";
 import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import driverOrganizationDataMapping from "../../functions/driverOrganizationDataMapping";
+import useGetShuttles from "../../hooks/data/useGetShuttles";
+import dayjs from "dayjs";
 
-const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
+const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [colorFilter, setColorFilter] = useState<ColorType>();
-  const [travelItems] = useState<TravelItem[]>(
-    initialItems.sort((a, b) => {
-      return a.startTime.localeCompare(b.startTime);
+  // TODO: handle filtering travleItems with states.
+  // const [filteredTravelItems, setFilteredTravelItems] = useState<TravelItem[] | null>();
+
+  let travelItems = useGetShuttles()
+    ?.sort((a, b) => {
+      return a.StartTime.getTime() - b.StartTime.getTime();
     })
-  );
+    .map((shuttle) => {
+      return {
+        ...shuttle,
+        code: "א",
+        colorType: "cyan",
+        stations: [
+          { name: 'מרפ"א ערבה', arrivalTime: "07:30", isOrigin: true },
+          { name: 'מרפ"א ערבה', arrivalTime: "08:20", isDestination: true },
+        ],
+      }
+    }) as TravelItem[];
+  
   const [expandedTrips, setExpandedTrips] = useState<number[]>([]);
   const [driverAssignments, setDriverAssignments] = useState<
     Record<ColorType, number | null>
@@ -37,11 +52,11 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
     setColorFilter((prevColor) => (prevColor === color ? undefined : color));
   };
 
-  const getFilteredItems = (): TravelItem[] => {
-    return colorFilter
-      ? travelItems.filter((item) => colorFilter === item.colorType)
-      : travelItems;
-  };
+  // const getFilteredItems = (): TravelItem[] => {
+  //   return colorFilter
+  //     ? travelItems.filter((item) => colorFilter === item.colorType)
+  //     : travelItems;
+  // };
 
   const toggleTripExpansion = (tripId: number): void => {
     setExpandedTrips((prev) =>
@@ -94,7 +109,9 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
     return `נהג ${colors.indexOf(color) + 1}`;
   };
 
-  const filteredItems = getFilteredItems();
+  // useEffect(() => {
+  //   setFilteredTravelItems(getFilteredItems());
+  // }, [colorFilter])
 
   // Array of colors to render filter buttons
   const colors: ColorType[] = ["purple", "cyan", "orange"];
@@ -142,35 +159,35 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
 
           <div className="travel-bar__list-container">
             <ul className="travel-bar__list">
-              {filteredItems.map((item) => {
+              {travelItems?.map((item) => {
                 const driverName = drivers.find(
-                  (driver) => driver.id === driverAssignments[item.colorType]
+                  (driver) => driver.id === item.DriverId
                 );
 
                 return (
-                  <li className="travel-bar__list__item" key={item.id}>
+                  <li className="travel-bar__list__item" key={item.ID}>
                     <div
                       className="travel-bar__list__item__header"
-                      onClick={() => toggleTripExpansion(item.id)}
+                      onClick={() => toggleTripExpansion(item.ID)}
                     >
                       <div className="travel-bar__list__item__expand-icon">
-                        {expandedTrips.includes(item.id) ? (
+                        {expandedTrips.includes(item.ID) ? (
                           <ChevronDown size={16} />
                         ) : (
                           <ChevronLeft size={16} />
                         )}
                       </div>
                       <div className="travel-bar__list__item__trip-id">
-                        {item.tripId}#
+                        {item.ID}#
                       </div>
 
                       <div className="travel-bar__list__item__left">
                         <div className="travel-bar__list__item__time">
-                          <span>{item.startTime}</span>
+                          <span>{dayjs(item.StartTime).format("HH:mm")}</span>
                           <span className="travel-bar__list__item__time__separator">
                             <FaLongArrowAltLeft />
                           </span>
-                          <span>{item.endTime}</span>
+                          <span>{dayjs(item.ArrivalTime).format("HH:mm")}</span>
                         </div>
                       </div>
 
@@ -193,7 +210,7 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
                       />
                     </div>
 
-                    {expandedTrips.includes(item.id) &&
+                    {expandedTrips.includes(item.ID) &&
                       item.stations.length > 0 && (
                         <div className="travel-bar__list__item__expanded">
                           <ul
@@ -250,11 +267,11 @@ const TravelBar = ({ initialItems = defaultTravelItems }: TravelBarProps) => {
         </div>
       )}
       <DriverOrganization
-        data={driverOrganizationDataMapping(
+        data={travelItems ? driverOrganizationDataMapping(
           travelItems,
           driverAssignments,
           kilometersPerColor
-        )}
+        ) : []}
         paramedic={"חובש 1"}
         chosenDate={new Date()}
         isModalOpen={isShowDailyOrganization}
