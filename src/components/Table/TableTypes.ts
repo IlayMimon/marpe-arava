@@ -42,11 +42,11 @@ export type TableRow = {
   pickupTime: string;
   estimatedArrival: string;
   desiredArrival: string;
-  outboundGap: string;
+  outboundGap: number;
   estimatedFinish: string;
   finishTime: string;
   inboundTime: string;
-  inboundGap: string;
+  inboundGap: number;
   driver: string;
   notes: string;
   actions?: any;
