@@ -15,6 +15,5 @@ export const getShuttles = () => {
       };
     });
     
-    console.log("shuttles fetched", shuttles);
     return shuttles;
   }

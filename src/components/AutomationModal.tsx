@@ -1,9 +1,8 @@
-import { Modal, Spin } from "antd";
-import React from "react";
-import { useQueryFetchRequest } from "../hooks/useQueryFetch";
-import { SharepointQueryResultArray } from "../types/spFetchTypes";
+import { Modal } from "antd";
 import Lottie from "lottie-react";
+import React from "react";
 import busAnimation from "../../public/assets/busAnimation.json";
+import useAutoRun from "../hooks/useAutoRun";
 
 
 
@@ -12,20 +11,13 @@ interface AutomationModalProps {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface Status {
-  status: string;
-  isAssigned: boolean;
-  step: number;
-  isOver: boolean;
-}
+
+
+
 
 const AutomationModal = ({ visible, setVisible }: AutomationModalProps) => {
-  const { data } = useQueryFetchRequest<SharepointQueryResultArray<Status>>(
-    "/_api/web/lists/getbytitle('Status')/items", 
-  );
-  console.log("AutomationModal data:", data?.d.results[0]);
-  const status = data?.d.results[0];
-  
+  useAutoRun(setVisible);
+
   return (
     <Modal className="automation-modal" open={visible} centered footer={null} closable={false}>
       <div className="automation-modal__content">

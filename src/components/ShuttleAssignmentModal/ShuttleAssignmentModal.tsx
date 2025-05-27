@@ -14,12 +14,8 @@ import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { getShuttles } from "../../functions/getSuttles";
-import { useUpdateSharePointItem } from "../../hooks/useUpdateSharePointItem";
-import { Driver, Shuttle } from '../../types/assignDriversTypes';
-import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import useGetMedics from "../../hooks/data/useGetMedics";
-import { patchItemInList } from "../../functions/postToSharepoint";
+import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -32,26 +28,9 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   setMedicName,
 }) => {
   const [form] = Form.useForm();
-  const drivers: Driver[] = [];
-  const shuttles: Shuttle[] = getShuttles() || [];
   const medics = useGetMedics();
 
-  const initDrivers = (numberOfDrivers: number) => {
-    const driver: Driver = {
-      id: 0,
-      name: "",
-      schedule: [],
-    }
-    for (let i = 0; i < numberOfDrivers; i++) {
-      drivers.push({
-        ...driver,
-        id: i,
-        name: `Driver ${i + 1}`,
-      });
-    }
-
-    return drivers;
-  };
+  
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
@@ -77,10 +56,9 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     form
       .validateFields()
       .then((values: FormValues) => {
-        const { startTime, endTime, vehicleCount, medicName } = values;
-        initDrivers(vehicleCount);
+        // const { startTime, endTime, vehicleCount, medicName } = values;
         form.resetFields();
-        const result = patchItemInList('Drivers', {Title: 'test'}, 10, '*')
+        // const result = patchItemInList('Drivers', {Title: 'test'}, 10, '*')
       })
       .finally(() => {
         
