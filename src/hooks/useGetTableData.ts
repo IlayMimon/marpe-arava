@@ -1,92 +1,66 @@
-const useGetTableData = () => {
-  const data = [
-    {
-      key: "1",
-      fullName: "יוסי כהן",
-      status: "מאושר",
-      phone: "050-1234567",
-      appointmentType: "בדיקה",
-      rideId: 101,
-      station: "תחנה א'",
-      area: "מרכז",
-      pickupTime: "08:00",
-      estimatedArrival: "08:45",
-      desiredArrival: "09:00",
-      outboundGap: "15 דקות",
-      estimatedFinish: "09:30",
-      finishTime: "09:40",
-      inboundTime: "10:10",
-      inboundGap: "30 דקות",
-      driver: "משה לוי",
-      notes: "יש להוריד ליד הכניסה",
-      actions: "actions",
-    },
-    {
-      key: "2",
-      fullName: "רות כהן",
-      status: "ממתין לאישור",
-      phone: "050-7654321",
-      appointmentType: "חיסון",
-      rideId: 102,
-      station: "תחנה ב'",
-      area: "צפון",
-      pickupTime: "09:30",
-      estimatedArrival: "10:15",
-      desiredArrival: "10:30",
-      outboundGap: "15 דקות",
-      estimatedFinish: "11:00",
-      finishTime: "11:10",
-      inboundTime: "11:40",
-      inboundGap: "30 דקות",
-      driver: "אבי ברק",
-      notes: "",
-      actions: "actions",
-    },
-    {
-      key: "3",
-      fullName: "דנה לוי",
-      status: "בוטל",
-      phone: "052-1112233",
-      appointmentType: "בדיקה",
-      rideId: 103,
-      station: "תחנה ג'",
-      area: "דרום",
-      pickupTime: "11:00",
-      estimatedArrival: "11:45",
-      desiredArrival: "12:00",
-      outboundGap: "15 דקות",
-      estimatedFinish: "12:30",
-      finishTime: "12:40",
-      inboundTime: "13:10",
-      inboundGap: "30 דקות",
-      driver: "שמעון כהן",
-      notes: "לא הגיע בזמן",
-      actions: "actions",
-    },
-    ...Array.from({ length: 8 }, (_, i) => ({
-      key: `${i + 4}`,
-      fullName: i === 8 || i === 9 ? "אליhhhh" : i === 10 ? "tjrui" : "אלי כהן",
-      status: "מאושר",
-      phone: "054-3334444",
-      appointmentType: "בדיקה",
-      rideId: 104,
-      station: "תחנה ד'",
-      area: "מרכז",
-      pickupTime: "13:00",
-      estimatedArrival: "13:50",
-      desiredArrival: "14:00",
-      outboundGap: "10 דקות",
-      estimatedFinish: "14:30",
-      finishTime: "14:40",
-      inboundTime: "15:10",
-      inboundGap: "30 דקות",
-      driver: "דוד ישראלי",
-      notes: "יש לו כיסא גלגלים",
-      actions: "actions",
-    })),
-  ];
+import { TripDirection } from "../components/HomeScreenBody";
+import { TableRow } from "../components/Table/TableTypes";
+import useGetDrivers from "./data/useGetDrivers";
+import useGetServices from "./data/useGetServices";
+import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerRequest ";
+import useGetShuttleRequests from "./data/useGetShuttleRequests";
+import useGetShuttles from "./data/useGetShuttles";
+import useGetStations from "./data/useGetStations";
 
-  return data;
+const useGetTableData = (tripDirection: TripDirection): TableRow[] => {
+  const shuttles = useGetShuttles();
+  const shuttleRequests = useGetShuttleRequests();
+  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
+  const stations = useGetStations();
+  const services = useGetServices();
+  const drivers = useGetDrivers();
+
+  const data: TableRow[] | undefined =
+    shuttleDetailsPerRequest?.map((requestDetails, index) => {
+
+      const shuttle = shuttles?.find((shut) => shut?.RequestsId?.results.includes(requestDetails?.ID));
+      const request = shuttleRequests?.find((req) => req.ID === requestDetails.RequestId);
+      const station = stations?.find((station) => station.ID === request?.StationId);
+      const driver = drivers?.find(driver => driver.ID === requestDetails.DriverId)
+      const requestedServices = request?.RequestedServicesId?.results.map((serviceId) => {
+        services?.find((service) => service.ID === serviceId)
+      }).join(", ");
+
+      const basicPassangerData = {
+        key: request?.ID || index + 1,
+        fullName: request?.FullName || "",
+        status: requestDetails.DriverId ? "שובץ" : "לא שובץ",
+        phone: request?.Phone || "",
+        appointmentType: requestedServices || "",
+        rideId: shuttle?.ID || "",
+        station: station?.Title || "",
+        area: station?.Area || "",
+        driver: driver?.Title || "",
+        notes: "",
+        actions: "actions",
+      };
+
+      const estimatedArrival = shuttle?.ArrivalTime;
+      const desiredArrival = requestDetails?.ArrivalTime;
+
+      const directionPassangerData = tripDirection === "outbound" ? {
+        pickupTime: requestDetails?.PickupTime || undefined,
+        estimatedArrival: estimatedArrival || undefined,
+        desiredArrival: desiredArrival || undefined,
+        outboundGap: estimatedArrival && desiredArrival ? Math.abs(new Date(estimatedArrival).getTime() - new Date(desiredArrival).getTime()) / 60000 : undefined,
+      } : {
+        //estimatedFinish: details?.estimatedFinish || "",
+        //finishTime: details?.finishTime || "",
+        //inboundTime: details?.inboundTime || "",
+        //inboundGap: details?.inboundGap || "",
+      }
+
+      const passangerData: TableRow = { ...basicPassangerData, ...directionPassangerData };
+
+      return passangerData;
+    })
+
+  return data || [];
 };
 
 export default useGetTableData;

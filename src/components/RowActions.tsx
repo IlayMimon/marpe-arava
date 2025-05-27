@@ -25,7 +25,7 @@ const RowActions = () => {
             children: [
                 {
                     key: "3",
-                    label: "ערוך עמודה",
+                    label: "ערוך מטופל",
                     icon: <TbPencil />,
                     onClick: hendleEditColumn,
                 },

@@ -6,7 +6,7 @@ type ShuttleRequests = {
     Title: string
     FullName: string | null
     Phone: string
-    RequestedServicesId: number[]
+    RequestedServicesId: { results: number[] }
     IsReturnShuttleRequired: boolean
     ReturnStationId: number | null
     StationId: number
