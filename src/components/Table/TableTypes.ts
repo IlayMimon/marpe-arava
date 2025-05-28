@@ -15,7 +15,7 @@ export interface GenericGroupedTableProps<T> {
   rowKey: (record: T) => string;
 }
 
-export type CellType<RecordType> = {
+export type CellType = {
   colSpan?: number;
   rowSpan?: number;
   style?: CSSProperties;
@@ -23,11 +23,11 @@ export type CellType<RecordType> = {
   title?: string;
 };
 
-export type RenderedCell<RecordType> =
+export type RenderedCell =
   | ReactNode
   | {
       children?: ReactNode;
-      props?: CellType<RecordType>;
+      props?: CellType;
     };
 
 export type TableRow = {

@@ -1,7 +1,7 @@
 import { Dropdown } from "antd";
 import classNames from "classnames";
 import { ChevronDown } from "lucide-react";
-import { DriverFilterButtonProps } from "../types/travelBar";
+import { DriverFilterButtonProps } from "../../types/travelBar";
 
 const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
   color,

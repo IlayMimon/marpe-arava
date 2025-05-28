@@ -42,7 +42,7 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
           }
         : undefined,
       sortOrder: sortInfo?.columnKey === col.key ? sortInfo.order : null,
-      render: (value: T[keyof T], record: T, index: number): RenderedCell<T> => {
+      render: (value: T[keyof T], record: T, index: number): RenderedCell => {
         const actualValue =
           col.dataIndex && record ? (record[col.dataIndex as keyof T] as React.ReactNode) : value;
 
