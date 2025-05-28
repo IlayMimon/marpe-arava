@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
 import useGetShuttleDetailsPerRequest from "../hooks/data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "../hooks/data/useGetShuttleRequests";
@@ -9,7 +10,10 @@ const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const shuttles = useGetShuttles();
-  const patientStatuses = patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests });
+  const patientStatuses = useMemo(
+    () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),
+    [shuttleDetailsPerRequest, shuttles, shuttleRequests]
+  );
 
   const statuses = Object.keys(assignedStatusEnum).map((assignedStatus) => {
     return {
