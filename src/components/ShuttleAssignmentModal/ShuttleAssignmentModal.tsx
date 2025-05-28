@@ -17,6 +17,8 @@ import { TbArrowNarrowLeft } from "react-icons/tb";
 import useGetMedics from "../../hooks/data/useGetMedics";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { getShuttles } from "../../functions/getSuttles";
+import resetShuttles from "../../functions/resetShuttles";
+import { patchItemInList } from "../../functions/postToSharepoint";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
@@ -58,7 +60,10 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       .then((values: FormValues) => {
         // const { startTime, endTime, vehicleCount, medicName } = values;
         form.resetFields();
-        // const result = patchItemInList('Drivers', {Title: 'test'}, 10, '*')
+        console.log("powerautomate")
+        // resetShuttles();
+        console.log("powerautomate")
+        const result = patchItemInList('driversData', {Title: 'נהג 1'}, 1, '*')
       })
       .finally(() => {
         

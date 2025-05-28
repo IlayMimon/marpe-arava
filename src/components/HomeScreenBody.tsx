@@ -12,6 +12,7 @@ import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
 import Table from "./Table/Table";
 import AutomationModal from "./AutomationModal";
+import useAutoRun from "../hooks/useAutoRun";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -24,7 +25,7 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
-
+  useAutoRun(setAutomationModalVisible);
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
       Time: values.appointmentTime.toISOString(),
@@ -50,6 +51,9 @@ const HomeScreenBody = () => {
     setIsShuttlesArranged(true);
     setShuttleAssignmentModalVisible(false);
     setAutomationModalVisible(true);
+    console.log("www")
+    useAutoRun(setAutomationModalVisible);
+    console.log("www")
   };
 
   const data = useGetTableData();

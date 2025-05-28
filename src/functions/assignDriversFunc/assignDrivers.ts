@@ -1,11 +1,12 @@
 import { canAssignShuttle } from "./canAssignDriver";
 import { Driver, Shuttle, ShuttleAssignment } from "../../types/assignDriversTypes";
+import { patchItemInList } from "../postToSharepoint";
 
 function getTotalKm(driver: Driver): number {
     return driver.schedule.reduce((sum, a) => sum + a.totalDistance, 0);
   }
   
-export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]): ShuttleAssignment[] {
+export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]) {
     const result: ShuttleAssignment[] = [];
     
     // מיון השאטלים לפי זמן התחלה
@@ -42,10 +43,15 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]):
         console.warn(`לא נמצא נהג זמין לנסיעה ${shuttle.Id}`);
       }
     }
+
     for (const driver of drivers) {
-        console.log(driver.id, driver.name, driver.schedule,getTotalKm(driver));
+        patchItemInList('driversData', {Distance: 0}, driver.id, '*')
+        if (driver.schedule.length !== 0) {
+          patchItemInList('driversData', {Distance: getTotalKm(driver)}, driver.id, '*')
+        }
     }
-    
-    return result;
+    for (const assignment of result) {
+        patchItemInList('Shuttles', {driverDataId: assignment.driverId}, assignment.shuttleId, '*')
+    }
+    patchItemInList("Status", {isAssigned: true}, 1, '*')
   }
-  

@@ -11,22 +11,24 @@ const  useAutoRun = (
 ) => {
   
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
+  console.log("2")
   const { refetch } = useGetStatus();
   const { refetch: refetchShuttles } = getShuttles();
-  
+  console.log("a")
   // FIX if 1.5 min has passed
   const fetchItem = async () => {
     
     const { data } = await refetch();
     const status = data?.d.results[0];
-  
+    console.log(status)
     if (status?.isOver == true && status?.isAssigned == true) {
+        console.log("2")
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
         }
-      
+      } else if (status?.isOver == true && status?.isAssigned != true) {
+        console.log("3")
         const { data } = await refetchShuttles();
         const shuttles = data?.d.results.map((shuttle) => {
         return {
@@ -36,7 +38,7 @@ const  useAutoRun = (
           totalDistance: shuttle.totalDistance,
         };
       });
-        assignShuttlesToDrivers(shuttles || [], initDrivers(3)); // FIX number of drivers
+        await assignShuttlesToDrivers(shuttles || [], initDrivers(3)); // FIX number of drivers
         setVisible(false);
       } else {
         setVisible(true);

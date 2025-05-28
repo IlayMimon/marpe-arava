@@ -12,12 +12,22 @@ export const getShuttles = () => {
   const dayAfterTomorrow = new Date(tomorrow);
   dayAfterTomorrow.setDate(tomorrow.getDate() + 1);
 
-  const isoTomorrow = tomorrow.toISOString(); // YYYY-MM-DDT00:00:00.000Z
+  const isoTomorrow = tomorrow.toISOString();
   const isoDayAfter = dayAfterTomorrow.toISOString();
 
-    const { refetch } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
+    const { data, refetch } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
       `/_api/web/lists/getbytitle('Shuttles')/items?$filter=StartTime ge datetime'${isoTomorrow}' and StartTime lt datetime'${isoDayAfter}'`, true, "GET"
     );
 
-    return { refetch };
+
+    const shuttles = data?.d.results.map((shuttle) => {
+        return {
+          Id: shuttle.Id,
+          StartTime: shuttle.StartTime,
+          ArrivalTime: shuttle.ArrivalTime,
+          totalDistance: shuttle.totalDistance,
+        };
+      });
+      console.log(shuttles)
+    return { shuttles, refetch };
   }

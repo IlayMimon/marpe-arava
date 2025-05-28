@@ -3,10 +3,10 @@ import { Driver } from "../types/assignDriversTypes";
 export const initDrivers = (numberOfDrivers: number) => {
     const drivers: Driver[] = [];
     
-    for (let i = 0; i < numberOfDrivers; i++) {
+    for (let i = 1; i <= numberOfDrivers; i++) {
       drivers.push({
         id: i,
-        name: `Driver ${i + 1}`,
+        name: `Driver ${i}`,
         schedule: [],
       });
     }

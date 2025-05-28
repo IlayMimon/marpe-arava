@@ -3,6 +3,7 @@ import Lottie from "lottie-react";
 import React from "react";
 import busAnimation from "../../public/assets/busAnimation.json";
 import useAutoRun from "../hooks/useAutoRun";
+import resetShuttles from "../functions/resetShuttles";
 
 
 
@@ -16,7 +17,8 @@ interface AutomationModalProps {
 
 
 const AutomationModal = ({ visible, setVisible }: AutomationModalProps) => {
-  useAutoRun(setVisible);
+
+  
 
   return (
     <Modal className="automation-modal" open={visible} centered footer={null} closable={false}>
