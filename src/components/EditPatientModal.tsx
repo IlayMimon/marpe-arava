@@ -7,6 +7,7 @@ import { TableRow } from "./Table/TableTypes";
 import useGetServices from "../hooks/data/useGetServices";
 import useGetStations from "../hooks/data/useGetStations";
 import useGetShuttles from "../hooks/data/useGetShuttles";
+import useGetDrivers from "../hooks/data/useGetDrivers";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -17,9 +18,13 @@ export type PatientFormValues = {
   phone: string;
   pickupStation?: string | null;
   dropoffStation?: string | null;
-  appointmentTypes: string[];
-  appointmentDate: dayjs.Dayjs;
-  appointmentTime: dayjs.Dayjs;
+  rideId?: number;
+  driver?: string;
+  appointmentType: string[];
+  pickupTime?: dayjs.Dayjs;
+  desiredArrival?: dayjs.Dayjs;
+  finishTime?: dayjs.Dayjs;
+  inboundTime?: dayjs.Dayjs;
   notes?: string;
 };
 
@@ -37,10 +42,11 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
 
   const statusOptions = ["שובץ", "לא שובץ"];
-  const appointmentOptions = useGetServices()?.map(service => service.Title) || [];
-  const pickupStations = useGetStations()?.map(station => station.Title) || [];
-  const dropoffStations = useGetStations()?.map(station => station.Title) || [];
-  const rideIds = useGetShuttles()?.map(shuttle => shuttle.ID) || [];
+  const appointmentOptions = useGetServices() || [];
+  const pickupStations = useGetStations() || [];
+  const dropoffStations = useGetStations() || [];
+  const rides = useGetShuttles() || [];
+  const drivers = useGetDrivers() || [];
 
   // Watch all required fields
   const fullName = Form.useWatch("fullName", form);
@@ -93,7 +99,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
           form={form}
           layout="vertical"
           onFinish={(submitValues) => {
-            onSubmit({...submitValues, id: initialValues.id});
+            onSubmit({ ...submitValues, id: initialValues.id });
             handleReset();
           }}
           initialValues={{
@@ -155,8 +161,8 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
               >
                 <Select disabled={!hasPickup} placeholder="בחר תחנה">
                   {pickupStations.map((station) => (
-                    <Option key={station} value={station}>
-                      {station}
+                    <Option key={station.ID} value={station.ID}>
+                      {station.Title}
                     </Option>
                   ))}
                 </Select>
@@ -195,8 +201,8 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
               <Form.Item name="dropoffStation">
                 <Select disabled={!hasDropoff} placeholder="בחר תחנה">
                   {dropoffStations.map((station) => (
-                    <Option key={station} value={station}>
-                      {station}
+                    <Option key={station.ID} value={station.ID}>
+                      {station.Title}
                     </Option>
                   ))}
                 </Select>
@@ -226,20 +232,33 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
           />
 
           <div className="add-patient-modal__form-section">
-            <Form.Item
-              name="rideId"
-              label='מס"ד נסיעה'
-            >
-              <Select placeholder='בחר מס"ד'>
-                {rideIds.map((masad) => (
-                  <Option key={masad} value={masad}>
-                    {masad}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-
+            {tripDirection === "outbound" ? (
+              <Form.Item
+                name="rideId"
+                label='מס"ד נסיעה'
+              >
+                <Select placeholder='בחר מס"ד'>
+                  {rides.map((ride) => (
+                    <Option key={ride.ID} value={ride.ID}>
+                      {ride.ID}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            ) : (
+              <Form.Item
+                name="driver"
+                label='נהג'
+              >
+                <Select placeholder='בחר נהג'>
+                  {drivers.map((driver) => (
+                    <Option key={driver.ID} value={driver.ID}>
+                      {driver.Title}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            )}
 
             <Form.Item
               name="appointmentType"
@@ -248,29 +267,48 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
             >
               <Select mode="multiple" placeholder="בחר תורים">
                 {appointmentOptions.map((type) => (
-                  <Option key={type} value={type}>
-                    {type}
+                  <Option key={type.ID} value={type.ID}>
+                    {type.Title}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
 
-            <Form.Item
-              name="desiredArrival"
-              label="שעת הגעה רצויה"
-              rules={[{ required: true, message: "יש לבחור שעה" }]}
-            >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
-            </Form.Item>
+            {tripDirection === "outbound" ? (
+              <Form.Item
+                name="desiredArrival"
+                label="שעת הגעה רצויה"
+                rules={[{ required: true, message: "יש לבחור שעה" }]}
+              >
+                <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              </Form.Item>
+            ) : (
+              <Form.Item
+                name="finishTime"
+                label="שעת סיום"
+                rules={[{ required: true, message: "יש לבחור שעה" }]}
+              >
+                <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              </Form.Item>
+            )}
 
-            <Form.Item
+            {tripDirection === "outbound" ? (
+              <Form.Item
               name="pickupTime"
               label="שעת איסוף"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >
               <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
-
+            ) : (
+              <Form.Item
+                name="inboundTime"
+                label="שעת חזרה"
+                rules={[{ required: true, message: "יש לבחור שעה" }]}
+              >
+                <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              </Form.Item>
+            )}
 
           </div>
         </Form>

@@ -24,6 +24,7 @@ const HomeScreenBody = () => {
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
+    console.log("Escort form values:", values);
     const patientFormData = {
       Time: values.appointmentTime.toISOString(),
       StationId: values.pickupStation,

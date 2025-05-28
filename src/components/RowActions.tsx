@@ -23,17 +23,24 @@ const RowActions = ({ rowData }: RowActionsProps) => {
 
     const handleSubmitForm = async (values: PatientFormValues) => {
         console.log('formValues', values)
-        const patientFormData = {
-          Time: values.appointmentTime,
+        const requestData = {
+          Time: values.desiredArrival,
           StationId: values.pickupStation,
           Phone: values.phone,
           IsReturnShuttleRequired: !!values.dropoffStation,
           ReturnStationId: values.dropoffStation,
-          RequestedServicesId: values.appointmentTypes,
+          RequestedServicesId: values.appointmentType,
           FullName: values.fullName,
         };
+
+        // const requestDetailsData = {
+        //   PickupTime: values.pickupTime,
+        //   FinishTime: values.finishTime,
+        //   InboundTime: values.inboundTime,
+        // };
     
-        await patchItemInList("ShuttleRequests", patientFormData, values.id, "*");
+        await patchItemInList("ShuttleRequests", requestData, values.id, "*");
+        // await patchItemInList("ShuttleDetailsPerRequest", requestDetailsData, values.id, "*");
     }
 
     const items = [
