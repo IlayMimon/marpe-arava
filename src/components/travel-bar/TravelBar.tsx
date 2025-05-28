@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ChevronDown, ChevronLeft, Users } from "lucide-react";
 import {
   ColorType,
@@ -18,25 +18,35 @@ import dayjs from "dayjs";
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [colorFilter, setColorFilter] = useState<ColorType>();
-  // TODO: handle filtering travleItems with states.
-  // const [filteredTravelItems, setFilteredTravelItems] = useState<TravelItem[] | null>();
+  const [travelItems, setTravelItems] = useState<TravelItem[]>([]);
 
-  let travelItems = useGetShuttles()
-    ?.sort((a, b) => {
-      return a.StartTime.getTime() - b.StartTime.getTime();
-    })
-    .map((shuttle) => {
-      return {
-        ...shuttle,
-        code: "א",
-        colorType: "cyan",
-        stations: [
-          { name: 'מרפ"א ערבה', arrivalTime: "07:30", isOrigin: true },
-          { name: 'מרפ"א ערבה', arrivalTime: "08:20", isDestination: true },
-        ],
-      }
-    }) as TravelItem[];
+  const shuttles = useGetShuttles();
   
+  useEffect(() => {
+    if (shuttles) {
+      const formattedShuttles = shuttles
+        .sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime())
+        .map((shuttle) => ({
+          ...shuttle,
+          code: "א",
+          colorType: "cyan",
+          stations: [
+            { name: 'מרפ"א ערבה', arrivalTime: "07:30", isOrigin: true },
+            { name: 'מרפ"א ערבה', arrivalTime: "08:20", isDestination: true },
+          ],
+        })) as TravelItem[];
+      
+      setTravelItems(formattedShuttles);
+    }
+  }, [shuttles]);
+
+  // Filter travel items based on color filter
+  const filteredTravelItems = useMemo(() => {
+    return colorFilter
+      ? travelItems.filter(item => item.colorType === colorFilter)
+      : travelItems;
+  }, [travelItems, colorFilter]);
+
   const [expandedTrips, setExpandedTrips] = useState<number[]>([]);
   const [driverAssignments, setDriverAssignments] = useState<
     Record<ColorType, number | null>
@@ -51,12 +61,6 @@ const TravelBar = () => {
   const toggleFilter = (color: ColorType): void => {
     setColorFilter((prevColor) => (prevColor === color ? undefined : color));
   };
-
-  // const getFilteredItems = (): TravelItem[] => {
-  //   return colorFilter
-  //     ? travelItems.filter((item) => colorFilter === item.colorType)
-  //     : travelItems;
-  // };
 
   const toggleTripExpansion = (tripId: number): void => {
     setExpandedTrips((prev) =>
@@ -109,10 +113,6 @@ const TravelBar = () => {
     return `נהג ${colors.indexOf(color) + 1}`;
   };
 
-  // useEffect(() => {
-  //   setFilteredTravelItems(getFilteredItems());
-  // }, [colorFilter])
-
   // Array of colors to render filter buttons
   const colors: ColorType[] = ["purple", "cyan", "orange"];
 
@@ -159,7 +159,7 @@ const TravelBar = () => {
 
           <div className="travel-bar__list-container">
             <ul className="travel-bar__list">
-              {travelItems?.map((item) => {
+              {filteredTravelItems.map((item) => {
                 const driverName = drivers.find(
                   (driver) => driver.id === item.DriverId
                 );
