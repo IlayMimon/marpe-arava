@@ -7,28 +7,34 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import { addItemToList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
 import Table from "./Table/Table";
 
 export type TripDirection = "outbound" | "inbound";
-export const dummyMedics = [
-  {id: 1, name: "אלכס"},
-  {id: 2, name: "יונתן"},
-  {id: 3, name: "מיכל"},
-];
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const handleEscortSubmit = (values: PatientFormValues) => {
-    console.log("Escort Submitted:", values);
+  const handleEscortSubmit = async (values: PatientFormValues) => {
+    const patientFormData = {
+      Time: values.appointmentTime.toISOString(),
+      StationId: values.pickupStation,
+      Phone: values.phone,
+      IsReturnShuttleRequired: !!values.dropoffStation,
+      ReturnStationId: values.dropoffStation,
+      RequestedServicesId: values.appointmentTypes,
+      FullName: values.fullName,
+    };
+
+    await addItemToList("ShuttleRequests", patientFormData);
+
     setEscortModalOpen(false);
   };
 
@@ -65,16 +71,10 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={
-                messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""
-              }
+              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setModalVisible(true)
-                }
+                onClick={() => (isShuttlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true))}
                 disabled={messagesAlreadySent}
                 color="default"
                 variant="filled"
@@ -114,10 +114,7 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader
-            handleChange={handleChangeDirection}
-            tripDirection={tripDirection}
-          />
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.key} />
           ) : (
@@ -130,8 +127,6 @@ const HomeScreenBody = () => {
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         onSubmit={handleSubmit}
-        medicName={selectedMedic}
-        setMedicName={setSelectedMedic}
         messagesAlreadySent={messagesAlreadySent}
       />
       <AddPatientModal

@@ -1,32 +1,39 @@
 import { IconSparkles } from "@tabler/icons-react";
-import {
-  Button,
-  ConfigProvider,
-  Form,
-  Modal,
-  Select,
-  TimePicker,
-  message,
-} from "antd";
+import { Button, ConfigProvider, Form, Modal, Select, TimePicker, message } from "antd";
 import { RuleObject } from "antd/es/form";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import React from "react";
+import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
-import { dummyMedics } from "../HomeScreenBody";
+import useGetMedics from "../../hooks/data/useGetMedics";
+import { useHomePageContext } from "../../contexts/HomePage";
+import useGetMedicsPerDate from "../../hooks/data/useGetMedicsPerDate";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
-const ShuttleAssignmentModal: React.FC<Props> = ({
-  visible,
-  onCancel,
-  onSubmit,
-  medicName,
-  setMedicName,
-}) => {
+const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
+  const medics = useGetMedics();
+
+  const { selectedDate } = useHomePageContext();
+  const { medicsPerDate, refetch, isLoading } = useGetMedicsPerDate(selectedDate);
+  const existingMedicId = medicsPerDate?.[0]?.medicId;
+
+  useEffect(() => {
+    if (visible) {
+      refetch();
+    }
+  }, [visible, refetch]);
+
+  useEffect(() => {
+    if (existingMedicId) {
+      form.setFieldsValue({ medicName: existingMedicId });
+    } else {
+      form.setFieldsValue({ medicName: undefined });
+    }
+  }, [existingMedicId, form]);
 
   const validateTimeRange = (_: RuleObject, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
@@ -77,7 +84,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
         <Form
           form={form}
           layout="vertical"
-          initialValues={{ vehicleCount: 3, medicName: medicName }}
+          initialValues={{ vehicleCount: 3, medicName: existingMedicId }}
         >
           <Form.Item
             label="שעות פעילות השאטלים"
@@ -127,13 +134,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
             name="medicName"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
-            <Select
-              placeholder="בחר חובש"
-              onChange={(medicId) => setMedicName(medicId)}
-            >
-              {dummyMedics.map((medic) => (
-                <Option value={medic.id}>{medic.name}</Option>
-              ))}
+            <Select placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}>
+              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
             </Select>
           </Form.Item>
         </Form>
