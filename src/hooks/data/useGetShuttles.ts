@@ -1,13 +1,13 @@
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type Shuttle = {
+export type Shuttle = {
   ID: number
   Title: string
   StartTime: Date
   ArrivalTime: Date
   Details: string
-  RequestsId: number[]
+  RequestsId: { results: number[] }
   DriverId: number | null
   totalDistance: number
 };

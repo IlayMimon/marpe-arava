@@ -1,9 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import { useGetPatientStatus } from "./functions/patientStatusFunctions";
 
 function App() {
-  useGetPatientStatus()
   return (
     <HashRouter>
       <Routes>
