@@ -11,6 +11,7 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
 
   const newData = useSortFilterTableData(data, filteredInfo, sortInfo);
+  console.log("Filtered and sorted data:", newData);
 
   const handleChange = (
     _pagination: TablePaginationConfig,

@@ -18,29 +18,39 @@ const RowActions = ({ rowData }: RowActionsProps) => {
 
     const hendleEditColumn = () => {
         setisEditPatientModalOpen(true);
-        console.log("Edit column clicked", rowData);
     };
 
     const handleSubmitForm = async (values: PatientFormValues) => {
-        console.log('formValues', values)
         const requestData = {
-          Time: values.desiredArrival,
-          StationId: values.pickupStation,
-          Phone: values.phone,
-          IsReturnShuttleRequired: !!values.dropoffStation,
-          ReturnStationId: values.dropoffStation,
-          RequestedServicesId: values.appointmentType,
-          FullName: values.fullName,
+            Time: values.desiredArrival.toISOString(),
+            StationId: values.pickupStation,
+            Phone: values.phone,
+            IsReturnShuttleRequired: !!values.dropoffStation,
+            ReturnStationId: values.dropoffStation,
+            RequestedServicesId: values.appointmentType,
+            FullName: values.fullName,
         };
 
-        // const requestDetailsData = {
-        //   PickupTime: values.pickupTime,
-        //   FinishTime: values.finishTime,
-        //   InboundTime: values.inboundTime,
-        // };
-    
-        await patchItemInList("ShuttleRequests", requestData, values.id, "*");
-        // await patchItemInList("ShuttleDetailsPerRequest", requestDetailsData, values.id, "*");
+        const requestDetailsData = {
+            DriverId: values.driver,
+            PickupTime: values.pickupTime.toISOString(),
+            FinishTime: values.finishTime.toISOString(),
+            InboundTime: values.inboundTime.toISOString(),
+        };
+
+        try {
+            await patchItemInList("ShuttleDetailsPerRequest", requestDetailsData, rowData.requestDetailsId, "*");
+
+        } catch (error) {
+            console.error("Error updating request details:", error);
+        }
+
+        try {
+            await patchItemInList("ShuttleRequests", requestData, rowData.id, "*");
+
+        } catch (error) {
+            console.error("Error updating request:", error);
+        }
     }
 
     const items = [

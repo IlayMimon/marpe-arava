@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
@@ -10,7 +11,7 @@ type ShuttleRequests = {
     IsReturnShuttleRequired: boolean
     ReturnStationId: number | null
     StationId: number
-    Time: Date
+    Time: dayjs.Dayjs;
 };
 
 const useGetShuttleRequests = () => {

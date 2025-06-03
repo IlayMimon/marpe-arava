@@ -1,11 +1,12 @@
+import dayjs from "dayjs";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
 type Shuttle = {
   ID: number
   Title: string
-  StartTime: Date
-  ArrivalTime: Date
+  StartTime: dayjs.Dayjs;
+  ArrivalTime: dayjs.Dayjs;
   Details: string
   RequestsId: { results: number[] }
   DriverId: number | null

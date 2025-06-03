@@ -1,6 +1,7 @@
 import { TripDirection } from "../components/HomeScreenBody";
 import RowActions from "../components/RowActions";
 import { TableColumn, TableRow } from "../components/Table/TableTypes";
+import dayjs from "dayjs";
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
 
@@ -11,16 +12,19 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
           key: "pickupTime",
           title: "שעת איסוף",
           dataIndex: "pickupTime",
+          render: (value) => value ? dayjs(value).format("HH:mm") : null,
         },
         {
           key: "estimatedArrival",
           title: "הגעה משוערת",
           dataIndex: "estimatedArrival",
+          render: (value) => value ? dayjs(value).format("HH:mm") : null,
         },
         {
           key: "desiredArrival",
           title: "הגעה רצויה",
           dataIndex: "desiredArrival",
+          render: (value) => value ? dayjs(value).format("HH:mm") : null,
         },
         {
           key: "outboundGap",
@@ -33,16 +37,19 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
           key: "estimatedFinish",
           title: "סיום משוער",
           dataIndex: "estimatedFinish",
+          render: (value) => value ? dayjs(value).format("HH:mm") : null,
         },
         {
           key: "finishTime",
           title: "שעת סיום",
           dataIndex: "finishTime",
+          render: (value) => value ? dayjs(value).format("HH:mm") : null,
         },
         {
           key: "inboundTime",
           title: "שעת חזרה",
           dataIndex: "inboundTime",
+          render: (value) => value ? dayjs(value).format("HH:mm") : null,
         },
         {
           key: "inboundGap",

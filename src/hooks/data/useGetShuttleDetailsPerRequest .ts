@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
@@ -5,11 +6,11 @@ type ShuttleDetailsPerRequest = {
     ID: number
     Title: string
     RequestId: number
-    PickupTime: Date
     DriverId: number
-    ArrivalTime: Date
-    FinishTime: Date
-    InboundTime: Date
+    PickupTime: dayjs.Dayjs;
+    ArrivalTime: dayjs.Dayjs;
+    FinishTime: dayjs.Dayjs;
+    InboundTime: dayjs.Dayjs;
 };
 
 const useGetShuttleDetailsPerRequest = () => {

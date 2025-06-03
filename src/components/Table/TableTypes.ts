@@ -1,4 +1,5 @@
 import { ColumnType } from "antd/es/table";
+import dayjs from "dayjs";
 import { CSSProperties, ReactNode } from "react";
 
 export interface TableColumn<T> extends Omit<ColumnType<T>, "dataIndex"> {
@@ -26,12 +27,14 @@ export type CellType<RecordType> = {
 export type RenderedCell<RecordType> =
   | ReactNode
   | {
-      children?: ReactNode;
-      props?: CellType<RecordType>;
-    };
+    children?: ReactNode;
+    props?: CellType<RecordType>;
+  };
 
 export type TableRow = {
   id: number;
+  requestDetailsId: number;
+  suttleId: number;
   fullName: string;
   status: string;
   phone: string;
@@ -39,13 +42,13 @@ export type TableRow = {
   rideId: string | number;
   pickupStation: string;
   area: string;
-  pickupTime?: string;
-  estimatedArrival?: string;
-  desiredArrival?: string;
+  pickupTime?: dayjs.Dayjs;
+  estimatedArrival?: dayjs.Dayjs;
+  desiredArrival?: dayjs.Dayjs;
   outboundGap?: number;
-  estimatedFinish?: string;
-  finishTime?: string;
-  inboundTime?: string;
+  estimatedFinish?: dayjs.Dayjs;
+  finishTime?: dayjs.Dayjs;
+  inboundTime?: dayjs.Dayjs;
   inboundGap?: number;
   driver: string;
   notes?: string;
