@@ -10,6 +10,7 @@ const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const shuttles = useGetShuttles();
+
   const patientStatuses = useMemo(
     () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),
     [shuttleDetailsPerRequest, shuttles, shuttleRequests]
@@ -28,7 +29,7 @@ const Kpies = () => {
 
   return (
     <div className="kpies">
-      <SummarizeNumbers />
+      <SummarizeNumbers totalPatients={patientStatuses?.length} totalTrips={shuttles?.length} />
       <div className="kpies__seperator" />
       <Kpi
         title="טרם שובצו"
