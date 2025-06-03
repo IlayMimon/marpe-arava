@@ -1,6 +1,6 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import TravelBar from "./travel-bar/TravelBar";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
@@ -18,14 +18,21 @@ export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(true);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
-  useAutoRun(setAutomationModalVisible);
+
+  const {isSuccess} = useAutoRun();
+
+  useEffect
+(() => {
+      setAutomationModalVisible(!isSuccess);
+  }, [isSuccess]);
+
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
       Time: values.appointmentTime.toISOString(),
@@ -52,7 +59,7 @@ const HomeScreenBody = () => {
     setShuttleAssignmentModalVisible(false);
     setAutomationModalVisible(true);
     console.log("www")
-    useAutoRun(setAutomationModalVisible);
+    useAutoRun();
     console.log("www")
   };
 

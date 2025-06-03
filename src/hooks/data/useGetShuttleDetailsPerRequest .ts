@@ -1,14 +1,8 @@
+import { ShuttleDetailsPerRequest } from "../../types/shuttleDetailsPerRequst";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type ShuttleDetailsPerRequest = {
-    ID: number
-    Title: string
-    RequestId: number
-    PickupTime: Date
-    DriverId: number | null
-    ArrivalTime: Date
-};
+
 
 const useGetShuttleDetailsPerRequest = () => {
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleDetailsPerRequest>>(

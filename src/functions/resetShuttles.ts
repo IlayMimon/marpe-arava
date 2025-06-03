@@ -1,25 +1,18 @@
-import useGetTomorrowShuttleDetailsPerRequest from "../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
-import { getShuttles } from "./getSuttles";
+import { ShuttleDetailsPerRequest } from "../types/shuttleDetailsPerRequst";
+import { ShuttlesPerDay } from "./getSuttles";
 import { removeItemFromLsit } from "./postToSharepoint";
 
-const resetShuttles = () => {
-    console.log("a")
-    const result = getShuttles();
-    console.log("a")
-    const shuttles = result?.shuttles || [];
-    console.log("a")
+const resetShuttles = async (tempShuttles: ShuttlesPerDay[] | undefined, tempShuttlesDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined) => {
+  const shuttles = tempShuttles || [];
+  const shuttlesDetailsPerRequest = tempShuttlesDetailsPerRequest || [];
+ 
+  for (const shuttle of shuttles) {
+    await removeItemFromLsit("Shuttles", shuttle.Id, "*");
+  }
 
-    const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest() || [];
-
-    console.log("a")
-    for (const shuttle of shuttles) {
-        removeItemFromLsit('Shuttles', shuttle.Id, '*');
-    }
-    console.log("b")
-    for (const DetailsPerRequest of shuttlesDetailsPerRequest) {
-        removeItemFromLsit('ShuttleDetailsPerRequest', DetailsPerRequest.ID, '*');
-    }
-    console.log("c")
-}
+  for (const DetailsPerRequest of shuttlesDetailsPerRequest) {
+      removeItemFromLsit('ShuttleDetailsPerRequest', DetailsPerRequest.ID, '*');
+  }
+};
 
 export default resetShuttles;

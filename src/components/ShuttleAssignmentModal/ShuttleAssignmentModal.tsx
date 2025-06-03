@@ -7,21 +7,21 @@ import {
   Modal,
   Select,
   TimePicker,
-  message
+  message,
 } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React, { useEffect } from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import useGetMedics from "../../hooks/data/useGetMedics";
-import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { getShuttles } from "../../functions/getSuttles";
 import resetShuttles from "../../functions/resetShuttles";
+import useGetMedics from "../../hooks/data/useGetMedics";
+import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
+import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { patchItemInList } from "../../functions/postToSharepoint";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
-
 
 const ShuttleAssignmentModal: React.FC<Props> = ({
   visible,
@@ -32,7 +32,10 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
   const medics = useGetMedics();
-  
+
+  const { shuttles } = getShuttles();
+  const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
+
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
@@ -42,10 +45,9 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     }
     return Promise.resolve();
   };
-  
+
   useEffect(() => {
     form.setFieldValue("medicName", medicName);
-    
   }, [medicName]);
 
   const handleValuesChange = (changedValues: FormValues) => {
@@ -57,16 +59,14 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   const handleSubmit = () => {
     form
       .validateFields()
-      .then((values: FormValues) => {
+      .then(async (values: FormValues) => {
         // const { startTime, endTime, vehicleCount, medicName } = values;
-        form.resetFields();
-        console.log("powerautomate")
-        // resetShuttles();
-        console.log("powerautomate")
-        const result = patchItemInList('driversData', {Title: 'נהג 1'}, 1, '*')
-      })
-      .finally(() => {
         
+        // await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+        
+        patchItemInList('trigger', {Title: '000'}, 1, '*')
+        console.log("Shuttles reset successfully");
+        form.resetFields();
         onSubmit();
       })
       .catch(() => {
@@ -82,19 +82,18 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
       onCancel={onCancel}
       footer={
         <div className="ShuttleAssignmentModal__footer">
+          <Button key="cancel" onClick={onCancel}>
+            ביטול
+          </Button>
 
-        <Button key="cancel" onClick={onCancel}>
-          ביטול
-        </Button>
-
-        <Button
-          type="primary"
-          className="ShuttleAssignmentModal__assign-btn"
-          onClick={handleSubmit}
-        >
-          <IconSparkles />
-          שבץ נסיעות
-        </Button>
+          <Button
+            type="primary"
+            className="ShuttleAssignmentModal__assign-btn"
+            onClick={handleSubmit}
+          >
+            <IconSparkles />
+            שבץ נסיעות
+          </Button>
         </div>
       }
     >
@@ -103,13 +102,11 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
           form={form}
           layout="vertical"
           onValuesChange={handleValuesChange}
-          initialValues={
-          {
+          initialValues={{
             startTime: dayjs("06:30", "HH:mm"),
             endTime: dayjs("18:30", "HH:mm"),
             vehicleCount: 3,
-          }
-          }
+          }}
         >
           <Form.Item
             label="שעות פעילות השאטלים"
@@ -122,7 +119,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
                 rules={[{ required: true, message: "יש לבחור שעת התחלה" }]}
                 className="ShuttleAssignmentModal__timePicker__container__startTime"
               >
-                <TimePicker  format="HH:mm" placeholder="התחלה" />
+                <TimePicker format="HH:mm" placeholder="התחלה" />
               </Form.Item>
 
               <TbArrowNarrowLeft className="ShuttleAssignmentModal__timePicker__container__arrowIcon" />
@@ -159,15 +156,19 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
             name="medicName"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
-            <Select placeholder="בחר חובש" onChange={(medicId) => setMedicName(medicId)}>
-              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
+            <Select
+              placeholder="בחר חובש"
+              onChange={(medicId) => setMedicName(medicId)}
+            >
+              {medics?.map((medic) => (
+                <Option value={medic.ID}>{medic.Title}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>
       </ConfigProvider>
-      </Modal>
+    </Modal>
   );
 };
 
 export default ShuttleAssignmentModal;
-
