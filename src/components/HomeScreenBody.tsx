@@ -12,13 +12,13 @@ import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
 import Table from "./Table/Table";
 import AutomationModal from "./AutomationModal";
-import useAutoRun from "../hooks/useAutoRun";
+import { useStatusManager } from "../hooks/useAutoRun";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(true);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
@@ -26,12 +26,11 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const {isSuccess} = useAutoRun();
+  const {isModalOpen, onAssignClick} = useStatusManager();
 
-  useEffect
-(() => {
-      setAutomationModalVisible(!isSuccess);
-  }, [isSuccess]);
+  useEffect(() => {
+    setAutomationModalVisible(isModalOpen);
+  }, [isModalOpen]);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -58,9 +57,9 @@ const HomeScreenBody = () => {
     setIsShuttlesArranged(true);
     setShuttleAssignmentModalVisible(false);
     setAutomationModalVisible(true);
-    console.log("www")
-    useAutoRun();
-    console.log("www")
+    
+    onAssignClick();
+    
   };
 
   const data = useGetTableData();
@@ -86,10 +85,16 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
+              title={
+                messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""
+              }
             >
               <Button
-                onClick={() => (isShuttlesArranged ? setPopUpMsgOpen(true) : setShuttleAssignmentModalVisible(true))}
+                onClick={() =>
+                  isShuttlesArranged
+                    ? setPopUpMsgOpen(true)
+                    : setShuttleAssignmentModalVisible(true)
+                }
                 disabled={messagesAlreadySent}
                 color="default"
                 variant="filled"
@@ -129,7 +134,10 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.key} />
           ) : (
@@ -146,7 +154,10 @@ const HomeScreenBody = () => {
         setMedicName={setSelectedMedic}
         messagesAlreadySent={messagesAlreadySent}
       />
-      <AutomationModal visible={automationModalVisible} setVisible={setAutomationModalVisible} />
+      <AutomationModal
+        visible={automationModalVisible}
+        setVisible={setAutomationModalVisible}
+      />
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}
