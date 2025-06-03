@@ -11,6 +11,7 @@ import useGetShuttles from "../../hooks/data/useGetShuttles";
 import { ColorType, Driver, TravelItem } from "../../types/travelBar";
 import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
+import { parseStations } from "../../functions/parseStations";
 
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,25 +22,21 @@ const TravelBar = () => {
   const driversData = useGetDriversData();
   const shuttles = useGetShuttles();
 
-  useEffect(() => {
-    if (shuttles) {
-      const formattedShuttles = shuttles
-        .sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime())
-        .map((shuttle) => {
-          return {
-            ...shuttle,
-            code: "א",
-            colorType: "cyan",
-            stations: [
-              { name: 'מרפ"א ערבה', arrivalTime: "07:30", isOrigin: true },
-              { name: 'מרפ"א ערבה', arrivalTime: "08:20", isDestination: true },
-            ],
-          };
-        }) as TravelItem[];
+  const updatedDrivers = useMemo(() => {
+    const driverDistanceMap = new Map<number, number>();
 
-      setTravelItems(formattedShuttles);
-    }
-  }, [shuttles]);
+    shuttles?.forEach((shuttle) => {
+      if (shuttle.driverData?.ID) {
+        const current = driverDistanceMap.get(shuttle.driverData.ID) || 0;
+        driverDistanceMap.set(shuttle.driverData.ID, current + shuttle.totalDistance);
+      }
+    });
+
+    return driversData.map((driver) => ({
+      ...driver,
+      Distance: driverDistanceMap.get(driver.ID) || 0,
+    }));
+  }, [driversData, shuttles]);
 
   // Filter travel items based on color filter
   const filteredTravelItems = useMemo(() => {
@@ -101,11 +98,28 @@ const TravelBar = () => {
   };
 
   const getDriverIndexByColor = (color: ColorType): IDriverData => {
-    return driversData.find((d) => d.ID === colors.indexOf(color) + 1) as IDriverData;
+    return updatedDrivers.find((d) => d.ID === colors.indexOf(color) + 1) as IDriverData;
   };
 
   // Array of colors to render filter buttons
-  const colors: ColorType[] = ["purple", "cyan", "orange"];
+  const colors: ColorType[] = useMemo(() => ["purple", "cyan", "orange"], []);
+
+  useEffect(() => {
+    if (shuttles) {
+      const formattedShuttles = shuttles
+        .sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime())
+        .map((shuttle) => {
+          return {
+            ...shuttle,
+            code: "",
+            colorType: colors[shuttle.driverData.ID - 1],
+            stations: parseStations(shuttle.Details),
+          };
+        }) as TravelItem[];
+
+      setTravelItems(formattedShuttles);
+    }
+  }, [colors, driverAssignments, shuttles]);
 
   return (
     <>
