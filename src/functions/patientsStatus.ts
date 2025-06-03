@@ -48,8 +48,8 @@ export const patientsStatus = ({
     if (!shuttle) return { patientId: patient.ID, status: assignedStatusEnum.initial };
 
     const arrivalTime = new Date(shuttle.ArrivalTime);
-    const timeToArrival = arrivalTime.getTime() - now.getTime() / 60000;
-    const timeSinceArrival = now.getTime() - arrivalTime.getTime() / 60000;
+    const timeToArrival = (arrivalTime.getTime() - now.getTime()) / 60000;
+    const timeSinceArrival = (now.getTime() - arrivalTime.getTime()) / 60000;
 
     let status: assignedStatusEnum = assignedStatusEnum.assigned;
 

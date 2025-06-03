@@ -20,7 +20,8 @@ const Kpies = () => {
       statusType: assignedStatus,
       value:
         patientStatuses?.filter(
-          (patient) => patient.status === assignedStatusEnum[assignedStatus as keyof typeof assignedStatusEnum]
+          (patient) =>
+            patient.status === assignedStatusEnum[assignedStatus as keyof typeof assignedStatusEnum]
         ).length || 0,
     };
   });
