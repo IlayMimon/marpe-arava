@@ -1,22 +1,19 @@
-import { drivers } from "../components/travel-bar/dummyData";
 import DriverData from "../types/DriverOrganizationTypes";
-import { ColorType, StationInfo, TravelItem } from "../types/travelBar";
-import dayjs from 'dayjs';
+import { ColorType, Driver, StationInfo, TravelItem } from "../types/travelBar";
+import dayjs from "dayjs";
 
 const driverOrganizationDataMapping = (
   items: TravelItem[],
-  driverAssignments: Record<ColorType, number | null>,
-  kilometersPerColor: Record<ColorType, string>
-): DriverData[]  => {
+  drivers: Driver[],
+  driverAssignments: Record<ColorType, number | null>
+): DriverData[] => {
   return Object.keys(driverAssignments).map((driverColor) => {
-
     const driverItems = items.filter((item) => item.colorType === driverColor);
 
-    if(driverItems.length > 0){
+    if (driverItems.length > 0) {
       return {
-        name: drivers.find(
-          (driver) => driver.id === driverAssignments[driverColor as ColorType]
-        )?.name,
+        name: drivers.find((driver) => driver.ID === driverAssignments[driverColor as ColorType])
+          ?.Title,
         paths: driverItems.map((path: TravelItem) => {
           return path.ID === 0
             ? {
@@ -40,7 +37,7 @@ const driverOrganizationDataMapping = (
       name: undefined,
       paths: [],
       distance: 0,
-      color: driverColor as ColorType
+      color: driverColor as ColorType,
     };
   });
 };

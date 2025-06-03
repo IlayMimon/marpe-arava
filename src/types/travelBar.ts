@@ -20,11 +20,10 @@ export interface TravelBarProps {
   title?: string;
   initialItems?: TravelItem[];
 }
-
-export interface Driver {
-  id: number;
-  name: string;
-}
+export type Driver = {
+  ID: number;
+  Title: string;
+};
 
 export interface IDriverDropdownProps {
   color: ColorType;
@@ -38,7 +37,7 @@ export interface DriverFilterButtonProps {
   drivers: Driver[];
   selectedDriver?: Driver;
   placeholder: string;
-  kilometers: string;
+  kilometers: number;
   color: ColorType;
   isActive: boolean;
   isDriverAssigned: boolean;
