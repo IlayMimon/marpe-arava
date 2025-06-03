@@ -2,7 +2,7 @@ import { TripDirection } from "../components/HomeScreenBody";
 import { TableRow } from "../components/Table/TableTypes";
 import useGetDrivers from "./data/useGetDrivers";
 import useGetServices from "./data/useGetServices";
-import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerRequest ";
+import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "./data/useGetShuttleRequests";
 import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
@@ -16,8 +16,11 @@ const useGetTableData = (tripDirection: TripDirection) => {
   const services = useGetServices();
   const drivers = useGetDrivers();
 
+  console.log('shuttles', shuttleDetailsPerRequest)
+
   const data =
     shuttleDetailsPerRequest?.map((requestDetails, index) => {
+      console.log('requestDetails', requestDetails)
 
       const shuttle = shuttles?.find((shut) => shut?.RequestsId?.results.includes(requestDetails?.ID));
       const request = shuttleRequests?.find((req) => req.ID === requestDetails.RequestId);
@@ -45,6 +48,8 @@ const useGetTableData = (tripDirection: TripDirection) => {
         actions: "actions",
       };
 
+      console.log('basic', basicPassangerData)
+
       const estimatedArrival = dayjs(shuttle?.ArrivalTime || new Date());
       const desiredArrival = dayjs(request?.Time || new Date());
       const finishTime = dayjs(requestDetails.FinishTime || new Date());
@@ -63,6 +68,7 @@ const useGetTableData = (tripDirection: TripDirection) => {
       }
 
       const passangerData: TableRow = { ...basicPassangerData, ...directionPassangerData };
+      console.log('passs',passangerData)
 
       return passangerData;
     })
