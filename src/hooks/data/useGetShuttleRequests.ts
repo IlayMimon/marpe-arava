@@ -1,7 +1,7 @@
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type ShuttleRequests = {
+export type ShuttleRequests = {
     ID: number
     Title: string
     FullName: string | null

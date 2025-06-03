@@ -2,6 +2,7 @@ import { Menu } from "antd";
 import { TableColumn, TableRow } from "../components/Table/TableTypes";
 import { TbDotsVertical, TbPencil, TbEyeOff } from "react-icons/tb";
 import { TripDirection } from "../components/HomeScreenBody";
+import TimeDeviation from "../components/TimeDeviation";
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
   const handleStopTracking = () => {
@@ -54,6 +55,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "outboundGap",
             title: "פער",
             dataIndex: "outboundGap",
+            render: (value: number) => <TimeDeviation value={value} />,
           },
         ]
       : [
@@ -76,6 +78,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "inboundGap",
             title: "פער",
             dataIndex: "inboundGap",
+            render: (value: number) => <TimeDeviation value={value} />,
           },
         ];
 

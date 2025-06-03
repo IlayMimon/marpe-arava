@@ -7,7 +7,7 @@ export type Shuttle = {
   StartTime: Date
   ArrivalTime: Date
   Details: string
-  RequestsId: number[]
+  RequestsId: { results: number[] }
   DriverId: number | null
   totalDistance: number
 };
