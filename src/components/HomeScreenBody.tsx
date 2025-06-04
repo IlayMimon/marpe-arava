@@ -50,7 +50,6 @@ const HomeScreenBody = () => {
 
   const columns = useGetTableColumns(tripDirection);
   const data = useGetTableData(tripDirection)
-  console.log("data", data);
 
   return (
     <div className="home-screen-body">

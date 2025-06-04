@@ -20,7 +20,6 @@ const useGetShuttleDetailsPerRequest = () => {
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleDetailsPerRequest>>(
         `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$select=ID,Title,RequestId,PickupTime,DriverId,ArrivalTime,FinishTime,InboundTime&${filterByToday(date, 'PickupTime')}`
     );
-    console.log('useGetShuttleDetailsPerRequest', data)
 
     const shuttleDetailsPerRequest = data?.d.results
 

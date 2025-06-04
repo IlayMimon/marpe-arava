@@ -16,7 +16,7 @@ const RowActions = ({ rowData }: RowActionsProps) => {
         console.log("Stop tracking clicked");
     };
 
-    const hendleEditColumn = () => {
+    const handleEditColumn = () => {
         setisEditPatientModalOpen(true);
     };
 
@@ -64,7 +64,7 @@ const RowActions = ({ rowData }: RowActionsProps) => {
                     key: "3",
                     label: "ערוך מטופל",
                     icon: <TbPencil />,
-                    onClick: hendleEditColumn,
+                    onClick: handleEditColumn,
                 },
                 {
                     key: "4",

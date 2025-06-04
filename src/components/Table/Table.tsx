@@ -11,13 +11,8 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
 
   const newData = useSortFilterTableData(data, filteredInfo, sortInfo);
-  console.log("Filtered and sorted data:", newData);
 
-  const handleChange = (
-    _pagination: TablePaginationConfig,
-    filters: Record<string, FilterValue | null>,
-    sorter: SorterResult<T> | SorterResult<T>[]
-  ) => {
+  const handleChange = (_pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, sorter: SorterResult<T> | SorterResult<T>[]) => {
     setFilteredInfo(filters);
     if (!Array.isArray(sorter)) {
       setSortInfo(sorter);
@@ -37,10 +32,10 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
       },
       sorter: col.sorter
         ? (a, b) => {
-            const aValue = a[col.dataIndex as keyof T];
-            const bValue = b[col.dataIndex as keyof T];
-            return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-          }
+          const aValue = a[col.dataIndex as keyof T];
+          const bValue = b[col.dataIndex as keyof T];
+          return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+        }
         : undefined,
       sortOrder: sortInfo?.columnKey === col.key ? sortInfo.order : null,
       render: (value: T[keyof T], record: T, index: number): RenderedCell<T> => {
