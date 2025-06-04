@@ -1,10 +1,4 @@
-<<<<<<< HEAD:src/hooks/data/useGetShuttleDetailsPerRequest .ts
-import { ShuttleDetailsPerRequest } from "../../types/shuttleDetailsPerRequst";
-import { SharepointQueryResultArray } from "../../types/spFetchTypes";
-import { useQueryFetchRequest } from "../useQueryFetch";
 
-
-=======
 import { useHomePageContext } from "../../contexts/HomePage";
 import filterByToday from "../../functions/filterByToday";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
@@ -18,7 +12,6 @@ export type ShuttleDetailsPerRequest = {
     DriverId: number | null
     ArrivalTime: Date
 };
->>>>>>> origin/NP:src/hooks/data/useGetShuttleDetailsPerRequest.ts
 
 const useGetShuttleDetailsPerRequest = () => {
     const date = useHomePageContext().selectedDate;

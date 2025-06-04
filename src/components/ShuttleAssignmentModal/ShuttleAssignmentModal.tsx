@@ -124,7 +124,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
         <Form
           form={form}
           layout="vertical"
-          onValuesChange={handleValuesChange}
+          // onValuesChange={handleValuesChange}
           initialValues={{
             medicName: existingMedicId,
             startTime: dayjs("06:30", "HH:mm"),
