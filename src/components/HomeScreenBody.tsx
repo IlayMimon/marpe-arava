@@ -26,11 +26,11 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const {isModalOpen, onAssignClick} = useStatusManager();
+  const {onAssignClick} = useStatusManager(setAutomationModalVisible);
 
-  useEffect(() => {
-    setAutomationModalVisible(isModalOpen);
-  }, [isModalOpen]);
+  // useEffect(() => {
+  //   setAutomationModalVisible(isModalOpen);
+  // }, [isModalOpen]);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {

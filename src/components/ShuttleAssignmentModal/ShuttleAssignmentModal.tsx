@@ -63,7 +63,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
         // const { startTime, endTime, vehicleCount, medicName } = values;
         
         // await resetShuttles(shuttles, shuttlesDetailsPerRequest);
-        
+
+        patchItemInList('Status', {isOver: false, status: 'pending', step: 1, isAssigned: false}, 1, '*')
         patchItemInList('trigger', {Title: '000'}, 1, '*')
         console.log("Shuttles reset successfully");
         form.resetFields();
