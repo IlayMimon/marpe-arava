@@ -1,24 +1,25 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import TravelBar from "./travel-bar/TravelBar";
-import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
-import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
-import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import { addItemToList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
-import Table from "./Table/Table";
+import { useStatusManager } from "../hooks/useStatusManager";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import AutomationModal from "./AutomationModal";
-import { useStatusManager } from "../hooks/useAutoRun";
+import BtnPopUpMsg from "./generic/btnPopUpMsg";
+import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
+import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
+import Table from "./Table/Table";
+import TravelBar from "./travel-bar/TravelBar";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
+    useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
@@ -26,11 +27,7 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const {onAssignClick} = useStatusManager(setAutomationModalVisible);
-
-  // useEffect(() => {
-  //   setAutomationModalVisible(isModalOpen);
-  // }, [isModalOpen]);
+  const { onAssignClick } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -57,9 +54,8 @@ const HomeScreenBody = () => {
     setIsShuttlesArranged(true);
     setShuttleAssignmentModalVisible(false);
     setAutomationModalVisible(true);
-    
+
     onAssignClick();
-    
   };
 
   const data = useGetTableData();

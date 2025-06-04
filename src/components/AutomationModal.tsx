@@ -2,41 +2,37 @@ import { Modal } from "antd";
 import Lottie from "lottie-react";
 import React from "react";
 import busAnimation from "../../public/assets/busAnimation.json";
-import useAutoRun from "../hooks/useAutoRun";
+import useAutoRun from "../hooks/useStatusManager";
 import resetShuttles from "../functions/resetShuttles";
-
-
 
 interface AutomationModalProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-
-
-
 const AutomationModal = ({ visible, setVisible }: AutomationModalProps) => {
-
-  
-
   return (
-    <Modal className="automation-modal" open={visible} centered footer={null} closable={false}>
+    <Modal
+      className="automation-modal"
+      open={visible}
+      centered
+      footer={null}
+      closable={false}
+    >
       <div className="automation-modal__content">
-         <Lottie
+        <Lottie
           animationData={busAnimation}
           loop
           className="automation-modal__content__animation"
         />
         <h3 style={{ marginTop: 24 }}>האוטומציה יצאה לריצה מבצעית</h3>
-          <p style={{ color: "#666" }}>
-            המערכת עובדת מאחורי הקלעים על פעולות מדויקות במיוחד.
-            <br />
-            תהליך זה יכול לקחת כמה דקות – ניתן לעבור למסך אחר, היא תמשיך בשקט
-            וביעילות, כמו חייל טוב.
-          </p>
+        <p style={{ color: "#666" }}>
+          המערכת עובדת מאחורי הקלעים על פעולות מדויקות במיוחד.
+          <br />
+          תהליך זה יכול לקחת כמה דקות – ניתן לעבור למסך אחר, היא תמשיך בשקט
+          וביעילות, כמו חייל טוב.
+        </p>
       </div>
-
     </Modal>
   );
 };
