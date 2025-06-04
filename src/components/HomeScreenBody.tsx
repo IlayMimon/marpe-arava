@@ -146,8 +146,6 @@ const HomeScreenBody = () => {
         visible={shuttleAssignmentModalVisible}
         onCancel={() => setShuttleAssignmentModalVisible(false)}
         onSubmit={handleSubmit}
-        medicName={selectedMedic}
-        setMedicName={setSelectedMedic}
         messagesAlreadySent={messagesAlreadySent}
       />
       <AutomationModal

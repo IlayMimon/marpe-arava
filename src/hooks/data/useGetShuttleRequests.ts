@@ -1,7 +1,9 @@
+import { useHomePageContext } from "../../contexts/HomePage";
+import filterByToday from "../../functions/filterByToday";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type ShuttleRequests = {
+export type ShuttleRequests = {
     ID: number
     Title: string
     FullName: string | null
@@ -14,8 +16,9 @@ type ShuttleRequests = {
 };
 
 const useGetShuttleRequests = () => {
+    const date = useHomePageContext().selectedDate;
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleRequests>>(
-        "/_api/web/lists/getbytitle('ShuttleRequests')/items?$select=ID,Title,FullName,Phone,RequestedServicesId,IsReturnShuttleRequired,ReturnStationId,StationId,Time"
+        `/_api/web/lists/getbytitle('ShuttleRequests')/items?$select=ID,Title,FullName,Phone,RequestedServicesId,IsReturnShuttleRequired,ReturnStationId,StationId,Time&${filterByToday(date, 'Time')}`
     );
 
     const shuttleRequests = data?.d.results

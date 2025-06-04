@@ -20,18 +20,48 @@ import useGetMedics from "../../hooks/data/useGetMedics";
 import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
 import { FormValues, Props } from "../../types/shuttleAssignmentProps";
 import { patchItemInList } from "../../functions/postToSharepoint";
+import { useHomePageContext } from "../../contexts/HomePage";
+import useGetMedicsPerDate from "../../hooks/data/useGetMedicsPerDate";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
-const ShuttleAssignmentModal: React.FC<Props> = ({
-  visible,
-  onCancel,
-  onSubmit,
-  medicName,
-  setMedicName,
-}) => {
+const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
   const medics = useGetMedics();
+
+  const { selectedDate } = useHomePageContext();
+  const { medicsPerDate, refetch, isLoading } = useGetMedicsPerDate(selectedDate);
+  const existingMedicId = medicsPerDate?.[0]?.medicId;
+
+  useEffect(() => {
+    if (visible) {
+      refetch();
+    }
+  }, [visible, refetch]);
+
+  useEffect(() => {
+    if (existingMedicId) {
+      form.setFieldsValue({ medicName: existingMedicId });
+    } else {
+      form.setFieldsValue({ medicName: undefined });
+    }
+  }, [existingMedicId, form]);
+
+  
+
+  useEffect(() => {
+    if (visible) {
+      refetch();
+    }
+  }, [visible, refetch]);
+
+  useEffect(() => {
+    if (existingMedicId) {
+      form.setFieldsValue({ medicName: existingMedicId });
+    } else {
+      form.setFieldsValue({ medicName: undefined });
+    }
+  }, [existingMedicId, form]);
 
   const { shuttles } = getShuttles();
   const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
@@ -46,15 +76,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     return Promise.resolve();
   };
 
-  useEffect(() => {
-    form.setFieldValue("medicName", medicName);
-  }, [medicName]);
-
-  const handleValuesChange = (changedValues: FormValues) => {
-    if ("medicName" in changedValues) {
-      setMedicName(changedValues.medicName);
-    }
-  };
+  
+  
 
   const handleSubmit = () => {
     form
@@ -75,6 +98,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   };
 
   return (
+    <ConfigProvider locale={heIL} direction="rtl">
     <Modal
       className="ShuttleAssignmentModal"
       title="שיבוץ נסיעות אוטומטי"
@@ -97,12 +121,12 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
         </div>
       }
     >
-      <ConfigProvider locale={heIL} direction="rtl">
         <Form
           form={form}
           layout="vertical"
           onValuesChange={handleValuesChange}
           initialValues={{
+            medicName: existingMedicId,
             startTime: dayjs("06:30", "HH:mm"),
             endTime: dayjs("18:30", "HH:mm"),
             vehicleCount: 3,
@@ -156,18 +180,13 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
             name="medicName"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
-            <Select
-              placeholder="בחר חובש"
-              onChange={(medicId) => setMedicName(medicId)}
-            >
-              {medics?.map((medic) => (
-                <Option value={medic.ID}>{medic.Title}</Option>
-              ))}
+            <Select placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}>
+              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
             </Select>
           </Form.Item>
         </Form>
-      </ConfigProvider>
     </Modal>
+      </ConfigProvider>
   );
 };
 
