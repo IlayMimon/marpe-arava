@@ -63,7 +63,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
     if (pickupStations.length && appointmentOptions.length && drivers.length && rides.length) {
       form.setFieldsValue({
         ...initialValues,
-        rideId: typeof initialValues.rideId === "string" ? parseInt(initialValues.rideId) : initialValues.rideId,
+        rideId: initialValues.rideId && typeof initialValues.rideId === "string" ? parseInt(initialValues.rideId) : 0,
         pickupStation: pickupStations.find(s => s.Title === initialValues.pickupStation)?.ID ?? null,
         driver: drivers.find(d => d.Title === initialValues.driver)?.ID ?? undefined,
         appointmentType: initialValues.appointmentType
@@ -188,7 +188,6 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues }:
                 label="סטטוס"
               >
                 <Select
-                  mode="multiple"
                   placeholder="בחר סטטוס"
                   style={{ width: '100%' }}
                 >

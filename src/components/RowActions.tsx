@@ -51,6 +51,8 @@ const RowActions = ({ rowData }: RowActionsProps) => {
         } catch (error) {
             console.error("Error updating request:", error);
         }
+
+        setisEditPatientModalOpen(false);
     }
 
     const items = [

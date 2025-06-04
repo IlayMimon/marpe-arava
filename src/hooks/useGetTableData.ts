@@ -16,11 +16,8 @@ const useGetTableData = (tripDirection: TripDirection) => {
   const services = useGetServices();
   const drivers = useGetDrivers();
 
-  console.log('shuttles', shuttleDetailsPerRequest)
-
   const data =
     shuttleDetailsPerRequest?.map((requestDetails, index) => {
-      console.log('requestDetails', requestDetails)
 
       const shuttle = shuttles?.find((shut) => shut?.RequestsId?.results.includes(requestDetails?.ID));
       const request = shuttleRequests?.find((req) => req.ID === requestDetails.RequestId);
@@ -47,8 +44,6 @@ const useGetTableData = (tripDirection: TripDirection) => {
         notes: "",
         actions: "actions",
       };
-
-      console.log('basic', basicPassangerData)
 
       const estimatedArrival = dayjs(shuttle?.ArrivalTime || new Date());
       const desiredArrival = dayjs(request?.Time || new Date());
