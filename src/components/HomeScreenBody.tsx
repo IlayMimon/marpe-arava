@@ -53,9 +53,9 @@ const HomeScreenBody = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setShuttleAssignmentModalVisible(false);
-    setAutomationModalVisible(true);
+    // setAutomationModalVisible(true);
 
-    onAssignClick();
+    // onAssignClick();
   };
 
   const data = useGetTableData();
@@ -145,9 +145,9 @@ const HomeScreenBody = () => {
       <ShuttleAssignmentModal
         visible={shuttleAssignmentModalVisible}
         onCancel={() => setShuttleAssignmentModalVisible(false)}
-        onSubmit={handleSubmit}
-        messagesAlreadySent={messagesAlreadySent}
-      />
+        onSubmit={handleSubmit} medicName={null} setMedicName={function (name: string): void {
+          throw new Error("Function not implemented.");
+        } } messagesAlreadySent={false}      />
       <AutomationModal
         visible={automationModalVisible}
         setVisible={setAutomationModalVisible}

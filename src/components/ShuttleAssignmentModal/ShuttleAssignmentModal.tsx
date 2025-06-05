@@ -32,7 +32,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
   const { selectedDate } = useHomePageContext();
   const { medicsPerDate, refetch, isLoading } = useGetMedicsPerDate(selectedDate);
   const existingMedicId = medicsPerDate?.[0]?.medicId;
-
+  const medicPerDateID = medicsPerDate?.[0]?.ID;
   useEffect(() => {
     if (visible) {
       refetch();
@@ -47,21 +47,6 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
     }
   }, [existingMedicId, form]);
 
-  
-
-  useEffect(() => {
-    if (visible) {
-      refetch();
-    }
-  }, [visible, refetch]);
-
-  useEffect(() => {
-    if (existingMedicId) {
-      form.setFieldsValue({ medicName: existingMedicId });
-    } else {
-      form.setFieldsValue({ medicName: undefined });
-    }
-  }, [existingMedicId, form]);
 
   const { shuttles } = getShuttles();
   const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
@@ -83,12 +68,13 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
     form
       .validateFields()
       .then(async (values: FormValues) => {
-        // const { startTime, endTime, vehicleCount, medicName } = values;
-        
-        await resetShuttles(shuttles, shuttlesDetailsPerRequest);
-        patchItemInList('Status', {isOver: false, status: 'pending', step: 1, isAssigned: false}, 1, '*')
-        patchItemInList('trigger', {Title: '000'}, 1, '*')
-        
+        // const { startTime, endTime, vehicleCount, medic } = values;
+       
+        // patchItemInList("MedicPerDate", { medicId: values.medicName }, medicPerDateID, "*");
+        // await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+        // patchItemInList('Status', {isOver: false, status: 'pending', step: 1, isAssigned: false}, 1, '*')
+        // patchItemInList('trigger', {Title: '000'}, 1, '*')
+        console.log("Values submitted:", values);
         form.resetFields();
         onSubmit();
       })
@@ -177,7 +163,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
 
           <Form.Item
             label="חובש אחראי"
-            name="medicName"
+            name="medic"
             rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
           >
             <Select placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}>
