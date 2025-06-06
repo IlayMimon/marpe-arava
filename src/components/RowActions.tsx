@@ -38,6 +38,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       ReturnStationId: values.dropoffStation,
       RequestedServicesId: values.appointmentType,
       FullName: values.fullName,
+      notes: values.notes,
     };
 
     const requestDetailsData = {

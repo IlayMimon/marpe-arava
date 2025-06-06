@@ -14,12 +14,13 @@ export type ShuttleRequests = {
     ReturnStationId?: number
     StationId: number
     Time: dayjs.Dayjs;
+    notes?: string;
 };
 
 const useGetShuttleRequests = () => {
     const date = useHomePageContext().selectedDate;
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleRequests>>(
-        `/_api/web/lists/getbytitle('ShuttleRequests')/items?$select=ID,Title,FullName,Phone,RequestedServicesId,IsReturnShuttleRequired,ReturnStationId,StationId,Time&${filterByToday(date, 'Time')}`
+        `/_api/web/lists/getbytitle('ShuttleRequests')/items?$select=ID,Title,FullName,Phone,RequestedServicesId,IsReturnShuttleRequired,ReturnStationId,StationId,Time,notes&${filterByToday(date, 'Time')}`
     );
 
     const shuttleRequests = data?.d.results
