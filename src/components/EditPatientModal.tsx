@@ -20,6 +20,7 @@ import useGetStations from "../hooks/data/useGetStations";
 import { TripDirection } from "./HomeScreenBody";
 import { TableRow } from "./Table/TableTypes";
 import useGetShuttleRequests from "../hooks/data/useGetShuttleRequests";
+import { assignedStatusEnum } from "../functions/patientsStatus";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -67,7 +68,6 @@ const EditPatientModal = ({
   const rawDrivers = useGetDrivers();
   const rawRequests = useGetShuttleRequests();
 
-  const statusOptions = useMemo(() => ["שובץ", "לא שובץ"], []);
   const appointmentOptions = useMemo(() => rawAppointmentOptions || [], [rawAppointmentOptions]);
   const stations = useMemo(() => rawStations || [], [rawStations]);
   const rides = useMemo(() => rawRides || [], [rawRides]);
@@ -230,9 +230,9 @@ const EditPatientModal = ({
               </Form.Item>
               <Form.Item name="status" label="סטטוס">
                 <Select placeholder="בחר סטטוס" style={{ width: "100%" }}>
-                  {statusOptions.map((tag) => (
-                    <Option key={tag} value={tag}>
-                      {tag}
+                  {Object.entries(assignedStatusEnum).map(([key, value]) => (
+                    <Option key={key} value={value}>
+                      {value}
                     </Option>
                   ))}
                 </Select>
