@@ -1,4 +1,15 @@
-import { Button, Checkbox, ConfigProvider, Form, Input, Modal, Segmented, Select, TimePicker, Typography } from "antd";
+import {
+  Button,
+  Checkbox,
+  ConfigProvider,
+  Form,
+  Input,
+  Modal,
+  Segmented,
+  Select,
+  TimePicker,
+  Typography,
+} from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
@@ -15,11 +26,12 @@ const { Option } = Select;
 
 export type PatientFormValues = {
   id: number;
+  requestDetailsId: number;
+  rideId?: number;
   fullName: string;
   phone: string;
   pickupStation?: number | null;
   dropoffStation?: number | null;
-  shuttleId?: number;
   driver?: number;
   appointmentType: number[];
   pickupTime: dayjs.Dayjs;
@@ -37,7 +49,13 @@ type IAddPatientModalProps = {
   tripDirection: TripDirection;
 };
 
-const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, tripDirection }: IAddPatientModalProps) => {
+const EditPatientModal = ({
+  isOpen: visible,
+  onClose,
+  onSubmit,
+  initialValues,
+  tripDirection,
+}: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(initialValues.pickupTime !== null);
   const [hasDropoff, setHasDropoff] = useState(false);
@@ -68,7 +86,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
   const inboundTime = Form.useWatch("inboundTime", form);
 
   const shuttleRequest = useMemo(() => {
-    return requests.find(request => request.ID === initialValues.id)
+    return requests.find((request) => request.ID === initialValues.id);
   }, [requests, initialValues.id]);
 
   useEffect(() => {
@@ -77,13 +95,27 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
         ...initialValues,
         pickupStation: shuttleRequest?.StationId ?? null,
         dropoffStation: shuttleRequest?.ReturnStationId ?? null,
-        driver: tripDirection === "inbound" ? (drivers.find(d => d.Title === initialValues.driver)?.ID ?? undefined) : undefined,
+        driver:
+          tripDirection === "inbound"
+            ? (drivers.find((d) => d.Title === initialValues.driver)?.ID ?? undefined)
+            : undefined,
         appointmentType: initialValues.appointmentType
-          .map(type => appointmentOptions.find(opt => opt.Title === type)?.ID)
+          .map((type) => appointmentOptions.find((opt) => opt.Title === type)?.ID)
           .filter((id): id is number => id !== undefined),
       });
     }
-  }, [requests, stations, appointmentOptions, drivers, rides, form, initialValues, tripDirection]);
+  }, [
+    requests,
+    stations,
+    appointmentOptions,
+    drivers,
+    rides,
+    form,
+    initialValues,
+    tripDirection,
+    shuttleRequest?.StationId,
+    shuttleRequest?.ReturnStationId,
+  ]);
 
   const isFormValid = () => {
     return (
@@ -105,6 +137,7 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
     form.resetFields();
     setHasPickup(false);
     setHasDropoff(false);
+    setFormTripDirection("outbound");
   };
 
   return (
@@ -129,12 +162,15 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
           form={form}
           layout="vertical"
           onFinish={(submitValues) => {
-            onSubmit({ ...submitValues });
+            onSubmit({
+              ...submitValues,
+              id: initialValues.id,
+              requestDetailsId: initialValues.requestDetailsId,
+            });
             handleReset();
           }}
           initialValues={{
             ...initialValues,
-
           }}
         >
           <Text strong>פרטי החייל</Text>
@@ -195,15 +231,9 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item
-                name="status"
-                label="סטטוס"
-              >
-                <Select
-                  placeholder="בחר סטטוס"
-                  style={{ width: '100%' }}
-                >
-                  {statusOptions.map(tag => (
+              <Form.Item name="status" label="סטטוס">
+                <Select placeholder="בחר סטטוס" style={{ width: "100%" }}>
+                  {statusOptions.map((tag) => (
                     <Option key={tag} value={tag}>
                       {tag}
                     </Option>
@@ -242,7 +272,6 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
               >
                 <Input.TextArea placeholder="הקלד הערה" autoSize={{ maxRows: 1 }} />
               </Form.Item>
-
             </div>
           </div>
 
@@ -258,7 +287,10 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
             onChange={(direction: TripDirection) => setFormTripDirection(direction)}
           />
 
-          <div style={{ display: formTripDirection === "outbound" ? "grid" : "none" }} className="add-patient-modal__form-section">
+          <div
+            style={{ display: formTripDirection === "outbound" ? "grid" : "none" }}
+            className="add-patient-modal__form-section"
+          >
             <Form.Item name="rideId" label='מס"ד נסיעה'>
               <Select placeholder='בחר מס"ד'>
                 {rides.map((ride) => (
@@ -300,9 +332,12 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
             </Form.Item>
           </div>
 
-          <div style={{ display: formTripDirection === "inbound" ? "grid" : "none" }} className="add-patient-modal__form-section">
-            <Form.Item name="driver" label='נהג'>
-              <Select placeholder='בחר נהג'>
+          <div
+            style={{ display: formTripDirection === "inbound" ? "grid" : "none" }}
+            className="add-patient-modal__form-section"
+          >
+            <Form.Item name="driver" label="נהג">
+              <Select placeholder="בחר נהג">
                 {drivers.map((driver) => (
                   <Option key={driver.ID} value={driver.ID}>
                     {driver.Title}
@@ -341,7 +376,6 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
               <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
           </div>
-
         </Form>
       </Modal>
     </ConfigProvider>
