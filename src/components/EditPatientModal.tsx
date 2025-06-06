@@ -8,6 +8,7 @@ import useGetShuttles from "../hooks/data/useGetShuttles";
 import useGetStations from "../hooks/data/useGetStations";
 import { TripDirection } from "./HomeScreenBody";
 import { TableRow } from "./Table/TableTypes";
+import useGetShuttleRequests from "../hooks/data/useGetShuttleRequests";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -46,12 +47,14 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
   const rawStations = useGetStations();
   const rawRides = useGetShuttles();
   const rawDrivers = useGetDrivers();
+  const rawRequests = useGetShuttleRequests();
 
   const statusOptions = useMemo(() => ["שובץ", "לא שובץ"], []);
   const appointmentOptions = useMemo(() => rawAppointmentOptions || [], [rawAppointmentOptions]);
   const stations = useMemo(() => rawStations || [], [rawStations]);
   const rides = useMemo(() => rawRides || [], [rawRides]);
   const drivers = useMemo(() => rawDrivers || [], [rawDrivers]);
+  const requests = useMemo(() => rawRequests || [], [rawRequests]);
 
   // Watch all required fields
   const fullName = Form.useWatch("fullName", form);
@@ -64,19 +67,23 @@ const EditPatientModal = ({ isOpen: visible, onClose, onSubmit, initialValues, t
   const finishTime = Form.useWatch("finishTime", form);
   const inboundTime = Form.useWatch("inboundTime", form);
 
+  const shuttleRequest = useMemo(() => {
+    return requests.find(request => request.ID === initialValues.id)
+  }, [requests, initialValues.id]);
+
   useEffect(() => {
     if (stations.length && appointmentOptions.length && drivers.length && rides.length) {
       form.setFieldsValue({
         ...initialValues,
-        pickupStation: stations.find(s => s.Title === initialValues.pickupStation)?.ID ?? null,
-        dropoffStation: stations.find(s => s.Title === initialValues.dropoffStation)?.ID ?? null,
+        pickupStation: shuttleRequest?.StationId ?? null,
+        dropoffStation: shuttleRequest?.ReturnStationId ?? null,
         driver: tripDirection === "inbound" ? (drivers.find(d => d.Title === initialValues.driver)?.ID ?? undefined) : undefined,
         appointmentType: initialValues.appointmentType
           .map(type => appointmentOptions.find(opt => opt.Title === type)?.ID)
           .filter((id): id is number => id !== undefined),
       });
     }
-  }, [stations, appointmentOptions, drivers, rides, form, initialValues, tripDirection]);
+  }, [requests, stations, appointmentOptions, drivers, rides, form, initialValues, tripDirection]);
 
   const isFormValid = () => {
     return (

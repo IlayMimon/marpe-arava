@@ -3,12 +3,14 @@ import RowActions from "../components/RowActions";
 import { TableColumn, TableRow } from "../components/Table/TableTypes";
 import dayjs from "dayjs";
 import TimeDeviation from "../components/TimeDeviation";
+import useGetStations from "./data/useGetStations";
 
 const formatTime = (value: dayjs.Dayjs | undefined) => {
   return value ? dayjs(value).format("HH:mm") : null;
 }
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
+  const areas = Array.from(new Set(useGetStations()?.map(station => station.Area)));
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
@@ -101,19 +103,15 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       sorter: true,
     },
     {
-      key: "pickupStation",
+      key: "station",
       title: "תחנה",
-      dataIndex: "pickupStation",
+      dataIndex: "station",
     },
     {
       key: "area",
       title: "אזור",
       dataIndex: "area",
-      filters: [
-        { text: "מרכז", value: "מרכז" },
-        { text: "צפון", value: "צפון" },
-        { text: "דרום", value: "דרום" },
-      ],
+      filters: areas.map(area => ({ text: area, value: area })),
       sorter: true,
     },
     ...directionColumns,

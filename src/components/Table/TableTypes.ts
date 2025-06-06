@@ -39,8 +39,7 @@ export type TableRow = {
   status: string;
   phone: string;
   appointmentType: string[];
-  pickupStation?: string;
-  dropoffStation?: string;
+  station: string;
   area: string;
   pickupTime?: dayjs.Dayjs;
   estimatedArrival?: dayjs.Dayjs;
