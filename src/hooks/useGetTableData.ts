@@ -17,30 +17,33 @@ const useGetTableData = (tripDirection: TripDirection) => {
   const drivers = useGetDrivers();
 
   const data =
-    shuttleDetailsPerRequest?.map((requestDetails, index) => {
+    shuttleDetailsPerRequest?.flatMap((requestDetails) => {
 
       const shuttle = shuttles?.find((shut) => shut?.RequestsId?.results.includes(requestDetails?.ID));
       const request = shuttleRequests?.find((req) => req.ID === requestDetails.RequestId);
-      const station = stations?.find((station) => station.ID === request?.StationId);
+      const pickupStation = stations?.find((station) => station.ID === request?.StationId);
+      const dropoffStation = stations?.find((station) => station.ID === request?.ReturnStationId);
       const driver = drivers?.find(driver => driver.ID === requestDetails.DriverId)
+      const returnDriver = drivers?.find(driver => driver.ID === requestDetails.ReturnDriverId)
       const requestedServices = request?.RequestedServicesId?.results
         .map((serviceId) => services?.find((service) => service.ID === serviceId))
         .filter((service) => service !== undefined)
       const requestedServicesTitles = requestedServices?.map(service => service?.Title);
       const servicesDuration = requestedServices?.reduce((total, service) => total + (service?.Time || 0), 0) || 0;
 
+      if (!request) return []
+
       const basicPassangerData = {
-        id: request?.ID || index + 1,
-        requestDetailsId: requestDetails?.ID || 0,
-        suttleId: shuttle?.ID || 0,
+        id: request.ID,
+        requestDetailsId: requestDetails.ID || 0,
+        shuttleId: shuttle?.ID || 0,
         fullName: request?.FullName || "",
         status: requestDetails.DriverId ? "שובץ" : "לא שובץ",
         phone: request?.Phone || "",
         appointmentType: requestedServicesTitles || [],
         rideId: shuttle?.ID || "",
-        pickupStation: station?.Title || "",
-        area: station?.Area || "",
-        driver: driver?.Title || "",
+        area: tripDirection === "outbound" ? pickupStation?.Area || "" : dropoffStation?.Area || "",
+        driver: tripDirection === "outbound" ? driver?.Title || "" : returnDriver?.Title || "",
         notes: "",
         actions: "actions",
       };
@@ -51,11 +54,13 @@ const useGetTableData = (tripDirection: TripDirection) => {
       const inboundTime = dayjs(requestDetails.InboundTime || new Date());
 
       const directionPassangerData = tripDirection === "outbound" ? {
+        pickupStation: pickupStation?.Title || "",
         pickupTime: dayjs(requestDetails.PickupTime),
         estimatedArrival: estimatedArrival,
         desiredArrival: desiredArrival,
         outboundGap: estimatedArrival.diff(desiredArrival, 'minute'),
       } : {
+        dropoffStation: pickupStation?.Title || "",
         estimatedFinish: estimatedArrival.add(servicesDuration, 'minute'),
         finishTime: finishTime,
         inboundTime: inboundTime,
@@ -63,7 +68,6 @@ const useGetTableData = (tripDirection: TripDirection) => {
       }
 
       const passangerData: TableRow = { ...basicPassangerData, ...directionPassangerData };
-      console.log('passs',passangerData)
 
       return passangerData;
     })

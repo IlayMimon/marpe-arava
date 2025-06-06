@@ -4,6 +4,10 @@ import { TableColumn, TableRow } from "../components/Table/TableTypes";
 import dayjs from "dayjs";
 import TimeDeviation from "../components/TimeDeviation";
 
+const formatTime = (value: dayjs.Dayjs | undefined) => {
+  return value ? dayjs(value).format("HH:mm") : null;
+}
+
 const useGetTableColumns = (tripDirection: TripDirection) => {
 
   const directionColumns: TableColumn<TableRow>[] =
@@ -13,19 +17,19 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "pickupTime",
             title: "שעת איסוף",
             dataIndex: "pickupTime",
-            render: (value) => value ? dayjs(value).format("HH:mm") : null,
+            render: (value) => formatTime(value),
           },
           {
             key: "estimatedArrival",
             title: "הגעה משוערת",
             dataIndex: "estimatedArrival",
-            render: (value) => value ? dayjs(value).format("HH:mm") : null,
+            render: (value) => formatTime(value),
           },
           {
             key: "desiredArrival",
             title: "הגעה רצויה",
             dataIndex: "desiredArrival",
-            render: (value) => value ? dayjs(value).format("HH:mm") : null,
+            render: (value) => formatTime(value),
           },
           {
             key: "outboundGap",
@@ -39,19 +43,19 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "estimatedFinish",
             title: "סיום משוער",
             dataIndex: "estimatedFinish",
-            render: (value) => value ? dayjs(value).format("HH:mm") : null,
+            render: (value) => formatTime(value),
           },
           {
             key: "finishTime",
             title: "שעת סיום",
             dataIndex: "finishTime",
-            render: (value) => value ? dayjs(value).format("HH:mm") : null,
+            render: (value) => formatTime(value),
           },
           {
             key: "inboundTime",
             title: "שעת חזרה",
             dataIndex: "inboundTime",
-            render: (value) => value ? dayjs(value).format("HH:mm") : null,
+            render: (value) => formatTime(value),
           },
           {
             key: "inboundGap",
@@ -128,7 +132,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       title: "פעולות",
       dataIndex: "actions",
       render: (_value, row) => (
-        <RowActions rowData={row} />
+        <RowActions rowData={row} tripDirection={tripDirection} />
       ),
     },
   ];

@@ -34,13 +34,13 @@ export type RenderedCell<RecordType> =
 export type TableRow = {
   id: number;
   requestDetailsId: number;
-  suttleId: number;
+  shuttleId: number;
   fullName: string;
   status: string;
   phone: string;
   appointmentType: string[];
-  rideId: string | number;
-  pickupStation: string;
+  pickupStation?: string;
+  dropoffStation?: string;
   area: string;
   pickupTime?: dayjs.Dayjs;
   estimatedArrival?: dayjs.Dayjs;

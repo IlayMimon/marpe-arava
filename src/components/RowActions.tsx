@@ -1,21 +1,19 @@
 import { Menu } from "antd";
 import { useState } from "react";
-import { TbDotsVertical, TbEyeOff, TbPencil } from "react-icons/tb";
+import { TbDotsVertical, TbPencil } from "react-icons/tb";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
 import { TableRow } from "./Table/TableTypes";
+import { TripDirection } from "./HomeScreenBody";
 
 interface RowActionsProps {
     rowData: TableRow;
+    tripDirection: TripDirection;
 }
 
-const RowActions = ({ rowData }: RowActionsProps) => {
+const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     const [isEditPatientModalOpen, setisEditPatientModalOpen] = useState(false);
-
-    const handleStopTracking = () => {
-        console.log("Stop tracking clicked");
-    };
-
+    
     const handleEditColumn = () => {
         setisEditPatientModalOpen(true);
     };
@@ -32,12 +30,12 @@ const RowActions = ({ rowData }: RowActionsProps) => {
         };
 
         const requestDetailsData = {
-            DriverId: values.driver,
+            ReturnDriverId: values.driver,
             PickupTime: values.pickupTime.toISOString(),
             FinishTime: values.finishTime.toISOString(),
             InboundTime: values.inboundTime.toISOString(),
         };
-
+        
         try {
             await patchItemInList("ShuttleDetailsPerRequest", requestDetailsData, rowData.requestDetailsId, "*");
 
@@ -61,36 +59,23 @@ const RowActions = ({ rowData }: RowActionsProps) => {
             icon: <TbDotsVertical />,
             children: [
                 {
-                    key: "3",
+                    key: "1",
                     label: "ערוך מטופל",
                     icon: <TbPencil />,
                     onClick: handleEditColumn,
-                },
-                {
-                    key: "4",
-                    label: "הפסק מעקב",
-                    icon: <TbEyeOff />,
-                    onClick: handleStopTracking,
                 },
             ],
         },
     ];
 
     return <>
-        <Menu
-            style={{ width: 0, height: 50, backgroundColor: "transparent" }}
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            mode={"vertical"}
-            theme={"light"}
-            items={items}
-        />
-
+        <Menu style={{ width: 0 }} items={items} />
         <EditPatientModal
             isOpen={isEditPatientModalOpen}
             onClose={() => setisEditPatientModalOpen(false)}
             onSubmit={handleSubmitForm}
             initialValues={rowData}
+            tripDirection={tripDirection}
         />
     </>
 }

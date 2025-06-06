@@ -11,7 +11,7 @@ export type ShuttleRequests = {
     Phone: string
     RequestedServicesId: { results: number[] }
     IsReturnShuttleRequired: boolean
-    ReturnStationId: number | null
+    ReturnStationId?: number
     StationId: number
     Time: dayjs.Dayjs;
 };
