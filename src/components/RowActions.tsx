@@ -30,9 +30,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       );
     }
 
-    console.log("oldShuttle:", oldShuttle);
-    console.log("newShuttle:", newShuttle);
-
     const requestData = {
       Time: values.desiredArrival.toISOString(),
       StationId: values.pickupStation,
