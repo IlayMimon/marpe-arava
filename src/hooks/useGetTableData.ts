@@ -6,6 +6,7 @@ import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerReques
 import useGetShuttleRequests from "./data/useGetShuttleRequests";
 import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
+import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
 
 const useGetTableData = () => {
   const shuttles = useGetShuttles();
@@ -14,6 +15,8 @@ const useGetTableData = () => {
   const stations = useGetStations();
   const services = useGetServices();
   const drivers = useGetDrivers();
+
+  const patientsStatuses = patientsStatus({ shuttleDetailsPerRequest, shuttleRequests, shuttles });
 
   const data = shuttleDetailsPerRequest?.flatMap((requestDetails) => {
     const shuttle = shuttles?.find((shut) =>
@@ -38,7 +41,9 @@ const useGetTableData = () => {
       requestDetailsId: requestDetails.ID || 0,
       shuttleId: shuttle?.ID || 0,
       fullName: request?.FullName || "",
-      status: requestDetails.DriverId ? "שובץ" : "לא שובץ",
+      status:
+        patientsStatuses?.find((status) => status.patientId === request.ID)?.status ||
+        assignedStatusEnum.initial,
       phone: request?.Phone || "",
       appointmentType: requestedServicesTitles || [],
       rideId: shuttle?.ID || "",
