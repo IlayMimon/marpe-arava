@@ -1,4 +1,4 @@
-import { TripDirection } from "../components/HomeScreenBody";
+import dayjs from "dayjs";
 import { TableRow } from "../components/Table/TableTypes";
 import useGetDrivers from "./data/useGetDrivers";
 import useGetServices from "./data/useGetServices";
@@ -6,9 +6,8 @@ import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerReques
 import useGetShuttleRequests from "./data/useGetShuttleRequests";
 import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
-import dayjs from "dayjs";
 
-const useGetTableData = (tripDirection: TripDirection) => {
+const useGetTableData = () => {
   const shuttles = useGetShuttles();
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
@@ -43,10 +42,12 @@ const useGetTableData = (tripDirection: TripDirection) => {
       phone: request?.Phone || "",
       appointmentType: requestedServicesTitles || [],
       rideId: shuttle?.ID || "",
-      station:
-        tripDirection === "outbound" ? pickupStation?.Title || "" : dropoffStation?.Title || "",
-      area: tripDirection === "outbound" ? pickupStation?.Area || "" : dropoffStation?.Area || "",
-      driver: tripDirection === "outbound" ? driver?.Title || "" : returnDriver?.Title || "",
+      station: pickupStation?.Title || "",
+      returnStation: dropoffStation?.Title || "",
+      area: pickupStation?.Area || "",
+      returnArea: dropoffStation?.Area || "",
+      driver: driver?.Title || "",
+      returnDriver: returnDriver?.Title || "",
       notes: request?.notes || "",
       actions: "actions",
     };
@@ -56,20 +57,16 @@ const useGetTableData = (tripDirection: TripDirection) => {
     const finishTime = dayjs(requestDetails.FinishTime || new Date());
     const inboundTime = dayjs(requestDetails.InboundTime || new Date());
 
-    const directionPassangerData =
-      tripDirection === "outbound"
-        ? {
-            pickupTime: dayjs(requestDetails.PickupTime),
-            estimatedArrival: estimatedArrival,
-            desiredArrival: desiredArrival,
-            outboundGap: estimatedArrival.diff(desiredArrival, "minute"),
-          }
-        : {
-            estimatedFinish: estimatedArrival.add(servicesDuration, "minute"),
-            finishTime: finishTime,
-            inboundTime: inboundTime,
-            inboundGap: inboundTime.diff(finishTime, "minute"),
-          };
+    const directionPassangerData = {
+      pickupTime: dayjs(requestDetails.PickupTime),
+      estimatedArrival: estimatedArrival,
+      desiredArrival: desiredArrival,
+      outboundGap: estimatedArrival.diff(desiredArrival, "minute"),
+      estimatedFinish: estimatedArrival.add(servicesDuration, "minute"),
+      finishTime: finishTime,
+      inboundTime: inboundTime,
+      inboundGap: inboundTime.diff(finishTime, "minute"),
+    };
 
     const passangerData: TableRow = { ...basicPassangerData, ...directionPassangerData };
 

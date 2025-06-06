@@ -7,14 +7,26 @@ import useGetStations from "./data/useGetStations";
 
 const formatTime = (value: dayjs.Dayjs | undefined) => {
   return value ? dayjs(value).format("HH:mm") : null;
-}
+};
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  const areas = Array.from(new Set(useGetStations()?.map(station => station.Area)));
+  const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
       ? [
+          {
+            key: "station",
+            title: "תחנה",
+            dataIndex: "station",
+          },
+          {
+            key: "area",
+            title: "אזור",
+            dataIndex: "area",
+            filters: areas.map((area) => ({ text: area, value: area })),
+            sorter: true,
+          },
           {
             key: "pickupTime",
             title: "שעת איסוף",
@@ -39,8 +51,25 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             dataIndex: "outboundGap",
             render: (value: number) => <TimeDeviation value={value} />,
           },
+          {
+            key: "driver",
+            title: "נהג",
+            dataIndex: "driver",
+          },
         ]
       : [
+          {
+            key: "returnStation",
+            title: "תחנת חזרה",
+            dataIndex: "returnStation",
+          },
+          {
+            key: "returnArea",
+            title: "אזור חזרה",
+            dataIndex: "returnArea",
+            filters: areas.map((area) => ({ text: area, value: area })),
+            sorter: true,
+          },
           {
             key: "estimatedFinish",
             title: "סיום משוער",
@@ -64,6 +93,11 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             title: "פער",
             dataIndex: "inboundGap",
             render: (value: number) => <TimeDeviation value={value} />,
+          },
+          {
+            key: "returnDriver",
+            title: "נהג",
+            dataIndex: "returnDriver",
           },
         ];
 
@@ -94,7 +128,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "appointmentType",
       title: "סוג תור",
       dataIndex: "appointmentType",
-      render: (types: string[]) => types?.join(', '),
+      render: (types: string[]) => types?.join(", "),
     },
     {
       key: "rideId",
@@ -102,24 +136,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       dataIndex: "rideId",
       sorter: true,
     },
-    {
-      key: "station",
-      title: "תחנה",
-      dataIndex: "station",
-    },
-    {
-      key: "area",
-      title: "אזור",
-      dataIndex: "area",
-      filters: areas.map(area => ({ text: area, value: area })),
-      sorter: true,
-    },
     ...directionColumns,
-    {
-      key: "driver",
-      title: "נהג",
-      dataIndex: "driver",
-    },
     {
       key: "notes",
       title: "הערות",
@@ -129,9 +146,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "actions",
       title: "פעולות",
       dataIndex: "actions",
-      render: (_value, row) => (
-        <RowActions rowData={row} tripDirection={tripDirection} />
-      ),
+      render: (_value, row) => <RowActions rowData={row} tripDirection={tripDirection} />,
     },
   ];
 

@@ -95,10 +95,7 @@ const EditPatientModal = ({
         ...initialValues,
         pickupStation: shuttleRequest?.StationId ?? null,
         dropoffStation: shuttleRequest?.ReturnStationId ?? null,
-        driver:
-          tripDirection === "inbound"
-            ? (drivers.find((d) => d.Title === initialValues.driver)?.ID ?? undefined)
-            : undefined,
+        driver: drivers.find((d) => d.Title === initialValues.driver)?.ID ?? undefined,
         appointmentType: initialValues.appointmentType
           .map((type) => appointmentOptions.find((opt) => opt.Title === type)?.ID)
           .filter((id): id is number => id !== undefined),
@@ -336,7 +333,7 @@ const EditPatientModal = ({
             style={{ display: formTripDirection === "inbound" ? "grid" : "none" }}
             className="add-patient-modal__form-section"
           >
-            <Form.Item name="driver" label="נהג">
+            <Form.Item name="returnDriver" label="נהג">
               <Select placeholder="בחר נהג">
                 {drivers.map((driver) => (
                   <Option key={driver.ID} value={driver.ID}>
