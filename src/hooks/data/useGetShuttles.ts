@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useHomePageContext } from "../../contexts/HomePage";
 import filterByToday from "../../functions/filterByToday";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
@@ -6,8 +7,8 @@ import { useQueryFetchRequest } from "../useQueryFetch";
 export type Shuttle = {
   ID: number
   Title: string
-  StartTime: Date
-  ArrivalTime: Date
+  StartTime: dayjs.Dayjs;
+  ArrivalTime: dayjs.Dayjs;
   Details: string
   RequestsId: { results: number[] }
   DriverId: number | null

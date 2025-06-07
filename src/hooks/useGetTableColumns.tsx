@@ -1,55 +1,49 @@
-import { Menu } from "antd";
-import { TableColumn, TableRow } from "../components/Table/TableTypes";
-import { TbDotsVertical, TbPencil, TbEyeOff } from "react-icons/tb";
 import { TripDirection } from "../components/HomeScreenBody";
+import RowActions from "../components/RowActions";
+import { TableColumn, TableRow } from "../components/Table/TableTypes";
+import dayjs from "dayjs";
 import TimeDeviation from "../components/TimeDeviation";
+import useGetStations from "./data/useGetStations";
+
+const formatTime = (value: dayjs.Dayjs | undefined) => {
+  return value ? dayjs(value).format("HH:mm") : null;
+};
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  const handleStopTracking = () => {
-    console.log("Stop tracking clicked");
-  };
-  const hendleEditColumn = () => {
-    console.log("Edit column clicked");
-  };
-
-  const items = [
-    {
-      key: "options",
-      icon: <TbDotsVertical />,
-      children: [
-        {
-          key: "3",
-          label: "ערוך עמודה",
-          icon: <TbPencil />,
-          onClick: hendleEditColumn,
-        },
-        {
-          key: "4",
-          label: "הפסק מעקב",
-          icon: <TbEyeOff />,
-          onClick: handleStopTracking,
-        },
-      ],
-    },
-  ];
+  const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
       ? [
           {
+            key: "station",
+            title: "תחנה",
+            dataIndex: "station",
+          },
+          {
+            key: "area",
+            title: "אזור",
+            dataIndex: "area",
+            filters: areas.map((area) => ({ text: area, value: area })),
+            sorter: true,
+          },
+          {
             key: "pickupTime",
             title: "שעת איסוף",
             dataIndex: "pickupTime",
+            render: (value) => formatTime(value),
           },
           {
             key: "estimatedArrival",
             title: "הגעה משוערת",
             dataIndex: "estimatedArrival",
+            render: (value) => formatTime(value),
           },
           {
             key: "desiredArrival",
             title: "הגעה רצויה",
             dataIndex: "desiredArrival",
+            render: (value) => formatTime(value),
           },
           {
             key: "outboundGap",
@@ -57,28 +51,53 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             dataIndex: "outboundGap",
             render: (value: number) => <TimeDeviation value={value} />,
           },
+          {
+            key: "driver",
+            title: "נהג",
+            dataIndex: "driver",
+          },
         ]
       : [
+          {
+            key: "returnStation",
+            title: "תחנת חזרה",
+            dataIndex: "returnStation",
+          },
+          {
+            key: "returnArea",
+            title: "אזור חזרה",
+            dataIndex: "returnArea",
+            filters: areas.map((area) => ({ text: area, value: area })),
+            sorter: true,
+          },
           {
             key: "estimatedFinish",
             title: "סיום משוער",
             dataIndex: "estimatedFinish",
+            render: (value) => formatTime(value),
           },
           {
             key: "finishTime",
             title: "שעת סיום",
             dataIndex: "finishTime",
+            render: (value) => formatTime(value),
           },
           {
             key: "inboundTime",
             title: "שעת חזרה",
             dataIndex: "inboundTime",
+            render: (value) => formatTime(value),
           },
           {
             key: "inboundGap",
             title: "פער",
             dataIndex: "inboundGap",
             render: (value: number) => <TimeDeviation value={value} />,
+          },
+          {
+            key: "returnDriver",
+            title: "נהג",
+            dataIndex: "returnDriver",
           },
         ];
 
@@ -109,6 +128,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "appointmentType",
       title: "סוג תור",
       dataIndex: "appointmentType",
+      render: (types: string[]) => types?.join(", "),
     },
     {
       key: "rideId",
@@ -116,28 +136,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       dataIndex: "rideId",
       sorter: true,
     },
-    {
-      key: "station",
-      title: "תחנה",
-      dataIndex: "station",
-    },
-    {
-      key: "area",
-      title: "אזור",
-      dataIndex: "area",
-      filters: [
-        { text: "מרכז", value: "מרכז" },
-        { text: "צפון", value: "צפון" },
-        { text: "דרום", value: "דרום" },
-      ],
-      sorter: true,
-    },
     ...directionColumns,
-    {
-      key: "driver",
-      title: "נהג",
-      dataIndex: "driver",
-    },
     {
       key: "notes",
       title: "הערות",
@@ -147,18 +146,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "actions",
       title: "פעולות",
       dataIndex: "actions",
-      render: () => (
-        <div>
-          <Menu
-            style={{ width: 0, height: 50, backgroundColor: "transparent" }}
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            mode={"vertical"}
-            theme={"light"}
-            items={items}
-          />
-        </div>
-      ),
+      render: (_value, row) => <RowActions rowData={row} tripDirection={tripDirection} />,
     },
   ];
 
