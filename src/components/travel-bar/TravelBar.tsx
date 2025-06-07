@@ -107,7 +107,7 @@ const TravelBar = () => {
   useEffect(() => {
     if (shuttles) {
       const formattedShuttles = shuttles
-        .sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime())
+        .sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime())
         .map((shuttle) => {
           return {
             ...shuttle,
