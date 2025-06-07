@@ -1,92 +1,84 @@
-const useGetTableData = () => {
-  const data = [
-    {
-      key: "1",
-      fullName: "יוסי כהן",
-      status: "מאושר",
-      phone: "050-1234567",
-      appointmentType: "בדיקה",
-      rideId: 101,
-      station: "תחנה א'",
-      area: "מרכז",
-      pickupTime: "08:00",
-      estimatedArrival: "08:45",
-      desiredArrival: "09:00",
-      outboundGap: 15,
-      estimatedFinish: "09:30",
-      finishTime: "09:40",
-      inboundTime: "10:10",
-      inboundGap: 30,
-      driver: "משה לוי",
-      notes: "יש להוריד ליד הכניסה",
-      actions: "actions",
-    },
-    {
-      key: "2",
-      fullName: "רות כהן",
-      status: "ממתין לאישור",
-      phone: "050-7654321",
-      appointmentType: "חיסון",
-      rideId: 102,
-      station: "תחנה ב'",
-      area: "צפון",
-      pickupTime: "09:30",
-      estimatedArrival: "10:15",
-      desiredArrival: "10:30",
-      outboundGap: 15,
-      estimatedFinish: "11:00",
-      finishTime: "11:10",
-      inboundTime: "11:40",
-      inboundGap: 30,
-      driver: "אבי ברק",
-      notes: "",
-      actions: "actions",
-    },
-    {
-      key: "3",
-      fullName: "דנה לוי",
-      status: "בוטל",
-      phone: "052-1112233",
-      appointmentType: "בדיקה",
-      rideId: 103,
-      station: "תחנה ג'",
-      area: "דרום",
-      pickupTime: "11:00",
-      estimatedArrival: "11:45",
-      desiredArrival: "12:00",
-      outboundGap: 15,
-      estimatedFinish: "12:30",
-      finishTime: "12:40",
-      inboundTime: "13:10",
-      inboundGap: 30,
-      driver: "שמעון כהן",
-      notes: "לא הגיע בזמן",
-      actions: "actions",
-    },
-    ...Array.from({ length: 8 }, (_, i) => ({
-      key: `${i + 4}`,
-      fullName: i === 8 || i === 9 ? "אליhhhh" : i === 10 ? "tjrui" : "אלי כהן",
-      status: "מאושר",
-      phone: "054-3334444",
-      appointmentType: "בדיקה",
-      rideId: 104,
-      station: "תחנה ד'",
-      area: "מרכז",
-      pickupTime: "13:00",
-      estimatedArrival: "13:50",
-      desiredArrival: "14:00",
-      outboundGap: 1,
-      estimatedFinish: "14:30",
-      finishTime: "14:40",
-      inboundTime: "15:10",
-      inboundGap: 30,
-      driver: "דוד ישראלי",
-      notes: "יש לו כיסא גלגלים",
-      actions: "actions",
-    })),
-  ];
+import dayjs from "dayjs";
+import { TableRow } from "../components/Table/TableTypes";
+import useGetDrivers from "./data/useGetDrivers";
+import useGetServices from "./data/useGetServices";
+import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerRequest";
+import useGetShuttleRequests from "./data/useGetShuttleRequests";
+import useGetShuttles from "./data/useGetShuttles";
+import useGetStations from "./data/useGetStations";
+import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
 
-  return data;
+const useGetTableData = () => {
+  const shuttles = useGetShuttles();
+  const shuttleRequests = useGetShuttleRequests();
+  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
+  const stations = useGetStations();
+  const services = useGetServices();
+  const drivers = useGetDrivers();
+
+  const patientsStatuses = patientsStatus({ shuttleDetailsPerRequest, shuttleRequests, shuttles });
+
+  const data = shuttleDetailsPerRequest?.flatMap((requestDetails) => {
+    const shuttle = shuttles?.find((shut) =>
+      shut?.RequestsId?.results.includes(requestDetails?.ID)
+    );
+    const request = shuttleRequests?.find((req) => req.ID === requestDetails.RequestId);
+    const pickupStation = stations?.find((station) => station.ID === request?.StationId);
+    const dropoffStation = stations?.find((station) => station.ID === request?.ReturnStationId);
+    const driver = drivers?.find((driver) => driver.ID === requestDetails.DriverId);
+    const returnDriver = drivers?.find((driver) => driver.ID === requestDetails.ReturnDriverId);
+    const requestedServices = request?.RequestedServicesId?.results
+      .map((serviceId) => services?.find((service) => service.ID === serviceId))
+      .filter((service) => service !== undefined);
+    const requestedServicesTitles = requestedServices?.map((service) => service?.Title);
+    const servicesDuration =
+      requestedServices?.reduce((total, service) => total + (service?.Time || 0), 0) || 0;
+
+    if (!request) return [];
+
+    const basicPassangerData = {
+      id: request.ID,
+      requestDetailsId: requestDetails.ID || 0,
+      shuttleId: shuttle?.ID || 0,
+      fullName: request?.FullName || "",
+      status:
+        patientsStatuses?.find((status) => status.patientId === request.ID)?.status ||
+        assignedStatusEnum.initial,
+      phone: request?.Phone || "",
+      appointmentType: requestedServicesTitles || [],
+      rideId: shuttle?.ID || "",
+      station: pickupStation?.Title || "",
+      returnStation: dropoffStation?.Title || "",
+      area: pickupStation?.Area || "",
+      returnArea: dropoffStation?.Area || "",
+      driver: driver?.Title || "",
+      returnDriver: returnDriver?.Title || "",
+      notes: request?.notes || "",
+      actions: "actions",
+    };
+
+    const estimatedArrival = dayjs(shuttle?.ArrivalTime || new Date());
+    const desiredArrival = dayjs(request?.Time || new Date());
+    const finishTime = dayjs(requestDetails.FinishTime || new Date());
+    const inboundTime = dayjs(requestDetails.InboundTime || new Date());
+
+    const directionPassangerData = {
+      pickupTime: dayjs(requestDetails.PickupTime),
+      estimatedArrival: estimatedArrival,
+      desiredArrival: desiredArrival,
+      outboundGap: estimatedArrival.diff(desiredArrival, "minute"),
+      estimatedFinish: estimatedArrival.add(servicesDuration, "minute"),
+      finishTime: finishTime,
+      inboundTime: inboundTime,
+      inboundGap: inboundTime.diff(finishTime, "minute"),
+    };
+
+    const passangerData: TableRow = { ...basicPassangerData, ...directionPassangerData };
+
+    return passangerData;
+  });
+
+  return data || [];
 };
 
 export default useGetTableData;

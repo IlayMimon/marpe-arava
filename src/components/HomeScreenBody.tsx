@@ -2,15 +2,15 @@ import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import TravelBar from "./travel-bar/TravelBar";
-import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
-import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
-import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import { addItemToList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import BtnPopUpMsg from "./generic/btnPopUpMsg";
+import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
+import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
+import TravelBar from "./travel-bar/TravelBar";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -48,8 +48,8 @@ const HomeScreenBody = () => {
     setModalVisible(false);
   };
 
-  const data = useGetTableData();
   const columns = useGetTableColumns(tripDirection);
+  const data = useGetTableData()
 
   return (
     <div className="home-screen-body">
@@ -116,9 +116,9 @@ const HomeScreenBody = () => {
         <div className="home-screen-body__container__body">
           <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           )}
         </div>
         <TravelBar />
