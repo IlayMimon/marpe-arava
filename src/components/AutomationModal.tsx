@@ -1,6 +1,6 @@
 import { Modal } from "antd";
 import Lottie from "lottie-react";
-import busAnimation from "../../public/assets/busAnimation.json";
+import busAnimation from "../assets/busAnimation.json";
 
 interface AutomationModalProps {
   visible: boolean;
