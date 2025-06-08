@@ -1,27 +1,16 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { assignShuttlesToDrivers } from "../functions/assignDriversFunc/assignDrivers";
-import { getShuttles } from "../functions/getSuttles";
+import { useGetTomorrowShuttles } from "../functions/useGetTomorrowShuttles";
 import { initDrivers } from "../functions/initDrivers";
 import GetStatus from "./data/useGetStatus";
 
-
 export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
-  // const [isModalOpen, setModalOpen] = useState(false);
   const [shouldPoll, setShouldPoll] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const queryClient = useQueryClient();
+  const { refetch } = GetStatus();
 
-  const {
-    data: status,
-    refetch,
-  } = GetStatus();
-
-  const {
-    shuttles,
-    refetch: refetchShuttles,
-  } = getShuttles();
+  const { refetch: refetchShuttles } = useGetTomorrowShuttles();
 
   const handleStatus = useCallback(async () => {
     const { data } = await refetch();
@@ -29,7 +18,7 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
     if (!data || !shuttleData) return;
 
     const { isOver, isAssigned } = data.d.results[0] || {};
-    
+
     const shuttles = shuttleData?.d.results.map((shuttle) => {
       return {
         Id: shuttle.Id,
@@ -42,24 +31,19 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
     if (isOver && isAssigned) {
       setModalOpen(false);
       setShouldPoll(false);
-      
     } else if (isOver && !isAssigned) {
       setModalOpen(true);
       await assignShuttlesToDrivers(shuttles || [], initDrivers(3)); // FIX number of drivers and shuttles
-     
     } else if (!isOver) {
       setModalOpen(true);
       setShouldPoll(true);
     }
-  }, [refetch, queryClient, refetchShuttles]);
-
+  }, [refetch, refetchShuttles, setModalOpen]);
 
   useEffect(() => {
     if (shouldPoll) {
-      
       intervalRef.current = setInterval(() => {
-      handleStatus();
-      
+        handleStatus();
       }, 2000);
     } else {
       // Clear the interval if polling is disabled
@@ -69,26 +53,20 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
       }
     }
 
-   
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     };
-  }, [shouldPoll]);
+  }, [handleStatus, shouldPoll]);
 
-  
   // Manually triggerable from outside
   const onAssignClick = () => {
-  
-  setShouldPoll(true);
-};
+    setShouldPoll(true);
+  };
 
   return {
-    
     onAssignClick,
   };
 };
-
-

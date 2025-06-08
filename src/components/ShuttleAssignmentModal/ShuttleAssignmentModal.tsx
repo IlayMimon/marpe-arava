@@ -1,54 +1,24 @@
 import { IconSparkles } from "@tabler/icons-react";
-import {
-  Button,
-  ConfigProvider,
-  Form,
-  FormRule,
-  Modal,
-  Select,
-  TimePicker,
-  message,
-} from "antd";
+import { Button, ConfigProvider, Form, FormRule, Modal, Select, TimePicker, message } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import React, { useEffect } from "react";
+import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { getShuttles } from "../../functions/getSuttles";
-import resetShuttles from "../../functions/resetShuttles";
-import useGetMedics from "../../hooks/data/useGetMedics";
-import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
-import { FormValues, Props } from "../../types/shuttleAssignmentProps";
+import { useGetTomorrowShuttles } from "../../functions/useGetTomorrowShuttles";
 import { patchItemInList } from "../../functions/postToSharepoint";
-import { useHomePageContext } from "../../contexts/HomePage";
-import useGetMedicsPerDate from "../../hooks/data/useGetMedicsPerDate";
+import resetShuttles from "../../functions/resetShuttles";
+import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
+import { Props } from "../../types/shuttleAssignmentProps";
+import MedicSelect from "../MedicSelect";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
 const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
-  const medics = useGetMedics();
+  const [selectedMedic, setSelectedMedic] = React.useState<number | undefined>(undefined);
 
-  const { selectedDate } = useHomePageContext();
-  const { medicsPerDate, refetch, isLoading } = useGetMedicsPerDate(selectedDate);
-  const existingMedicId = medicsPerDate?.[0]?.medicId;
-  const medicPerDateID = medicsPerDate?.[0]?.ID;
-  useEffect(() => {
-    if (visible) {
-      refetch();
-    }
-  }, [visible, refetch]);
-
-  useEffect(() => {
-    if (existingMedicId) {
-      form.setFieldsValue({ medicName: existingMedicId });
-    } else {
-      form.setFieldsValue({ medicName: undefined });
-    }
-  }, [existingMedicId, form]);
-
-
-  const { shuttles } = getShuttles();
+  const { shuttles } = useGetTomorrowShuttles();
   const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
 
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
@@ -61,20 +31,20 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
     return Promise.resolve();
   };
 
-  
-  
-
   const handleSubmit = () => {
     form
       .validateFields()
-      .then(async (values: FormValues) => {
+      .then(async () => {
         // const { startTime, endTime, vehicleCount, medic } = values;
-       
-        // patchItemInList("MedicPerDate", { medicId: values.medicName }, medicPerDateID, "*");
-        // await resetShuttles(shuttles, shuttlesDetailsPerRequest);
-        // patchItemInList('Status', {isOver: false, status: 'pending', step: 1, isAssigned: false}, 1, '*')
-        // patchItemInList('trigger', {Title: '000'}, 1, '*')
-        console.log("Values submitted:", values);
+
+        await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+        patchItemInList(
+          "Status",
+          { isOver: false, status: "pending", step: 1, isAssigned: false },
+          1,
+          "*"
+        );
+        patchItemInList("trigger", { Title: "000" }, 1, "*");
         form.resetFields();
         onSubmit();
       })
@@ -85,34 +55,33 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
 
   return (
     <ConfigProvider locale={heIL} direction="rtl">
-    <Modal
-      className="ShuttleAssignmentModal"
-      title="שיבוץ נסיעות אוטומטי"
-      open={visible}
-      onCancel={onCancel}
-      footer={
-        <div className="ShuttleAssignmentModal__footer">
-          <Button key="cancel" onClick={onCancel}>
-            ביטול
-          </Button>
+      <Modal
+        className="ShuttleAssignmentModal"
+        title="שיבוץ נסיעות אוטומטי"
+        open={visible}
+        onCancel={onCancel}
+        footer={
+          <div className="ShuttleAssignmentModal__footer">
+            <Button key="cancel" onClick={onCancel}>
+              ביטול
+            </Button>
 
-          <Button
-            type="primary"
-            className="ShuttleAssignmentModal__assign-btn"
-            onClick={handleSubmit}
-          >
-            <IconSparkles />
-            שבץ נסיעות
-          </Button>
-        </div>
-      }
-    >
+            <Button
+              type="primary"
+              className="ShuttleAssignmentModal__assign-btn"
+              onClick={handleSubmit}
+            >
+              <IconSparkles />
+              שבץ נסיעות
+            </Button>
+          </div>
+        }
+      >
         <Form
           form={form}
           layout="vertical"
           // onValuesChange={handleValuesChange}
           initialValues={{
-            medicName: existingMedicId,
             startTime: dayjs("06:30", "HH:mm"),
             endTime: dayjs("18:30", "HH:mm"),
             vehicleCount: 3,
@@ -163,16 +132,16 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
 
           <Form.Item
             label="חובש אחראי"
-            name="medic"
-            rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
+            required
+            validateStatus={!selectedMedic ? "error" : ""}
+            help={!selectedMedic ? "יש לבחור חובש אחראי" : ""}
           >
-            <Select placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}>
-              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
-            </Select>
+            <MedicSelect setSelectedMedic={setSelectedMedic} />
+            <input type="hidden" name="medic" value={selectedMedic || ""} />
           </Form.Item>
         </Form>
-    </Modal>
-      </ConfigProvider>
+      </Modal>
+    </ConfigProvider>
   );
 };
 

@@ -9,7 +9,7 @@ export interface ShuttlesPerDay {
   totalDistance: number;
 }
 
-export const getShuttles = () => {
+export const useGetTomorrowShuttles = () => {
   const today = new Date();
 
   const tomorrow = new Date(today);
@@ -36,6 +36,6 @@ export const getShuttles = () => {
       totalDistance: shuttle.totalDistance,
     };
   });
- 
+
   return { shuttles, refetch };
 };

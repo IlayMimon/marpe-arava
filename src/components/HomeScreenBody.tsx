@@ -18,10 +18,8 @@ export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
-    useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
-  const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
@@ -53,13 +51,13 @@ const HomeScreenBody = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setShuttleAssignmentModalVisible(false);
-    // setAutomationModalVisible(true);
+    setAutomationModalVisible(true);
 
-    // onAssignClick();
+    onAssignClick();
   };
 
   const columns = useGetTableColumns(tripDirection);
-  const data = useGetTableData()
+  const data = useGetTableData();
 
   return (
     <div className="home-screen-body">
@@ -81,9 +79,7 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={
-                messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""
-              }
+              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
             >
               <Button
                 onClick={() =>
@@ -130,10 +126,7 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader
-            handleChange={handleChangeDirection}
-            tripDirection={tripDirection}
-          />
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
@@ -145,13 +138,10 @@ const HomeScreenBody = () => {
       <ShuttleAssignmentModal
         visible={shuttleAssignmentModalVisible}
         onCancel={() => setShuttleAssignmentModalVisible(false)}
-        onSubmit={handleSubmit} medicName={null} setMedicName={function (name: string): void {
-          throw new Error("Function not implemented.");
-        } } messagesAlreadySent={false}      />
-      <AutomationModal
-        visible={automationModalVisible}
-        setVisible={setAutomationModalVisible}
+        onSubmit={handleSubmit}
+        messagesAlreadySent={false}
       />
+      <AutomationModal visible={automationModalVisible} />
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}
