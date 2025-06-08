@@ -14,7 +14,7 @@ interface RowActionsProps {
 
 const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
   const [isEditPatientModalOpen, setisEditPatientModalOpen] = useState(false);
-  const shuttles = useGetShuttles();
+  const {shuttles} = useGetShuttles();
 
   const handleEditColumn = () => {
     setisEditPatientModalOpen(true);

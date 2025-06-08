@@ -20,13 +20,13 @@ export type Shuttle = {
 
 const useGetShuttles = () => {
   const date = useHomePageContext().selectedDate;
-  const { data } = useQueryFetchRequest<SharepointQueryResultArray<Shuttle>>(
+  const { data, refetch } = useQueryFetchRequest<SharepointQueryResultArray<Shuttle>>(
     `/_api/web/lists/getbytitle('shuttles')/items?$select=ID,Title,StartTime,ArrivalTime,Details,RequestsId,DriverId,totalDistance,driverData/ID,driverData/Title&$expand=driverData&${filterByToday(date, "StartTime")}`
   );
 
   const shuttles = data?.d.results;
 
-  return shuttles;
+  return { shuttles, refetch };
 };
 
 export default useGetShuttles;

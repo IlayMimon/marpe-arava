@@ -12,6 +12,7 @@ import { ColorType, Driver, TravelItem } from "../../types/travelBar";
 import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
 import { parseStations } from "../../functions/parseStations";
+import { patchItemInList } from "../../functions/postToSharepoint";
 
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,7 +21,7 @@ const TravelBar = () => {
 
   const drivers = useGetDrivers();
   const driversData = useGetDriversData();
-  const shuttles = useGetShuttles();
+  const { shuttles, refetch: refetchShuttles } = useGetShuttles();
 
   const updatedDrivers = useMemo(() => {
     const driverDistanceMap = new Map<number, number>();
@@ -62,18 +63,44 @@ const TravelBar = () => {
   };
 
   // Assign driver to a color route
-  const assignDriver = (color: ColorType, driverId: number): void => {
-    setDriverAssignments((prev) =>
-      prev[color] !== driverId
-        ? {
-            ...prev,
-            [color]: driverId,
-          }
-        : {
-            ...prev,
-            [color]: null,
-          }
-    );
+  const assignDriver = async (color: ColorType, driverId: number): Promise<void> => {
+    try {
+      const relevantShuttles = shuttles?.filter(
+        (s) => s.driverData.ID === getDriverIndexByColor(color)?.ID
+      );
+
+      if (!relevantShuttles || relevantShuttles.length === 0) {
+        return;
+      }
+
+      await Promise.all(
+        relevantShuttles.map((s) =>
+          patchItemInList(
+            "Shuttles",
+            { DriverId: s.DriverId !== driverId ? driverId : null },
+            s.ID,
+            "*"
+          )
+        )
+      );
+
+      // Only update state after successful patching
+      setDriverAssignments((prev) =>
+        prev[color] !== driverId
+          ? {
+              ...prev,
+              [color]: driverId,
+            }
+          : {
+              ...prev,
+              [color]: null,
+            }
+      );
+
+      refetchShuttles();
+    } catch (error) {
+      console.error("Error assigning driver:", error);
+    }
   };
 
   // Get assigned driver name for a color
@@ -109,7 +136,7 @@ const TravelBar = () => {
       const shuttle = shuttles?.find((s) => s.driverData.ID === colors.indexOf(color) + 1);
       return shuttle ? shuttle.DriverId : null;
     };
-    
+
     const initialAssignments: Record<ColorType, number | null> = {
       purple: findInitialDriver("purple"),
       cyan: findInitialDriver("cyan"),

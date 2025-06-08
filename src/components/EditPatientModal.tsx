@@ -64,7 +64,7 @@ const EditPatientModal = ({
 
   const rawAppointmentOptions = useGetServices();
   const rawStations = useGetStations();
-  const rawRides = useGetShuttles();
+  const {shuttles: rawRides} = useGetShuttles();
   const rawDrivers = useGetDrivers();
   const rawRequests = useGetShuttleRequests();
 
