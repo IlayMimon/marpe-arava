@@ -105,6 +105,20 @@ const TravelBar = () => {
   const colors: ColorType[] = useMemo(() => ["purple", "cyan", "orange"], []);
 
   useEffect(() => {
+    const findInitialDriver = (color: ColorType): number | null => {
+      const shuttle = shuttles?.find((s) => s.driverData.ID === colors.indexOf(color) + 1);
+      return shuttle ? shuttle.DriverId : null;
+    };
+    
+    const initialAssignments: Record<ColorType, number | null> = {
+      purple: findInitialDriver("purple"),
+      cyan: findInitialDriver("cyan"),
+      orange: findInitialDriver("orange"),
+    };
+    setDriverAssignments(initialAssignments);
+  }, [colors, shuttles]);
+
+  useEffect(() => {
     if (shuttles) {
       const formattedShuttles = shuttles
         .sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime())
