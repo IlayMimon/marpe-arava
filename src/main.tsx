@@ -6,7 +6,7 @@ import QueryProvider from "./components/QueryProvider.tsx";
 import axios from "axios";
 
 if (import.meta.env.PROD) {
-  axios.defaults.baseURL = window.location.pathname;
+  axios.defaults.baseURL = window.location.pathname.split('/', 3).join('/');
   axios.interceptors.request.use((config) => {
     if (!config.url || !/^\/?_api/g.test(config.url)) {
       config.baseURL = undefined;
