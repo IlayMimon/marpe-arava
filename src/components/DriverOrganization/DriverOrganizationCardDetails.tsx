@@ -1,9 +1,4 @@
-import {
-  IconClock,
-  IconRoute,
-  IconRoute2,
-  IconUserCircle,
-} from "@tabler/icons-react";
+import { IconClock, IconRoute, IconRoute2, IconUserCircle } from "@tabler/icons-react";
 import getTotalDrivingTime from "../../functions/getTimeDifference";
 import DriverData from "../../types/DriverOrganizationTypes";
 
@@ -18,16 +13,12 @@ const DriverOrganizationCardDetails = ({
 }: DriverOrganizationCardDetailsProps) => {
   const details = [
     {
-      icon: (
-        <IconUserCircle className="driver-organization-card__details__icon" />
-      ),
+      icon: <IconUserCircle className="driver-organization-card__details__icon" />,
       text: driverData.name || "נהג " + (index + 1).toString(),
     },
     {
       icon: <IconRoute className="driver-organization-card__details__icon" />,
-      text: driverData.paths
-        .filter((path) => "pathId" in path)
-        .length.toString(),
+      text: driverData.paths.filter((path) => "pathId" in path).length.toString(),
     },
     {
       icon: <IconRoute2 className="driver-organization-card__details__icon" />,
@@ -39,8 +30,9 @@ const DriverOrganizationCardDetails = ({
         driverData.paths
           .filter((path) => "pathId" in path)
           .map((path) => {
-            const times = path.stations.map((station) => station.arrivalTime);
-            return times.length === 0
+            const times = path.stations.map((station) => station.arrivalTime || "00:00");
+
+            return !times.length
               ? { first: "00:00", last: "00:00" }
               : {
                   first: times[0],
@@ -56,9 +48,7 @@ const DriverOrganizationCardDetails = ({
       {details.map((detail) => (
         <div key={detail.text} className="driver-organization-card__details">
           {detail.icon}
-          <span className="driver-organization-card__details__text">
-            {detail.text}
-          </span>
+          <span className="driver-organization-card__details__text">{detail.text}</span>
         </div>
       ))}
     </div>

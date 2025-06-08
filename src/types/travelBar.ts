@@ -1,3 +1,5 @@
+import { Shuttle } from "../hooks/data/useGetShuttles";
+
 export type ColorType = "purple" | "cyan" | "orange";
 
 export interface StationInfo {
@@ -8,26 +10,20 @@ export interface StationInfo {
   isDestination?: boolean;
 }
 
-export interface TravelItem {
-  id: number;
-  tripId: string;
-  startTime: string;
-  endTime: string;
+export interface TravelItem extends Shuttle {
   code: string;
   colorType: ColorType;
   stations: StationInfo[];
-  driverId?: number;
 }
 
 export interface TravelBarProps {
   title?: string;
   initialItems?: TravelItem[];
 }
-
-export interface Driver {
-  id: number;
-  name: string;
-}
+export type Driver = {
+  ID: number;
+  Title: string;
+};
 
 export interface IDriverDropdownProps {
   color: ColorType;
@@ -41,9 +37,10 @@ export interface DriverFilterButtonProps {
   drivers: Driver[];
   selectedDriver?: Driver;
   placeholder: string;
-  kilometers: string;
+  kilometers: number;
   color: ColorType;
   isActive: boolean;
+  isUpdatingDriver: boolean;
   isDriverAssigned: boolean;
   toggleFilter: (color: ColorType) => void;
   assignDriver: (color: ColorType, driverId: number) => void;

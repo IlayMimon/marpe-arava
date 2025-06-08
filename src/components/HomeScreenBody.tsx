@@ -58,8 +58,8 @@ const HomeScreenBody = () => {
     // onAssignClick();
   };
 
-  const data = useGetTableData();
   const columns = useGetTableColumns(tripDirection);
+  const data = useGetTableData()
 
   return (
     <div className="home-screen-body">
@@ -135,9 +135,9 @@ const HomeScreenBody = () => {
             tripDirection={tripDirection}
           />
           {tripDirection === "outbound" ? (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           )}
         </div>
         <TravelBar />

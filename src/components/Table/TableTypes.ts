@@ -1,4 +1,5 @@
 import { ColumnType } from "antd/es/table";
+import dayjs from "dayjs";
 import { CSSProperties, ReactNode } from "react";
 
 export interface TableColumn<T> extends Omit<ColumnType<T>, "dataIndex"> {
@@ -12,7 +13,7 @@ export interface GenericGroupedTableProps<T> {
   data: T[];
   groupBy?: (record: T) => string;
   columns: TableColumn<T>[];
-  rowKey: (record: T) => string;
+  rowKey: (record: T) => number;
 }
 
 export type CellType<RecordType> = {
@@ -26,28 +27,29 @@ export type CellType<RecordType> = {
 export type RenderedCell<RecordType> =
   | ReactNode
   | {
-      children?: ReactNode;
-      props?: CellType<RecordType>;
-    };
+    children?: ReactNode;
+    props?: CellType<RecordType>;
+  };
 
 export type TableRow = {
-  key: string;
+  id: number;
+  requestDetailsId: number;
+  shuttleId: number;
   fullName: string;
   status: string;
   phone: string;
-  appointmentType: string;
-  rideId: string | number;
+  appointmentType: string[];
   station: string;
   area: string;
-  pickupTime: string;
-  estimatedArrival: string;
-  desiredArrival: string;
-  outboundGap: number;
-  estimatedFinish: string;
-  finishTime: string;
-  inboundTime: string;
-  inboundGap: number;
+  pickupTime?: dayjs.Dayjs;
+  estimatedArrival?: dayjs.Dayjs;
+  desiredArrival?: dayjs.Dayjs;
+  outboundGap?: number;
+  estimatedFinish?: dayjs.Dayjs;
+  finishTime?: dayjs.Dayjs;
+  inboundTime?: dayjs.Dayjs;
+  inboundGap?: number;
   driver: string;
-  notes: string;
-  actions?: any;
+  notes?: string;
+  actions: string;
 };
