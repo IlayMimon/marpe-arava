@@ -16,6 +16,7 @@ import { patchItemInList } from "../../functions/postToSharepoint";
 
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isUpdatingDriver, setIsUpdatingDriver] = useState<boolean>(false);
   const [colorFilter, setColorFilter] = useState<ColorType>();
   const [travelItems, setTravelItems] = useState<TravelItem[]>([]);
 
@@ -65,6 +66,8 @@ const TravelBar = () => {
   // Assign driver to a color route
   const assignDriver = async (color: ColorType, driverId: number): Promise<void> => {
     try {
+      if (isUpdatingDriver) return; // Prevent multiple updates at the same time
+      setIsUpdatingDriver(true);
       const relevantShuttles = shuttles?.filter(
         (s) => s.driverData.ID === getDriverIndexByColor(color)?.ID
       );
@@ -97,9 +100,11 @@ const TravelBar = () => {
             }
       );
 
-      refetchShuttles();
+      await refetchShuttles();
     } catch (error) {
       console.error("Error assigning driver:", error);
+    } finally {
+      setIsUpdatingDriver(false);
     }
   };
 
@@ -185,6 +190,7 @@ const TravelBar = () => {
                 key={color}
                 color={color}
                 isActive={color === colorFilter}
+                isUpdatingDriver={isUpdatingDriver}
                 isDriverAssigned={hasDriverAssigned(color)}
                 selectedDriver={getAssignedDriver(color)}
                 placeholder={getDriverIndexByColor(color)?.Title}

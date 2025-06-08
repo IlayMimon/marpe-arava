@@ -40,6 +40,7 @@ export interface DriverFilterButtonProps {
   kilometers: number;
   color: ColorType;
   isActive: boolean;
+  isUpdatingDriver: boolean;
   isDriverAssigned: boolean;
   toggleFilter: (color: ColorType) => void;
   assignDriver: (color: ColorType, driverId: number) => void;

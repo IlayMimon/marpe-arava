@@ -7,6 +7,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
   color,
   isDriverAssigned,
   isActive,
+  isUpdatingDriver,
   selectedDriver,
   placeholder,
   kilometers,
@@ -39,27 +40,33 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
       className={classNames("driver-filter-button", { ["driver-filter-button--active"]: isActive })}
       onClick={() => toggleFilter(color)}
     >
-      <Dropdown className="driver-filter-button__dropdown" menu={{ items }} trigger={["click"]}>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          className={classNames(
-            "driver-filter-button__button",
-            `driver-filter-button__button--${color}`,
-            {
-              [`driver-filter-button__button--active`]: isDriverAssigned,
-              [`driver-filter-button__button--active--${color}`]: isDriverAssigned,
-            }
-          )}
-        >
-          <span className="driver-filter-button__button__text">
-            {selectedDriver?.Title || placeholder}
-          </span>
-          <ChevronDown className="driver-filter-button__button__dropdown-icon" />
-        </button>
-      </Dropdown>
+      {isUpdatingDriver ? (
+        <div className="driver-filter-button__button">
+          <span className="driver-filter-button__button__text">מעדכן...</span>
+        </div>
+      ) : (
+        <Dropdown className="driver-filter-button__dropdown" menu={{ items }} trigger={["click"]}>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            className={classNames(
+              "driver-filter-button__button",
+              `driver-filter-button__button--${color}`,
+              {
+                [`driver-filter-button__button--active`]: isDriverAssigned,
+                [`driver-filter-button__button--active--${color}`]: isDriverAssigned,
+              }
+            )}
+          >
+            <span className="driver-filter-button__button__text">
+              {selectedDriver?.Title || placeholder}
+            </span>
+            <ChevronDown className="driver-filter-button__button__dropdown-icon" />
+          </button>
+        </Dropdown>
+      )}
 
       <div className="driver-filter-button__kilometers">{`${kilometers} ק"מ`}</div>
     </div>
