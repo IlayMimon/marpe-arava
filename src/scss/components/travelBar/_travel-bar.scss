@@ -3,7 +3,7 @@ $color-text-dark: #595959;
 .travel-bar {
   direction: rtl;
 
-  width: 52em;
+  width: 52rem;
   height: 100%;
 
   background: #fff;
@@ -218,9 +218,7 @@ $color-text-dark: #595959;
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background-color: var(
-            --Colors-purple-3
-          ); // Default color, will be overridden
+          background-color: var(--Colors-purple-3); // Default color, will be overridden
           z-index: 2;
         }
 
@@ -232,9 +230,7 @@ $color-text-dark: #595959;
           top: 50%;
           height: 100%; // Height to reach the next dot
           width: 2px;
-          background-color: var(
-            --Colors-purple-3
-          ); // Default color, will be overridden
+          background-color: var(--Colors-purple-3); // Default color, will be overridden
           z-index: 1;
         }
 
@@ -289,6 +285,10 @@ $color-text-dark: #595959;
           font-size: 1.3rem;
           font-weight: 500;
           width: 12rem;
+        }
+
+        &__time {
+          font-size: 1.1rem;
         }
       }
     }

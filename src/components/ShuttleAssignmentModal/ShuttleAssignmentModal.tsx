@@ -1,41 +1,27 @@
 import { IconSparkles } from "@tabler/icons-react";
-import { Button, ConfigProvider, Form, Modal, Select, TimePicker, message } from "antd";
-import { RuleObject } from "antd/es/form";
+import { Button, ConfigProvider, Form, FormRule, Modal, Select, TimePicker, message } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import React, { useEffect } from "react";
+import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { FormValues, Props } from "../../types/shuttleAssignmentProps";
-import useGetMedics from "../../hooks/data/useGetMedics";
-import { useHomePageContext } from "../../contexts/HomePage";
-import useGetMedicsPerDate from "../../hooks/data/useGetMedicsPerDate";
+import { useGetTomorrowShuttles } from "../../functions/useGetTomorrowShuttles";
+import { patchItemInList } from "../../functions/postToSharepoint";
+import resetShuttles from "../../functions/resetShuttles";
+import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
+import { Props } from "../../types/shuttleAssignmentProps";
+import MedicSelect from "../MedicSelect";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
 const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
-  const medics = useGetMedics();
+  const [selectedMedic, setSelectedMedic] = React.useState<number | undefined>(undefined);
 
-  const { selectedDate } = useHomePageContext();
-  const { medicsPerDate, refetch, isLoading } = useGetMedicsPerDate(selectedDate);
-  const existingMedicId = medicsPerDate?.[0]?.medicId;
+  const { shuttles } = useGetTomorrowShuttles();
+  const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
 
-  useEffect(() => {
-    if (visible) {
-      refetch();
-    }
-  }, [visible, refetch]);
-
-  useEffect(() => {
-    if (existingMedicId) {
-      form.setFieldsValue({ medicName: existingMedicId });
-    } else {
-      form.setFieldsValue({ medicName: undefined });
-    }
-  }, [existingMedicId, form]);
-
-  const validateTimeRange = (_: RuleObject, endTime: Dayjs) => {
+  const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
     const diff = endTime.diff(startTime, "hour", true);
@@ -48,9 +34,19 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
   const handleSubmit = () => {
     form
       .validateFields()
-      .then((values: FormValues) => {
-        onSubmit(values);
+      .then(async () => {
+        // const { startTime, endTime, vehicleCount, medic } = values;
+
+        await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+        patchItemInList(
+          "Status",
+          { isOver: false, status: "pending", step: 1, isAssigned: false },
+          1,
+          "*"
+        );
+        patchItemInList("trigger", { Title: "000" }, 1, "*");
         form.resetFields();
+        onSubmit();
       })
       .catch(() => {
         message.error("נא למלא את כל השדות החובה כראוי");
@@ -84,7 +80,12 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
         <Form
           form={form}
           layout="vertical"
-          initialValues={{ vehicleCount: 3, medicName: existingMedicId }}
+          // onValuesChange={handleValuesChange}
+          initialValues={{
+            startTime: dayjs("06:30", "HH:mm"),
+            endTime: dayjs("18:30", "HH:mm"),
+            vehicleCount: 3,
+          }}
         >
           <Form.Item
             label="שעות פעילות השאטלים"
@@ -118,7 +119,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
           <Form.Item
             label="מספר נהגים"
             name="vehicleCount"
-            rules={[{ required: true, message: "יש לבחור מספר רכבים" }]}
+            rules={[{ required: true, message: "יש לבחור מספר נהגים" }]}
           >
             <Select>
               {[1, 2, 3, 4, 5].map((num) => (
@@ -131,12 +132,12 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
 
           <Form.Item
             label="חובש אחראי"
-            name="medicName"
-            rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
+            required
+            validateStatus={!selectedMedic ? "error" : ""}
+            help={!selectedMedic ? "יש לבחור חובש אחראי" : ""}
           >
-            <Select placeholder={isLoading ? "טוען..." : "בחר חובש אחראי"}>
-              {medics?.map((medic) => <Option value={medic.ID}>{medic.Title}</Option>)}
-            </Select>
+            <MedicSelect setSelectedMedic={setSelectedMedic} />
+            <input type="hidden" name="medic" value={selectedMedic || ""} />
           </Form.Item>
         </Form>
       </Modal>
