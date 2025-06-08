@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import formatDate from "../../functions/formatDate";
 import DriverData from "../../types/DriverOrganizationTypes";
 import DriverOrganizationCardContent from "./DriverOrganizationCardContent";
@@ -6,7 +7,7 @@ import DriverOrganizationCardDetails from "./DriverOrganizationCardDetails";
 interface DriverOrganizationCardProps {
   driverData: DriverData;
   index: number;
-  chosenDate: Date;
+  chosenDate: Dayjs;
   ref: React.RefObject<HTMLDivElement | null>;
 }
 

@@ -9,7 +9,7 @@ import SummarizeNumbers from "./SummarizeNumbers";
 const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
-  const shuttles = useGetShuttles();
+  const {shuttles} = useGetShuttles();
 
   const patientStatuses = useMemo(
     () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),

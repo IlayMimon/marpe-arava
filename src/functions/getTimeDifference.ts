@@ -1,6 +1,4 @@
-const getTotalDrivingTime = (
-  times: { first: string; last: string }[]
-): string => {
+const getTotalDrivingTime = (times: { first: string; last: string }[]): string => {
   if (!times.length) return "אין נתונים";
 
   const toMinutes = (timeStr: string): number => {

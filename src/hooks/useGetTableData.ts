@@ -9,7 +9,7 @@ import useGetStations from "./data/useGetStations";
 import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
 
 const useGetTableData = () => {
-  const shuttles = useGetShuttles();
+  const {shuttles} = useGetShuttles();
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const stations = useGetStations();
