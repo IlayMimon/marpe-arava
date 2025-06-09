@@ -2,25 +2,30 @@ import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import TravelBar from "./travel-bar/TravelBar";
-import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
-import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
-import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import { addItemToList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
+import { useStatusManager } from "../hooks/useStatusManager";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import AutomationModal from "./AutomationModal";
+import BtnPopUpMsg from "./generic/btnPopUpMsg";
+import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
+import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
+import TravelBar from "./travel-bar/TravelBar";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const { onAssignClick } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -45,11 +50,14 @@ const HomeScreenBody = () => {
   const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-    setModalVisible(false);
+    setShuttleAssignmentModalVisible(false);
+    setAutomationModalVisible(true);
+
+    onAssignClick();
   };
 
-  const data = useGetTableData();
   const columns = useGetTableColumns(tripDirection);
+  const data = useGetTableData();
 
   return (
     <div className="home-screen-body">
@@ -64,7 +72,7 @@ const HomeScreenBody = () => {
             btnContent="שבץ מחדש"
             isOpen={popUpMsgOpen}
             onConfirm={() => {
-              setModalVisible((prevValue) => !prevValue);
+              setShuttleAssignmentModalVisible((prevValue) => !prevValue);
               setPopUpMsgOpen(false);
             }}
             onCancel={() => setPopUpMsgOpen(false)}
@@ -74,7 +82,11 @@ const HomeScreenBody = () => {
               title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
             >
               <Button
-                onClick={() => (isShuttlesArranged ? setPopUpMsgOpen(true) : setModalVisible(true))}
+                onClick={() =>
+                  isShuttlesArranged
+                    ? setPopUpMsgOpen(true)
+                    : setShuttleAssignmentModalVisible(true)
+                }
                 disabled={messagesAlreadySent}
                 color="default"
                 variant="filled"
@@ -116,19 +128,20 @@ const HomeScreenBody = () => {
         <div className="home-screen-body__container__body">
           <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
-            <Table data={data} columns={columns} rowKey={(row) => row.key} />
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           )}
         </div>
         <TravelBar />
       </div>
       <ShuttleAssignmentModal
-        visible={modalVisible}
-        onCancel={() => setModalVisible(false)}
+        visible={shuttleAssignmentModalVisible}
+        onCancel={() => setShuttleAssignmentModalVisible(false)}
         onSubmit={handleSubmit}
-        messagesAlreadySent={messagesAlreadySent}
+        messagesAlreadySent={false}
       />
+      <AutomationModal visible={automationModalVisible} />
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}

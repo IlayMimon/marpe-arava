@@ -1,22 +1,15 @@
+import { Status } from "../../components/types/Status";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type Status = {
-  ID: number
-  Title: string
-  isOver: boolean
-  status: string
-  step: number
-};
 
-const useGetStatus = () => {
-  const { data } = useQueryFetchRequest<SharepointQueryResultArray<Status>>(
-    "/_api/web/lists/getbytitle('Status')/items?$select=ID,Title,isOver,status,step"
+
+const GetStatus = () => {
+  const { data, refetch } = useQueryFetchRequest<SharepointQueryResultArray<Status>>(
+    "/_api/web/lists/getbytitle('Status')/items?$select=isOver,status,step,isAssigned",
   );
 
-  const statuses = data?.d.results
-
-  return statuses
+  return { data, refetch };
 }
 
-export default useGetStatus;
+export default GetStatus;

@@ -26,7 +26,7 @@ export default function ShuttleTableHeader({
             className="shuttle-table-header__segmented"
             options={[
               { label: "הלוך", value: "outbound" },
-              { label: "חזור", value: "return" },
+              { label: "חזור", value: "inbound" },
             ]}
             block
             value={tripDirection}

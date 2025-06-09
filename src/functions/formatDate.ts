@@ -1,11 +1,11 @@
-import dayjs from "dayjs";
+import { Dayjs } from "dayjs";
 
-const formatDate = (date: Date): string => {
+const formatDate = (date: Dayjs): string => {
   const hebrewDays = ["א", "ב", "ג", "ד", "ה", "ו", "ש"];
-  const dayOfWeek = date.getDay();
+  const dayOfWeek = date.day(); // Day.js method, returns 0 (Sunday) to 6 (Saturday)
   const hebrewDay = hebrewDays[dayOfWeek];
 
-  const formatted = dayjs(date).format("DD.MM.YY");
+  const formatted = date.format("DD.MM.YY");
 
   return `יום ${hebrewDay}’ ${formatted}`;
 };

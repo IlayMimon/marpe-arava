@@ -4,6 +4,9 @@ import SidebarNavigation from "../components/sidebarNavigation";
 import React, { useState } from "react";
 import { HomePageContext } from "../contexts/HomePage";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc)
 
 const HomePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
