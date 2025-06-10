@@ -8,13 +8,14 @@ function getTotalKm(driver: Driver): number {
   
 export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]) {
     const result: ShuttleAssignment[] = [];
-    
+    console.log("assignShuttlesToDrivers called", shuttles, drivers);
     // מיון השאטלים לפי זמן התחלה
-    const sortedShuttles = shuttles.sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime());
-  
+    const sortedShuttles = shuttles.sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime());
+
+    console.log("Sorted Shuttles:", sortedShuttles);
     for (const shuttle of sortedShuttles) {
       let assigned = false;
-  
+      
       // מתחיל מהנהגים עם הכי פחות קילומטרים
       const sortedDrivers = [...drivers].sort((a, b) => getTotalKm(a) - getTotalKm(b));
   
@@ -33,7 +34,7 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]) 
             driverId: driver.id,
             driverName: driver.name
           });
-  
+          
           assigned = true;
           break;
         }
@@ -43,9 +44,9 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]) 
         console.warn(`לא נמצא נהג זמין לנסיעה ${shuttle.Id}`);
       }
     }
-
+    
     for (const driver of drivers) {
-        patchItemInList('driversData', {Distance: 0}, driver.id, '*')
+      patchItemInList('driversData', {Distance: 0}, driver.id, '*')
         if (driver.schedule.length !== 0) {
           patchItemInList('driversData', {Distance: getTotalKm(driver)}, driver.id, '*')
         }
