@@ -159,7 +159,7 @@ const TravelBar = () => {
             ...shuttle,
             code: "",
             colorType: colors[shuttle.driverData.ID - 1],
-            stations: parseStations(shuttle.Details),
+            stations: parseStations(shuttle.Details, shuttle.ArrivalTime),
           };
         }) as TravelItem[];
 
