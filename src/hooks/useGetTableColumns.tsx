@@ -10,11 +10,25 @@ const formatTime = (value: dayjs.Dayjs | undefined) => {
 };
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
+  const areas = Array.from(
+    new Set(useGetStations()?.map((station) => station.Area))
+  );
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
       ? [
+          {
+            key: "appointmentType",
+            title: "סוג תור",
+            dataIndex: "appointmentType",
+            render: (types: string[]) => types?.join(", "),
+          },
+          {
+            key: "rideId",
+            title: "מס״ד נסיעה",
+            dataIndex: "rideId",
+            sorter: true,
+          },
           {
             key: "station",
             title: "תחנה",
@@ -124,18 +138,6 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       title: "טלפון",
       dataIndex: "phone",
     },
-    {
-      key: "appointmentType",
-      title: "סוג תור",
-      dataIndex: "appointmentType",
-      render: (types: string[]) => types?.join(", "),
-    },
-    {
-      key: "rideId",
-      title: "מס״ד נסיעה",
-      dataIndex: "rideId",
-      sorter: true,
-    },
     ...directionColumns,
     {
       key: "notes",
@@ -146,7 +148,9 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "actions",
       title: "פעולות",
       dataIndex: "actions",
-      render: (_value, row) => <RowActions rowData={row} tripDirection={tripDirection} />,
+      render: (_value, row) => (
+        <RowActions rowData={row} tripDirection={tripDirection} />
+      ),
     },
   ];
 
