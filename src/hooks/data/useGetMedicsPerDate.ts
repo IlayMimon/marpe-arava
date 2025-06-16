@@ -2,7 +2,7 @@ import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 import dayjs from "dayjs";
 
-type MedicPerDate = {
+export type MedicPerDate = {
   ID: number;
   medicId: number;
   Date: string;

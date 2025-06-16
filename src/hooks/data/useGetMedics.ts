@@ -1,7 +1,7 @@
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type Medic = {
+export type Medic = {
   ID: number;
   Title: string;
 };

@@ -1,7 +1,7 @@
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
-type Service = {
+export type Service = {
   ID: number;
   Title: string;
   Time: number

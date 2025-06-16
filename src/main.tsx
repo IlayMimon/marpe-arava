@@ -4,6 +4,8 @@ import "./scss/main.scss";
 import App from "./App.tsx";
 import QueryProvider from "./components/QueryProvider.tsx";
 import axios from "axios";
+import { Provider as ReduxProvider } from 'react-redux';
+import store from "./store/store.ts";
 // import "mimic";
 
 if (import.meta.env.PROD) {
@@ -21,7 +23,9 @@ axios.defaults.headers.common.Accept = "application/json;odata=verbose";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryProvider>
-      <App />
+      <ReduxProvider store={store}>
+        <App />
+      </ReduxProvider>
     </QueryProvider>
   </StrictMode>
 );
