@@ -6,10 +6,10 @@ import GetStatus from "./data/useGetStatus";
 
 export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
   const [shouldPoll, setShouldPoll] = useState(true);
+  const [status, setStatus] = useState<{ isOver: boolean; step: number; isAssigned: boolean } | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { refetch } = GetStatus();
-
   const { refetch: refetchShuttles } = useGetTomorrowShuttles();
 
   const handleStatus = useCallback(async () => {
@@ -17,23 +17,22 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
     const { data: shuttleData } = await refetchShuttles();
     if (!data || !shuttleData) return;
 
-    const { isOver, isAssigned } = data.d.results[0] || {};
+    const { isOver, step,isAssigned } = data.d.results[0] || {};
+    setStatus({ isOver, step, isAssigned });
 
-    const shuttles = shuttleData?.d.results.map((shuttle) => {
-      return {
-        Id: shuttle.Id,
-        StartTime: shuttle.StartTime,
-        ArrivalTime: shuttle.ArrivalTime,
-        totalDistance: shuttle.totalDistance,
-      };
-    });
+    const shuttles = shuttleData?.d.results.map((shuttle) => ({
+      Id: shuttle.Id,
+      StartTime: shuttle.StartTime,
+      ArrivalTime: shuttle.ArrivalTime,
+      totalDistance: shuttle.totalDistance,
+    }));
 
     if (isOver && isAssigned) {
       setModalOpen(false);
       setShouldPoll(false);
     } else if (isOver && !isAssigned) {
       setModalOpen(true);
-      await assignShuttlesToDrivers(shuttles || [], initDrivers(3)); // FIX number of drivers and shuttles
+      await assignShuttlesToDrivers(shuttles || [], initDrivers(3));
     } else if (!isOver) {
       setModalOpen(true);
       setShouldPoll(true);
@@ -46,7 +45,6 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
         handleStatus();
       }, 2000);
     } else {
-      // Clear the interval if polling is disabled
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -61,12 +59,12 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
     };
   }, [handleStatus, shouldPoll]);
 
-  // Manually triggerable from outside
   const onAssignClick = () => {
     setShouldPoll(true);
   };
 
   return {
     onAssignClick,
+    status, 
   };
 };

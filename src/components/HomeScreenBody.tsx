@@ -25,7 +25,8 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const { onAssignClick } = useStatusManager(setAutomationModalVisible);
+const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
+
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -141,7 +142,8 @@ const HomeScreenBody = () => {
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-      <AutomationModal visible={automationModalVisible} />
+<AutomationModal visible={automationModalVisible} status={status} />
+
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}
