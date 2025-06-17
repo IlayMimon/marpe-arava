@@ -14,7 +14,7 @@ import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import { useHomePageContext } from "../contexts/HomePage";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -63,8 +63,8 @@ const HomeScreenBody = () => {
   const columns = useGetTableColumns(tripDirection);
   const data = useGetTableData();
 
-
-  const isSelectedDateTomorrow = selectedDate.isBefore(dayjs().add(1, 'day').endOf('day')) && selectedDate.isAfter(dayjs().endOf('day'));
+  const isSelectedDateTomorrow =
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) && selectedDate.isAfter(dayjs().endOf("day"));
 
   return (
     <div className="home-screen-body">
@@ -86,7 +86,11 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : !isSelectedDateTomorrow ? "ניתן לשבץ נסיעות רק למחר" : ""}
+              title={
+                (messagesAlreadySent && "לא ניתן לשבץ מחדש לאחר הפצת הודעות") ||
+                (!isSelectedDateTomorrow && "ניתן לשבץ נסיעות רק למחר") ||
+                ""
+              }
             >
               <Button
                 onClick={() =>
