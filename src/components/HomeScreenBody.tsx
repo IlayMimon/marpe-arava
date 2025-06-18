@@ -13,6 +13,8 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
+import { useHomePageContext } from "../contexts/HomePage";
+import dayjs from "dayjs";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -24,6 +26,8 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const { selectedDate } = useHomePageContext();
 
   const { onAssignClick } = useStatusManager(setAutomationModalVisible);
 
@@ -59,6 +63,9 @@ const HomeScreenBody = () => {
   const columns = useGetTableColumns(tripDirection);
   const data = useGetTableData();
 
+  const isSelectedDateTomorrow =
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) && selectedDate.isAfter(dayjs().endOf("day"));
+
   return (
     <div className="home-screen-body">
       <div className="home-screen-body__header">
@@ -79,7 +86,11 @@ const HomeScreenBody = () => {
           >
             <Tooltip
               key="submit"
-              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
+              title={
+                (messagesAlreadySent && "לא ניתן לשבץ מחדש לאחר הפצת הודעות") ||
+                (!isSelectedDateTomorrow && "ניתן לשבץ נסיעות רק למחר") ||
+                ""
+              }
             >
               <Button
                 onClick={() =>
@@ -87,7 +98,7 @@ const HomeScreenBody = () => {
                     ? setPopUpMsgOpen(true)
                     : setShuttleAssignmentModalVisible(true)
                 }
-                disabled={messagesAlreadySent}
+                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
