@@ -2,6 +2,7 @@ import { Dropdown } from "antd";
 import classNames from "classnames";
 import { ChevronDown } from "lucide-react";
 import { DriverFilterButtonProps } from "../../types/travelBar";
+import { useState } from "react";
 
 const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
   color,
@@ -16,6 +17,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
   isDriverAssignedFunc,
   drivers,
 }) => {
+  const [driverDropdownOpen, setDriverDropdownOpen] = useState<boolean>()
   const items = drivers.map((driver) => ({
     key: driver.ID,
     disabled: isDriverAssignedFunc(driver.ID, color),
@@ -28,6 +30,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
           if (!isDriverAssignedFunc(driver.ID, color)) {
             assignDriver(color, driver.ID);
           }
+          setDriverDropdownOpen(false)
         }}
       >
         {driver.Title}
@@ -45,7 +48,10 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
           <span className="driver-filter-button__button__text">מעדכן...</span>
         </div>
       ) : (
-        <Dropdown className="driver-filter-button__dropdown" menu={{ items }} trigger={["click"]}>
+        <Dropdown className="driver-filter-button__dropdown" menu={{ items }} trigger={["click"]}
+        open={driverDropdownOpen}
+        onOpenChange={() => {setDriverDropdownOpen(true)}}
+        >
           <button
             onClick={(e) => {
               e.preventDefault();
