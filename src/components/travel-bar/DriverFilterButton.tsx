@@ -1,4 +1,4 @@
-import { Dropdown} from "antd";
+import { Dropdown, Menu} from "antd";
 import classNames from "classnames";
 import { ChevronDown } from "lucide-react";
 import { DriverFilterButtonProps } from "../../types/travelBar";
@@ -22,15 +22,17 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
     label: driver.Title,
   }));
 
-  const item_click = (info: { key: number }) => {
-    if (!isDriverAssignedFunc(info.key, color)) {
-      assignDriver(color, info.key);
+  const item_click = (info: { key: string }) => {
+    if (!isDriverAssignedFunc(parseInt(info.key),  color)) {
+      assignDriver(color, parseInt(info.key));
     }
-    console.log(color);
-    console.log(info.key);
-    
-    
   }  
+
+  const menu = (
+    <div onClick={(e) => e.stopPropagation()}>
+      <Menu items={items} onClick={item_click} />
+    </div>
+  );
 
   return (
     <div
@@ -42,7 +44,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
           <span className="driver-filter-button__button__text">מעדכן...</span>
         </div>
       ) : (
-        <Dropdown className="driver-filter-button__dropdown" menu={{ items, onClick: item_click }} trigger={["click"]}
+        <Dropdown className="driver-filter-button__dropdown" overlay={menu}  trigger={["click"]}
         >
           <button
             onClick={(e) => {
