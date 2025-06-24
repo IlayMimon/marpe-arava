@@ -146,7 +146,18 @@ const HomeScreenBody = () => {
         </div>
         <TravelBar />
       </div>
-     
+      <ShuttleAssignmentModal
+        visible={shuttleAssignmentModalVisible}
+        onCancel={() => setShuttleAssignmentModalVisible(false)}
+        onSubmit={handleSubmit}
+        messagesAlreadySent={false}
+      />
+      <AutomationModal visible={automationModalVisible} />
+      <AddPatientModal
+        isOpen={escortModalOpen}
+        onClose={() => setEscortModalOpen(false)}
+        onSubmit={handleEscortSubmit}
+      />
     </div>
   );
 };
