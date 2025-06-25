@@ -13,20 +13,24 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
+import { useHomePageContext } from "../contexts/HomePage";
+import dayjs from "dayjs";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
+    useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
+  const { selectedDate } = useHomePageContext();
 
+  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -60,6 +64,10 @@ const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
   const columns = useGetTableColumns(tripDirection);
   const data = useGetTableData();
 
+  const isSelectedDateTomorrow =
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
+    selectedDate.isAfter(dayjs().endOf("day"));
+
   return (
     <div className="home-screen-body">
       <div className="home-screen-body__header">
@@ -80,7 +88,11 @@ const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
           >
             <Tooltip
               key="submit"
-              title={messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""}
+              title={
+                (messagesAlreadySent && "לא ניתן לשבץ מחדש לאחר הפצת הודעות") ||
+                (!isSelectedDateTomorrow && "ניתן לשבץ נסיעות רק למחר") ||
+                ""
+              }
             >
               <Button
                 onClick={() =>
@@ -88,7 +100,7 @@ const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
                     ? setPopUpMsgOpen(true)
                     : setShuttleAssignmentModalVisible(true)
                 }
-                disabled={messagesAlreadySent}
+                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
@@ -127,7 +139,10 @@ const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
@@ -142,7 +157,7 @@ const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-<AutomationModal visible={automationModalVisible} status={status} />
+      <AutomationModal visible={automationModalVisible} status={status} />
 
       <AddPatientModal
         isOpen={escortModalOpen}

@@ -39,4 +39,35 @@
 
     background: transparent !important;
   }
+
+  &--helper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 3rem 0.2rem;
+
+    height: 100%;
+
+    &-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 2rem;
+      height: 2rem;
+
+      color: white;
+      border-radius: 50%;
+      background-color: var(--Background-color-bg-layout-secondary);
+
+      opacity: 0.8;
+      transition: 0.15s ease-in-out;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }

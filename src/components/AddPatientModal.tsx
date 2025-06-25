@@ -39,7 +39,7 @@ type IAddPatientModalProps = {
 const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(true);
-  const [hasDropoff, setHasDropoff] = useState(false);
+  const [hasDropoff, setHasDropoff] = useState(true);
 
   // Watch all required fields
   const pickupStation = Form.useWatch("pickupStation", form);
@@ -153,7 +153,13 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                   },
                 ]}
               >
-                <Select disabled={!hasPickup} placeholder="בחר תחנה">
+                <Select
+                  disabled={!hasPickup}
+                  placeholder="בחר תחנה"
+                  onChange={(e) => {
+                    form.setFieldsValue({ dropoffStation: e });
+                  }}
+                >
                   {stationsData?.map((station) => (
                     <Option key={station.ID} value={station.ID}>
                       {station.Title}

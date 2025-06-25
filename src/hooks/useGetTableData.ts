@@ -9,7 +9,7 @@ import useGetStations from "./data/useGetStations";
 import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
 
 const useGetTableData = () => {
-  const {shuttles} = useGetShuttles();
+  const { shuttles } = useGetShuttles();
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const stations = useGetStations();
@@ -44,7 +44,7 @@ const useGetTableData = () => {
       status:
         patientsStatuses?.find((status) => status.patientId === request.ID)?.status ||
         assignedStatusEnum.initial,
-      phone: request?.Phone || "",
+      phone: (request?.Phone || "").replace(/-/g, ""),
       appointmentType: requestedServicesTitles || [],
       rideId: shuttle?.ID || "",
       station: pickupStation?.Title || "",
