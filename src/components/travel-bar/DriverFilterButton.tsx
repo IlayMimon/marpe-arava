@@ -22,7 +22,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
     label: driver.Title,
   }));
 
-  const item_click = (info: { key: string }) => {
+  const onItemClick = (info: { key: string }) => {
     if (!isDriverAssignedFunc(parseInt(info.key),  color)) {
       assignDriver(color, parseInt(info.key));
     }
@@ -30,7 +30,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
 
   const menu = (
     <div onClick={(e) => e.stopPropagation()}>
-      <Menu items={items} onClick={item_click} />
+      <Menu items={items} onClick={onItemClick} />
     </div>
   );
 

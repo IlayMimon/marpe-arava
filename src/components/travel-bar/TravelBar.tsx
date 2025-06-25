@@ -112,8 +112,6 @@ const TravelBar = () => {
   const getAssignedDriver = (color: ColorType): Driver | undefined => {
     const driverId = driverAssignments[color];
     const driverFound = drivers?.find((driver) => driver?.ID === driverId);
-    // console.log(driverFound);
-    
     return driverFound;
   };
 
