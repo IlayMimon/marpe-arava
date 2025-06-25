@@ -32,7 +32,7 @@ const DriverOrganizationCardPath = ({
         <div
           className={classNames(
             "driver-organization-card-content__path__station",
-            name === 'מרפ"א ערבה' && "--marpe-station"
+            name === "מרפא ערבה" && "--marpe-station"
           )}
           key={arrivalTime}
         >

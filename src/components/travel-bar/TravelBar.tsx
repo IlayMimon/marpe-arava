@@ -13,6 +13,9 @@ import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
 import { parseStations } from "../../functions/parseStations";
 import { patchItemInList } from "../../functions/postToSharepoint";
+import findRequestByShuttleId from "../../functions/findRequestByShuttleId";
+import useGetShuttleDetailsPerRequest from "../../hooks/data/useGetShuttleDetailsPerRequest";
+import useGetShuttleRequests from "../../hooks/data/useGetShuttleRequests";
 
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -23,6 +26,8 @@ const TravelBar = () => {
   const drivers = useGetDrivers();
   const driversData = useGetDriversData();
   const { shuttles, refetch: refetchShuttles } = useGetShuttles();
+  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
+  const shuttleRequests = useGetShuttleRequests();
 
   const updatedDrivers = useMemo(() => {
     const driverDistanceMap = new Map<number, number>();
@@ -159,7 +164,12 @@ const TravelBar = () => {
             ...shuttle,
             code: "",
             colorType: colors[shuttle.driverData.ID - 1],
-            stations: parseStations(shuttle.Details, shuttle.ArrivalTime),
+            stations: parseStations(shuttle.Details, shuttle.ArrivalTime).map((station) => {
+              return {
+                ...station,
+                passengers: findRequestByShuttleId(shuttle.ID, shuttleDetailsPerRequest, shuttleRequests)?.FullName,
+              };
+            }),
           };
         }) as TravelItem[];
 
@@ -257,7 +267,9 @@ const TravelBar = () => {
                             `travel-bar__list__item__stations--${item.colorType}`
                           )}
                         >
-                          {item.stations.map((station, index) => (
+                          {item.stations.map((station, index) => {
+                            console.log(station.passengers)
+                            return (
                             <li
                               key={index}
                               className={classNames(
@@ -283,7 +295,7 @@ const TravelBar = () => {
                                 {station.arrivalTime}
                               </div>
                             </li>
-                          ))}
+                          )})}
                         </ul>
                       </div>
                     )}
