@@ -1,6 +1,7 @@
 import { Modal, Progress } from "antd";
 import Lottie from "lottie-react";
 import busAnimation from "../assets/busAnimation.json";
+import { useEffect, useState } from "react";
 
 interface AutomationModalProps {
   visible: boolean;
@@ -8,10 +9,28 @@ interface AutomationModalProps {
 }
 
 const AutomationModal = ({ visible, status }: AutomationModalProps) => {
-  const percent = status
-    ? Math.min(Math.round((status.step / 8) * 100), 100)
-    : 0;
+  const [percent, setPercent] = useState(0);
 
+  useEffect(() => {
+    if (!visible) {
+      setPercent(0);
+      return;
+    }
+  }, [visible]);
+  useEffect(() => {
+    if(percent ===0 &&(status === null || status.step ===8)){
+      return; 
+    }
+    if(status?.step==0){
+      return;
+    }
+    if(percent === 100 && status?.isOver){
+      visible = false;
+      return;
+    }
+    const newPercent = status ? Math.min(Math.round((status.step / 8) * 100), 100) : 0
+    setPercent(newPercent);
+  }, [ status]);
   return (
     <Modal
       className="automation-modal"
