@@ -2,11 +2,7 @@ import { useHomePageContext } from "../../contexts/HomePage";
 import filterByToday from "../../functions/filterByToday";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
-
-export type Station = {
-  Title: string;
-  Area: string;
-};
+import useGetStations from "./useGetStations";
 
 export type Shuttle = {
   ID: number;
@@ -28,16 +24,15 @@ export type Shuttle = {
 const useGetShuttles = () => {
   const date = useHomePageContext().selectedDate;
 
-  const { data: shuttlesData, refetch: refetchShuttles } = useQueryFetchRequest<SharepointQueryResultArray<Shuttle>>(
+  const { data: shuttlesData, refetch: refetchShuttles } = useQueryFetchRequest<
+    SharepointQueryResultArray<Shuttle>
+  >(
     `/_api/web/lists/getbytitle('shuttles')/items?$select=ID,Title,StartTime,ArrivalTime,Details,RequestsId,DriverId,totalDistance,driverData/ID,driverData/Title&$expand=driverData&${filterByToday(date, "StartTime")}`
   );
 
-  const { data: stationsData, refetch: refetchStations } = useQueryFetchRequest<SharepointQueryResultArray<Station>>(
-    `/_api/web/lists/getbytitle('stations')/items?$select=Title,Area`
-  );
+  const stationsList = useGetStations();
 
   const shuttles = shuttlesData?.d.results;
-  const stationsList = stationsData?.d.results;
 
   const stationMap: { [stationName: string]: string } = {};
   stationsList?.forEach((station) => {
@@ -47,15 +42,11 @@ const useGetShuttles = () => {
   shuttles?.forEach((shuttle) => {
     const regex = /([^:]+): \d{2}:\d{2}/g;
     const matches = shuttle.Details.matchAll(regex);
-    const stations: string[] = [];
-
-    for (const match of matches) {
-      stations.push(match[1].trim());
-    }
+    const stations: string[] = [...matches].map((match) => match[1].trim());
 
     shuttle.stations = stations;
 
-    const lastStation = stations[stations.length - 1] ;
+    const lastStation = stations[stations.length - 1];
     shuttle.area = stationMap[lastStation] || "";
   });
 
