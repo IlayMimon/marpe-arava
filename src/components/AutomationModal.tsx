@@ -2,43 +2,35 @@ import { Modal, Progress } from "antd";
 import Lottie from "lottie-react";
 import busAnimation from "../assets/busAnimation.json";
 import { useEffect, useState } from "react";
+import { Status } from "./types/Status";
 
 interface AutomationModalProps {
   visible: boolean;
-  status: { isOver: boolean; step: number; isAssigned: boolean } | null;
+  status: Status | null;
 }
 
 const AutomationModal = ({ visible, status }: AutomationModalProps) => {
   const [percent, setPercent] = useState(0);
 
   useEffect(() => {
-    if (!visible) {
-      setPercent(0);
-      return;
-    }
+    setPercent(0);
   }, [visible]);
+
   useEffect(() => {
-    if(percent ===0 &&(status === null || status.step ===8)){
-      return; 
-    }
-    if(status?.step==0){
+    if (percent === 0 && (status === null || status.step === 8)) {
       return;
     }
-    if(percent === 100 && status?.isOver){
-      visible = false;
+
+    if (status?.step == 0 || !status) {
       return;
     }
-    const newPercent = status ? Math.min(Math.round((status.step / 8) * 100), 100) : 0
+
+    const newPercent = Math.min(Math.round((status.step / 8) * 100), 100);
     setPercent(newPercent);
-  }, [ status]);
+  }, [percent, status]);
+
   return (
-    <Modal
-      className="automation-modal"
-      open={visible}
-      centered
-      footer={null}
-      closable={false}
-    >
+    <Modal className="automation-modal" open={visible} centered footer={null} closable={false}>
       <div className="automation-modal__content">
         <Lottie
           animationData={busAnimation}
@@ -49,8 +41,7 @@ const AutomationModal = ({ visible, status }: AutomationModalProps) => {
         <p style={{ color: "#666" }}>
           המערכת עובדת מאחורי הקלעים על פעולות מדויקות במיוחד.
           <br />
-          תהליך זה יכול לקחת כמה דקות – ניתן לעבור למסך אחר, היא תמשיך בשקט
-          וביעילות, כמו חייל טוב.
+          תהליך זה יכול לקחת כמה דקות – ניתן לעבור למסך אחר, היא תמשיך בשקט וביעילות, כמו חייל טוב.
         </p>
         <Progress percent={percent} />
       </div>
