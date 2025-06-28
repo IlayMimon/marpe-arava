@@ -157,7 +157,7 @@ const TravelBar = () => {
         .map((shuttle) => {
           return {
             ...shuttle,
-            code: "",
+            code: shuttle.area,
             colorType: colors[shuttle.driverData.ID - 1],
             stations: parseStations(shuttle.Details, shuttle.ArrivalTime),
           };
