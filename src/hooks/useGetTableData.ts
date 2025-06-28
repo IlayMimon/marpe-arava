@@ -79,13 +79,6 @@ const useGetTableData = () => {
         inboundGap: inboundTime?.diff(finishTime, "minute"),
       };
 
-      console.log(
-        directionPassangerData.inboundGap,
-        "inboundGap",
-        directionPassangerData.outboundGap,
-        "outboundGap"
-      );
-
       const passengerData: TableRow = { ...basicPassangerData, ...directionPassangerData };
 
       return passengerData;

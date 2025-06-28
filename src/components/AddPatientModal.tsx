@@ -11,7 +11,7 @@ import {
   Typography,
 } from "antd";
 import heIL from "antd/locale/he_IL";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import useGetServices from "../hooks/data/useGetServices";
 import useGetStations from "../hooks/data/useGetStations";
@@ -51,8 +51,12 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const appointmentTypes = Form.useWatch("appointmentTypes", form);
 
   const servicesData = useGetServices();
-
   const stationsData = useGetStations();
+
+  const disableDaysNotMonToWed = (current: Dayjs) => {
+    const day = current.day();
+    return day < 1 || day > 3;
+  };
 
   const isFormValid = () => {
     return (
@@ -204,7 +208,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="תאריך התור"
               rules={[{ required: true, message: "יש לבחור תאריך" }]}
             >
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" />
+              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableDaysNotMonToWed} />
             </Form.Item>
 
             <Form.Item
