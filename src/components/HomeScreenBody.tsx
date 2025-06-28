@@ -1,7 +1,9 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
+import { useHomePageContext } from "../contexts/HomePage";
 import { addItemToList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
@@ -13,8 +15,6 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
-import { useHomePageContext } from "../contexts/HomePage";
-import dayjs from "dayjs";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -29,7 +29,7 @@ const HomeScreenBody = () => {
 
   const { selectedDate } = useHomePageContext();
 
-  const { onAssignClick } = useStatusManager(setAutomationModalVisible);
+  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -64,7 +64,8 @@ const HomeScreenBody = () => {
   const data = useGetTableData();
 
   const isSelectedDateTomorrow =
-    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) && selectedDate.isAfter(dayjs().endOf("day"));
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
+    selectedDate.isAfter(dayjs().endOf("day"));
 
   return (
     <div className="home-screen-body">
@@ -152,7 +153,8 @@ const HomeScreenBody = () => {
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-      <AutomationModal visible={automationModalVisible} />
+      <AutomationModal visible={automationModalVisible} status={status} />
+
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}

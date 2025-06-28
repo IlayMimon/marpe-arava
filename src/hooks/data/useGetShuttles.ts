@@ -2,6 +2,7 @@ import { useHomePageContext } from "../../contexts/HomePage";
 import filterByToday from "../../functions/filterByToday";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
+import useGetStations from "./useGetStations";
 
 export type Shuttle = {
   ID: number;
@@ -9,6 +10,8 @@ export type Shuttle = {
   StartTime: Date;
   ArrivalTime: Date;
   Details: string;
+  stations: string[];
+  area: string;
   RequestsId: { results: number[] };
   DriverId: number | null;
   totalDistance: number;
@@ -20,13 +23,34 @@ export type Shuttle = {
 
 const useGetShuttles = () => {
   const date = useHomePageContext().selectedDate;
-  const { data, refetch } = useQueryFetchRequest<SharepointQueryResultArray<Shuttle>>(
+
+  const { data: shuttlesData, refetch: refetchShuttles } = useQueryFetchRequest<
+    SharepointQueryResultArray<Shuttle>
+  >(
     `/_api/web/lists/getbytitle('shuttles')/items?$select=ID,Title,StartTime,ArrivalTime,Details,RequestsId,DriverId,totalDistance,driverData/ID,driverData/Title&$expand=driverData&${filterByToday(date, "StartTime")}`
   );
 
-  const shuttles = data?.d.results;
+  const stationsList = useGetStations();
 
-  return { shuttles, refetch };
+  const shuttles = shuttlesData?.d.results;
+
+  const stationMap: { [stationName: string]: string } = {};
+  stationsList?.forEach((station) => {
+    stationMap[station.Title.trim()] = station.Area.trim();
+  });
+
+  shuttles?.forEach((shuttle) => {
+    const regex = /([^:]+): \d{2}:\d{2}/g;
+    const matches = shuttle.Details.matchAll(regex);
+    const stations: string[] = [...matches].map((match) => match[1].trim());
+
+    shuttle.stations = stations;
+
+    const lastStation = stations[stations.length - 1];
+    shuttle.area = stationMap[lastStation] || "";
+  });
+
+  return { shuttles, refetch: refetchShuttles };
 };
 
 export default useGetShuttles;
