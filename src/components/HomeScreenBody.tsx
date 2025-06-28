@@ -29,7 +29,7 @@ const HomeScreenBody = () => {
 
   const { selectedDate } = useHomePageContext();
 
-  const { onAssignClick } = useStatusManager(setAutomationModalVisible);
+  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -64,7 +64,8 @@ const HomeScreenBody = () => {
   const data = useGetTableData();
 
   const isSelectedDateTomorrow =
-    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) && selectedDate.isAfter(dayjs().endOf("day"));
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
+    selectedDate.isAfter(dayjs().endOf("day"));
 
   return (
     <div className="home-screen-body">
@@ -152,7 +153,8 @@ const HomeScreenBody = () => {
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-      <AutomationModal visible={automationModalVisible} />
+      <AutomationModal visible={automationModalVisible} status={status} />
+
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}
