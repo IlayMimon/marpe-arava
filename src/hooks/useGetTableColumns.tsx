@@ -10,9 +10,7 @@ const formatTime = (value: dayjs.Dayjs | undefined) => {
 };
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  const areas = Array.from(
-    new Set(useGetStations()?.map((station) => station.Area))
-  );
+  const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
@@ -63,7 +61,8 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "outboundGap",
             title: "פער",
             dataIndex: "outboundGap",
-            render: (value: number) => <TimeDeviation value={value} />,
+            render: (value?: number) =>
+              value !== undefined ? <TimeDeviation value={value} /> : null,
           },
           {
             key: "driver",
@@ -106,7 +105,8 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "inboundGap",
             title: "פער",
             dataIndex: "inboundGap",
-            render: (value: number) => <TimeDeviation value={value} />,
+            render: (value?: number) =>
+              value !== undefined ? <TimeDeviation value={value} /> : null,
           },
           {
             key: "returnDriver",
@@ -148,9 +148,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "actions",
       title: "פעולות",
       dataIndex: "actions",
-      render: (_value, row) => (
-        <RowActions rowData={row} tripDirection={tripDirection} />
-      ),
+      render: (_value, row) => <RowActions rowData={row} tripDirection={tripDirection} />,
     },
   ];
 
