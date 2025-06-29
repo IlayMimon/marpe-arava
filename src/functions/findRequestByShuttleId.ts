@@ -10,12 +10,11 @@ const findRequestByShuttleId = (
   shuttlesDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined,
   shuttleRequests: ShuttleRequests[] | undefined
 ): ShuttleRequests | undefined => {
-    const result = shuttleRequests?.find(
+    return shuttleRequests?.find(
         (shuttleRequest) =>
             shuttleRequest.ID ===
         shuttlesDetailsPerRequest?.find((shuttleDetailsPerRequest) => shuttleDetailsPerRequest.ID === id)?.RequestId
     );
-    return result
 };
 
 export default findRequestByShuttleId;

@@ -7,15 +7,16 @@ import { TbChevronsLeft } from "react-icons/tb";
 import driverOrganizationDataMapping from "../../functions/driverOrganizationDataMapping";
 import useGetDrivers from "../../hooks/data/useGetDrivers";
 import useGetDriversData, { IDriverData } from "../../hooks/data/useGetDriversData";
-import useGetShuttles from "../../hooks/data/useGetShuttles";
+import useGetShuttles, { Shuttle } from "../../hooks/data/useGetShuttles";
 import { ColorType, Driver, TravelItem } from "../../types/travelBar";
 import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
 import { parseStations } from "../../functions/parseStations";
 import { patchItemInList } from "../../functions/postToSharepoint";
-import findRequestByShuttleId from "../../functions/findRequestByShuttleId";
 import useGetShuttleDetailsPerRequest from "../../hooks/data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "../../hooks/data/useGetShuttleRequests";
+import useGetStations from "../../hooks/data/useGetStations";
+import { useHomePageContext } from "../../contexts/HomePage";
 
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -28,6 +29,9 @@ const TravelBar = () => {
   const { shuttles, refetch: refetchShuttles } = useGetShuttles();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const shuttleRequests = useGetShuttleRequests();
+  const stations = useGetStations();
+
+  const date = useHomePageContext().selectedDate
 
   const updatedDrivers = useMemo(() => {
     const driverDistanceMap = new Map<number, number>();
@@ -159,23 +163,18 @@ const TravelBar = () => {
     if (shuttles) {
       const formattedShuttles = shuttles
         .sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime())
-        .map((shuttle) => {
+        .map((shuttle: Shuttle) => {
           return {
             ...shuttle,
             code: "",
             colorType: colors[shuttle.driverData.ID - 1],
-            stations: parseStations(shuttle.Details, shuttle.ArrivalTime).map((station) => {
-              return {
-                ...station,
-                passengers: findRequestByShuttleId(shuttle.ID, shuttleDetailsPerRequest, shuttleRequests)?.FullName,
-              };
-            }),
+            stations: parseStations(shuttle.Details, shuttle.ArrivalTime, shuttle, shuttleDetailsPerRequest, shuttleRequests, stations)
           };
         }) as TravelItem[];
 
       setTravelItems(formattedShuttles);
     }
-  }, [colors, driverAssignments, shuttles]);
+  }, [colors, driverAssignments, shuttles, shuttleDetailsPerRequest, shuttleRequests]);
 
   return (
     <>
@@ -267,9 +266,7 @@ const TravelBar = () => {
                             `travel-bar__list__item__stations--${item.colorType}`
                           )}
                         >
-                          {item.stations.map((station, index) => {
-                            console.log(station.passengers)
-                            return (
+                          {item.stations.map((station, index) => 
                             <li
                               key={index}
                               className={classNames(
@@ -295,7 +292,7 @@ const TravelBar = () => {
                                 {station.arrivalTime}
                               </div>
                             </li>
-                          )})}
+                          )}
                         </ul>
                       </div>
                     )}
