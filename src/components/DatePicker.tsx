@@ -66,7 +66,7 @@ const DatePicker = () => {
           format="[יום] dd DD.MM.YY"
           onChange={(val) => {
             if (val && isAllowedDay(val.day())) {
-              val && setSelectedDate(val);
+              setSelectedDate(val);
             }
           }}
           disabledDate={disabledDate}
