@@ -30,12 +30,8 @@ export const parseStations = (
   const lines = input.trim().split("\n");
   const parsedStations = lines.map((line, index) => {
     const [rawName, rawTime] = line.split(": ").map((part) => part.trim());
-    return {
-      name: rawName,
-      arrivalTime: fixTime(rawTime),
-      isOrigin: index === 0 ? true : undefined,
-      isDestination: undefined,
-      passengers: shuttle.RequestsId.results
+    
+    const passengers = shuttle.RequestsId.results
         .map((requestId) => {
           const passenger = findRequestByShuttleId(requestId, shuttleDetailsPerRequest, shuttleRequests);
           const station = stations?.find((station) => station.ID === passenger?.StationId);
@@ -43,7 +39,14 @@ export const parseStations = (
             return passenger.FullName;
           }
         })
-        .filter((value) => value !== undefined && value !== null),
+        .filter((value) => value !== undefined && value !== null)
+
+    return {
+      name: rawName,
+      arrivalTime: fixTime(rawTime),
+      isOrigin: index === 0 ? true : undefined,
+      isDestination: undefined,
+      passengers: passengers.length !== 0 && passengers || undefined,
     };
   });
 
