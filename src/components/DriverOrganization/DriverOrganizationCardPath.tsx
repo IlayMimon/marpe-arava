@@ -43,7 +43,7 @@ const DriverOrganizationCardPath = ({
             <div className="driver-organization-card-content__path__station__details__name-and-passengers">
               <span>{name}</span>
               <span className="driver-organization-card-content__path__station__details__name-and-passengers__passengers">
-                {passengers &&
+                {passengers && passengers.length !== 0 &&
                   passengers.join(", ") + ` (${passengers.length.toString()})`}
               </span>
             </div>
