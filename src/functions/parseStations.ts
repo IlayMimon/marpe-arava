@@ -1,10 +1,10 @@
 import { StationInfo } from "../types/travelBar";
 import dayjs from "dayjs";
-import findRequestByShuttleId from './findRequestByShuttleId';
-import { Shuttle } from '../hooks/data/useGetShuttles';
-import { ShuttleDetailsPerRequest } from '../hooks/data/useGetShuttleDetailsPerRequest';
-import { ShuttleRequests } from '../hooks/data/useGetShuttleRequests';
-import { Station } from '../hooks/data/useGetStations';
+import findRequestByShuttleId from "./findRequestByShuttleId";
+import { Shuttle } from "../hooks/data/useGetShuttles";
+import { ShuttleDetailsPerRequest } from "../hooks/data/useGetShuttleDetailsPerRequest";
+import { ShuttleRequests } from "../hooks/data/useGetShuttleRequests";
+import { Station } from "../hooks/data/useGetStations";
 
 export const parseStations = (
   input: string,
@@ -32,21 +32,21 @@ export const parseStations = (
     const [rawName, rawTime] = line.split(": ").map((part) => part.trim());
     
     const passengers = shuttle.RequestsId.results
-        .map((requestId) => {
-          const passenger = findRequestByShuttleId(requestId, shuttleDetailsPerRequest, shuttleRequests);
-          const station = stations?.find((station) => station.ID === passenger?.StationId);
-          if (passenger && station && station.Title === rawName) {
-            return passenger.FullName;
-          }
-        })
-        .filter((value) => value !== undefined && value !== null)
+      .map((requestId) => {
+        const passenger = findRequestByShuttleId(requestId, shuttleDetailsPerRequest, shuttleRequests);
+        const station = stations?.find((station) => station.ID === passenger?.StationId);
+        if (passenger && station && station.Title === rawName) {
+          return passenger.FullName;
+        }
+      })
+      .filter((value) => value !== undefined && value !== null);
 
     return {
       name: rawName,
       arrivalTime: fixTime(rawTime),
       isOrigin: index === 0 ? true : undefined,
       isDestination: undefined,
-      passengers: passengers.length !== 0 && passengers || undefined,
+      passengers: (passengers.length !== 0 && passengers) || undefined,
     };
   });
 
