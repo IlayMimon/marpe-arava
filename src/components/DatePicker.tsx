@@ -65,11 +65,11 @@ const DatePicker = () => {
           suffixIcon={null}
           format="[יום] dd DD.MM.YY"
           onChange={(val) => {
-            // if (val && isAllowedDay(val.day())) {
+            if (val && isAllowedDay(val.day())) {
               val && setSelectedDate(val);
-            // }
+            }
           }}
-          // disabledDate={disabledDate}
+          disabledDate={disabledDate}
         />
       </ConfigProvider>
 

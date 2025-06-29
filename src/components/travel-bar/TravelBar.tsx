@@ -7,7 +7,7 @@ import { TbChevronsLeft } from "react-icons/tb";
 import driverOrganizationDataMapping from "../../functions/driverOrganizationDataMapping";
 import useGetDrivers from "../../hooks/data/useGetDrivers";
 import useGetDriversData, { IDriverData } from "../../hooks/data/useGetDriversData";
-import useGetShuttles, { Shuttle } from "../../hooks/data/useGetShuttles";
+import useGetShuttles from "../../hooks/data/useGetShuttles";
 import { ColorType, Driver, TravelItem } from "../../types/travelBar";
 import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
@@ -16,7 +16,6 @@ import { patchItemInList } from "../../functions/postToSharepoint";
 import useGetShuttleDetailsPerRequest from "../../hooks/data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "../../hooks/data/useGetShuttleRequests";
 import useGetStations from "../../hooks/data/useGetStations";
-import { useHomePageContext } from "../../contexts/HomePage";
 
 const TravelBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -30,8 +29,6 @@ const TravelBar = () => {
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const shuttleRequests = useGetShuttleRequests();
   const stations = useGetStations();
-
-  const date = useHomePageContext().selectedDate
 
   const updatedDrivers = useMemo(() => {
     const driverDistanceMap = new Map<number, number>();
@@ -163,7 +160,7 @@ const TravelBar = () => {
     if (shuttles) {
       const formattedShuttles = shuttles
         .sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime())
-        .map((shuttle: Shuttle) => {
+        .map((shuttle) => {
           return {
             ...shuttle,
             code: "",
@@ -174,7 +171,7 @@ const TravelBar = () => {
 
       setTravelItems(formattedShuttles);
     }
-  }, [colors, driverAssignments, shuttles, shuttleDetailsPerRequest, shuttleRequests]);
+  }, [colors, driverAssignments, shuttles, shuttleDetailsPerRequest, shuttleRequests, stations]);
 
   return (
     <>
@@ -266,7 +263,7 @@ const TravelBar = () => {
                             `travel-bar__list__item__stations--${item.colorType}`
                           )}
                         >
-                          {item.stations.map((station, index) => 
+                          {item.stations.map((station, index) => (
                             <li
                               key={index}
                               className={classNames(
@@ -292,7 +289,7 @@ const TravelBar = () => {
                                 {station.arrivalTime}
                               </div>
                             </li>
-                          )}
+                          ))}
                         </ul>
                       </div>
                     )}
