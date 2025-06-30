@@ -1,30 +1,63 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
+import { useHomePageContext } from "../contexts/HomePage";
+import { addItemToList } from "../functions/postToSharepoint";
+import useGetTableColumns from "../hooks/useGetTableColumns";
+import useGetTableData from "../hooks/useGetTableData";
+import { useStatusManager } from "../hooks/useStatusManager";
+import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
+import AutomationModal from "./AutomationModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
-import { FormValues } from "./types/shuttleAssignmentProps";
+import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
+import Table from "./Table/Table";
+import TravelBar from "./travel-bar/TravelBar";
 
-export type TripDirection = 'outbound' | 'return';
+export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedMedic, setSelectedMedic] = useState<string | null>(null);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
-  const [tripDirection, setTripDirection] = useState<TripDirection>('outbound');
+  const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
+  const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const { selectedDate } = useHomePageContext();
+
+  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
+
+  const handleEscortSubmit = async (values: PatientFormValues) => {
+    const patientFormData = {
+      Time: values.appointmentTime.toISOString(),
+      StationId: values.pickupStation,
+      Phone: values.phone,
+      IsReturnShuttleRequired: !!values.dropoffStation,
+      ReturnStationId: values.dropoffStation,
+      RequestedServicesId: values.appointmentTypes,
+      FullName: values.fullName,
+    };
+
+    await addItemToList("ShuttleRequests", patientFormData);
+
+    setEscortModalOpen(false);
+  };
 
   const handleChangeDirection = (direction: TripDirection) => {
-    setTripDirection(direction)
-  }
+    setTripDirection(direction);
+  };
 
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-    setModalVisible(false);
+    setShuttleAssignmentModalVisible(false);
+    setAutomationModalVisible(true);
+
+    onAssignClick();
   };
 
   const sendWhatsMessage = async (messageInfo: {
@@ -53,6 +86,12 @@ const HomeScreenBody = () => {
       alert("❌ Failed to send message");
     }
   };
+  const columns = useGetTableColumns(tripDirection);
+  const data = useGetTableData();
+
+  const isSelectedDateTomorrow =
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
+    selectedDate.isAfter(dayjs().endOf("day"));
 
   return (
     <div className="home-screen-body">
@@ -67,7 +106,7 @@ const HomeScreenBody = () => {
             btnContent="שבץ מחדש"
             isOpen={popUpMsgOpen}
             onConfirm={() => {
-              setModalVisible((prevValue) => !prevValue);
+              setShuttleAssignmentModalVisible((prevValue) => !prevValue);
               setPopUpMsgOpen(false);
             }}
             onCancel={() => setPopUpMsgOpen(false)}
@@ -75,16 +114,18 @@ const HomeScreenBody = () => {
             <Tooltip
               key="submit"
               title={
-                messagesAlreadySent ? "לא ניתן לשבץ מחדש לאחר הפצת הודעות" : ""
+                (messagesAlreadySent && "לא ניתן לשבץ מחדש לאחר הפצת הודעות") ||
+                (!isSelectedDateTomorrow && "ניתן לשבץ נסיעות רק למחר") ||
+                ""
               }
             >
               <Button
                 onClick={() =>
                   isShuttlesArranged
                     ? setPopUpMsgOpen(true)
-                    : setModalVisible(true)
+                    : setShuttleAssignmentModalVisible(true)
                 }
-                disabled={messagesAlreadySent}
+                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
@@ -94,14 +135,6 @@ const HomeScreenBody = () => {
               </Button>
             </Tooltip>
           </BtnPopUpMsg>
-          <ShuttleAssignmentModal
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onSubmit={handleSubmit}
-            medicName={selectedMedic}
-            setMedicName={setSelectedMedic}
-            messagesAlreadySent={messagesAlreadySent}
-          />
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
               // disabled={!isShuttlesArranged}
@@ -109,14 +142,15 @@ const HomeScreenBody = () => {
               variant="filled"
               icon={<IconSend />}
               onClick={() =>{ 
-                setMessagesAlreadySent(true);
                 setPopUpMsgOpen(false);
                 
                 sendWhatsMessage({
                   date: 'a',
                   name: "Liam Liber",
                   number: "542772450",
-                })}
+                })
+                setMessagesAlreadySent(true);
+              }
               }
               className="home-screen-body__header__left__button"
             >
@@ -128,18 +162,37 @@ const HomeScreenBody = () => {
             variant="solid"
             icon={<TbPlus />}
             className="home-screen-body__header__left__button"
+            onClick={() => setEscortModalOpen(true)}
           >
             הוספת מטופל
           </Button>
         </div>
       </div>
-      <div className="home-screen-body__body">
-        <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection}/>
-        {tripDirection === "outbound" ? 
-          <div>going</div> : 
-          <div>returning</div>
-        }
+
+      <div className="home-screen-body__container">
+        <div className="home-screen-body__container__body">
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          {tripDirection === "outbound" ? (
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
+          ) : (
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
+          )}
+        </div>
+        <TravelBar />
       </div>
+      <ShuttleAssignmentModal
+        visible={shuttleAssignmentModalVisible}
+        onCancel={() => setShuttleAssignmentModalVisible(false)}
+        onSubmit={handleSubmit}
+        messagesAlreadySent={false}
+      />
+      <AutomationModal visible={automationModalVisible} status={status} />
+
+      <AddPatientModal
+        isOpen={escortModalOpen}
+        onClose={() => setEscortModalOpen(false)}
+        onSubmit={handleEscortSubmit}
+      />
     </div>
   );
 };

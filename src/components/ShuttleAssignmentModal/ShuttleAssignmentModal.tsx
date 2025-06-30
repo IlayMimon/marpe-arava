@@ -1,32 +1,27 @@
 import { IconSparkles } from "@tabler/icons-react";
-import {
-  Button,
-  ConfigProvider,
-  Form,
-  Modal,
-  Select,
-  TimePicker,
-  message,
-} from "antd";
+import { Button, ConfigProvider, Form, FormRule, Modal, Select, TimePicker, message } from "antd";
 import heIL from "antd/locale/he_IL";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import React, { useEffect } from "react";
+import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { FormValues, Props } from "../types/shuttleAssignmentProps";
+import { useGetTomorrowShuttles } from "../../functions/useGetTomorrowShuttles";
+import { patchItemInList } from "../../functions/postToSharepoint";
+import resetShuttles from "../../functions/resetShuttles";
+import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
+import { Props } from "../../types/shuttleAssignmentProps";
+import MedicSelect from "../MedicSelect";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
-const ShuttleAssignmentModal: React.FC<Props> = ({
-  visible,
-  onCancel,
-  onSubmit,
-  medicName,
-  setMedicName,
-}) => {
+const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
+  const [selectedMedic, setSelectedMedic] = React.useState<number | undefined>(undefined);
 
-  const validateTimeRange = (_: any, endTime: Dayjs) => {
+  const { shuttles } = useGetTomorrowShuttles();
+  const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
+
+  const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
     const diff = endTime.diff(startTime, "hour", true);
@@ -36,22 +31,22 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
     return Promise.resolve();
   };
 
-  useEffect(() => {
-    form.setFieldValue("medicName", medicName);
-  }, [medicName]);
-
-  const handleValuesChange = (changedValues: FormValues) => {
-    if ("medicName" in changedValues) {
-      setMedicName(changedValues.medicName);
-    }
-  };
-
   const handleSubmit = () => {
     form
       .validateFields()
-      .then((values: FormValues) => {
-        onSubmit(values);
+      .then(async () => {
+        // const { startTime, endTime, vehicleCount, medic } = values;
+
+        await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+        patchItemInList(
+          "Status",
+          { isOver: false, status: "pending", step: 1, isAssigned: false },
+          1,
+          "*"
+        );
+        patchItemInList("trigger", { Title: "000" }, 1, "*");
         form.resetFields();
+        onSubmit();
       })
       .catch(() => {
         message.error("נא למלא את כל השדות החובה כראוי");
@@ -59,35 +54,38 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
   };
 
   return (
-    <Modal
-      className="ShuttleAssignmentModal"
-      title="שיבוץ נסיעות אוטומטי"
-      open={visible}
-      onCancel={onCancel}
-      footer={
-        <div className="ShuttleAssignmentModal__footer">
+    <ConfigProvider locale={heIL} direction="rtl">
+      <Modal
+        className="ShuttleAssignmentModal"
+        title="שיבוץ נסיעות אוטומטי"
+        open={visible}
+        onCancel={onCancel}
+        footer={
+          <div className="ShuttleAssignmentModal__footer">
+            <Button key="cancel" onClick={onCancel}>
+              ביטול
+            </Button>
 
-        <Button key="cancel" onClick={onCancel}>
-          ביטול
-        </Button>
-
-        <Button
-          type="primary"
-          className="ShuttleAssignmentModal__assign-btn"
-          onClick={handleSubmit}
-        >
-          <IconSparkles />
-          שבץ נסיעות
-        </Button>
-        </div>
-      }
-    >
-      <ConfigProvider locale={heIL} direction="rtl">
+            <Button
+              type="primary"
+              className="ShuttleAssignmentModal__assign-btn"
+              onClick={handleSubmit}
+            >
+              <IconSparkles />
+              שבץ נסיעות
+            </Button>
+          </div>
+        }
+      >
         <Form
           form={form}
           layout="vertical"
-          onValuesChange={handleValuesChange}
-          initialValues={{ vehicleCount: 3 }}
+          // onValuesChange={handleValuesChange}
+          initialValues={{
+            startTime: dayjs("06:30", "HH:mm"),
+            endTime: dayjs("18:30", "HH:mm"),
+            vehicleCount: 3,
+          }}
         >
           <Form.Item
             label="שעות פעילות השאטלים"
@@ -121,7 +119,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
           <Form.Item
             label="מספר נהגים"
             name="vehicleCount"
-            rules={[{ required: true, message: "יש לבחור מספר רכבים" }]}
+            rules={[{ required: true, message: "יש לבחור מספר נהגים" }]}
           >
             <Select>
               {[1, 2, 3, 4, 5].map((num) => (
@@ -134,18 +132,16 @@ const ShuttleAssignmentModal: React.FC<Props> = ({
 
           <Form.Item
             label="חובש אחראי"
-            name="medicName"
-            rules={[{ required: true, message: "יש לבחור חובש אחראי" }]}
+            required
+            validateStatus={!selectedMedic ? "error" : ""}
+            help={!selectedMedic ? "יש לבחור חובש אחראי" : ""}
           >
-            <Select placeholder="בחר חובש">
-              <Option value="משה כהן">משה כהן</Option>
-              <Option value="דנה לוי">דנה לוי</Option>
-              <Option value="רועי ישראלי">רועי ישראלי</Option>
-            </Select>
+            <MedicSelect setSelectedMedic={setSelectedMedic} />
+            <input type="hidden" name="medic" value={selectedMedic || ""} />
           </Form.Item>
         </Form>
-      </ConfigProvider>
-    </Modal>
+      </Modal>
+    </ConfigProvider>
   );
 };
 
