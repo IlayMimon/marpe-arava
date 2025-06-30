@@ -3,10 +3,12 @@ import { assignShuttlesToDrivers } from "../functions/assignDriversFunc/assignDr
 import { useGetTomorrowShuttles } from "../functions/useGetTomorrowShuttles";
 import { initDrivers } from "../functions/initDrivers";
 import GetStatus from "./data/useGetStatus";
+import { Status } from "../components/types/Status";
 
 export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
   const [shouldPoll, setShouldPoll] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [status, setStatus] = useState<Status | null>(null);
 
   const { refetch } = GetStatus();
 
@@ -17,7 +19,8 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
     const { data: shuttleData } = await refetchShuttles();
     if (!data || !shuttleData) return;
 
-    const { isOver, isAssigned } = data.d.results[0] || {};
+    const { isOver, step, isAssigned, status } = data.d.results[0] || {};
+    setStatus({ isOver, step, isAssigned, status });
 
     const shuttles = shuttleData?.d.results.map((shuttle) => {
       return {
@@ -68,5 +71,6 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
 
   return {
     onAssignClick,
+    status,
   };
 };
