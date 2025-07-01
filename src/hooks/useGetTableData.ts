@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
-import { TableRow } from "../components/Table/TableTypes";
 import useGetDrivers from "./data/useGetDrivers";
 import useGetServices from "./data/useGetServices";
 import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "./data/useGetShuttleRequests";
 import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
-import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
+import { patientsStatus } from "../functions/patientsStatus";
+import { TableRow } from "../types/table";
+import { AssignedStatusEnum } from "../types/status";
 
 const useGetTableData = () => {
   const { shuttles } = useGetShuttles();
@@ -43,7 +44,7 @@ const useGetTableData = () => {
         requestDetailsId: requestDetails?.ID || 0,
         shuttleId: shuttle?.ID || 0,
         fullName: request.FullName || "",
-        status: status?.status || assignedStatusEnum.initial,
+        status: status?.status || AssignedStatusEnum.initial,
         appointmentType: requestedServicesTitles,
         phone: (request?.Phone || "").replace(/-/g, ""),
         rideId: shuttle?.ID || "",

@@ -18,9 +18,10 @@ import useGetServices from "../hooks/data/useGetServices";
 import useGetShuttles from "../hooks/data/useGetShuttles";
 import useGetStations from "../hooks/data/useGetStations";
 import { TripDirection } from "./HomeScreenBody";
-import { TableRow } from "./Table/TableTypes";
 import useGetShuttleRequests from "../hooks/data/useGetShuttleRequests";
-import { assignedStatusEnum } from "../functions/patientsStatus";
+import { TableRow } from "../types/table";
+import { statusDetails } from "../constants/statusDetails";
+import { AssignedStatusEnum } from "../types/status";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -230,9 +231,9 @@ const EditPatientModal = ({
               </Form.Item>
               <Form.Item name="status" label="סטטוס">
                 <Select placeholder="בחר סטטוס" style={{ width: "100%" }}>
-                  {Object.entries(assignedStatusEnum).map(([key, value]) => (
-                    <Option key={key} value={value}>
-                      {value}
+                  {Object.keys(AssignedStatusEnum).map((status, index) => (
+                    <Option key={status + index} value={status}>
+                      {statusDetails[status as keyof typeof AssignedStatusEnum].singularTitle}
                     </Option>
                   ))}
                 </Select>

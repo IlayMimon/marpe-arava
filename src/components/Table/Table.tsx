@@ -4,7 +4,7 @@ import type { FilterValue, SorterResult } from "antd/es/table/interface";
 import heIL from "antd/locale/he_IL";
 import { useState } from "react";
 import { useSortFilterTableData } from "../../hooks/useSortFilterTableData";
-import { GenericGroupedTableProps, RenderedCell } from "./TableTypes";
+import { GenericGroupedTableProps, RenderedCell } from "../../types/table";
 
 const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableProps<T>) => {
   const [sortInfo, setSortInfo] = useState<SorterResult<T>>({});

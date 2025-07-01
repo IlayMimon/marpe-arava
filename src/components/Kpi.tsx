@@ -1,12 +1,13 @@
 import { JSX } from "react";
 import { Tooltip } from "antd";
+import StatusTag from "./StatusTag";
 
 interface KpiProps {
   title: string;
   icon?: JSX.Element;
   value: number | undefined;
-  titleColor?: string;
-  borderColor?: string;
+  titleColor: string;
+  borderColor: string;
 }
 
 const Kpi = ({ title, icon, value, titleColor, borderColor }: KpiProps) => {
@@ -15,15 +16,11 @@ const Kpi = ({ title, icon, value, titleColor, borderColor }: KpiProps) => {
       {icon ? (
         <Tooltip title={title}>{icon}</Tooltip>
       ) : (
-        <span
-          className="kpi__title"
-          style={{
-            color: `var(${titleColor})`,
-            borderColor: `var(${borderColor})`,
-          }}
-        >
-          {title}
-        </span>
+        <StatusTag
+          title={title}
+          titleColor={titleColor}
+          borderColor={borderColor}
+        />
       )}
       <div
         className="kpi__value"

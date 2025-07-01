@@ -3,9 +3,9 @@ import { useState } from "react";
 import { TbDotsVertical, TbPencil } from "react-icons/tb";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
-import { TableRow } from "./Table/TableTypes";
 import { TripDirection } from "./HomeScreenBody";
 import useGetShuttles from "../hooks/data/useGetShuttles";
+import { TableRow } from "../types/table";
 
 interface RowActionsProps {
   rowData: TableRow;
