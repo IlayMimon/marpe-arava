@@ -1,7 +1,7 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { useHomePageContext } from "../contexts/HomePage";
 import { addItemToList } from "../functions/postToSharepoint";
@@ -15,6 +15,7 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
+import GetStatus from "../hooks/data/useGetStatus";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -26,6 +27,15 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const { data: statusData } = GetStatus();
+  const statusItem = statusData?.d.results[0];
+  const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
+  const isSucceeded = statusItem?.status === "succeeded";
+
+  useEffect(() => {
+    setIsShuttlesArranged(isToday && isSucceeded);
+  }, [isToday, isSucceeded]);
 
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
@@ -162,10 +172,7 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader
-            handleChange={handleChangeDirection}
-            tripDirection={tripDirection}
-          />
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
