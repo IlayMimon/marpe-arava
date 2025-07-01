@@ -28,7 +28,10 @@ const useGetTableData = () => {
       );
       const pickupStation = stations?.find((station) => station.ID === request.StationId);
       const dropoffStation = stations?.find((station) => station.ID === request.ReturnStationId);
-      const driver = drivers?.find((driver) => driver.ID === requestDetails?.DriverId);
+      const driver =
+        shuttles?.find((shuttle) =>
+          requestDetails?.ID ? shuttle.RequestsId.results.includes(requestDetails.ID) : false
+        )?.Driver.Title || "";
       const returnDriver = drivers?.find((driver) => driver.ID === requestDetails?.ReturnDriverId);
       const requestedServices =
         request.RequestedServicesId?.results
@@ -51,7 +54,7 @@ const useGetTableData = () => {
         returnStation: dropoffStation?.Title || "",
         area: pickupStation?.Area || "",
         returnArea: dropoffStation?.Area || "",
-        driver: driver?.Title || "",
+        driver: driver || "",
         returnDriver: returnDriver?.Title || "",
         notes: request.notes || "",
         actions: "actions",
