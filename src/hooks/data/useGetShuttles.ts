@@ -49,8 +49,7 @@ const useGetShuttles = () => {
 
     shuttle.stations = stations;
 
-    const lastStation = stations[stations.length - 1];
-    shuttle.area = stationMap[lastStation] || "";
+    shuttle.area = stationMap[stations[1]] || "";
   });
 
   return { shuttles, refetch: refetchShuttles };
