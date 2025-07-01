@@ -28,6 +28,7 @@ const HomeScreenBody = () => {
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
   const { selectedDate } = useHomePageContext();
+  const tableData = useGetTableData();
 
   const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
@@ -54,30 +55,31 @@ const HomeScreenBody = () => {
   const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-    setShuttleAssignmentModalVisible(false);
-    setAutomationModalVisible(true);
 
     onAssignClick();
   };
 
-  const sendWhatsMessage = async (messageInfo: {
-    date: string;
-    number?: string;
-    name: string;
-    contact?: string;
-  }) => {
-    const phone = `972${messageInfo.number}`;
-    const message = `Hello, ${messageInfo.name}. \n You are japshan ${messageInfo.date}, `;
-    const { contact } = messageInfo;
+  const sendWhatsMessages = async () => {
+    // const phone = `972${messageInfo.number}`;
+    // const message = `Hello, ${messageInfo.name}. \n You are japshan ${messageInfo.date}, `;
+    // const { contact } = messageInfo;
 
-    const body = { message, phone, contact };
-    if (phone) body.phone = phone;
-    else if (contact) body.contact = contact;
+    // const body = { message, phone, contact };
+    // if (phone) body.phone = phone;
+    // else if (contact) body.contact = contact;
+    const messagesInfo = tableData
+      .filter((r) => r.status === "שובץ")
+      .map((row) => ({
+        phone: `972${row.phone.slice(1)}`, // Remove the leading '0' and add country code
+        time: row.pickupTime,
+        name: row.fullName,
+        station: row.station,
+      }));
 
     const res = await fetch("http://127.0.0.1:5000/send-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(messagesInfo),
     });
 
     if (res.ok) {
@@ -86,6 +88,7 @@ const HomeScreenBody = () => {
       alert("❌ Failed to send message");
     }
   };
+
   const columns = useGetTableColumns(tripDirection);
   const data = useGetTableData();
 
@@ -141,17 +144,12 @@ const HomeScreenBody = () => {
               color="default"
               variant="filled"
               icon={<IconSend />}
-              onClick={() =>{ 
+              onClick={() => {
                 setPopUpMsgOpen(false);
-                
-                sendWhatsMessage({
-                  date: 'a',
-                  name: "Liam Liber",
-                  number: "542772450",
-                })
+
+                sendWhatsMessages();
                 setMessagesAlreadySent(true);
-              }
-              }
+              }}
               className="home-screen-body__header__left__button"
             >
               שליחת הודעות
@@ -171,7 +169,10 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
@@ -182,6 +183,8 @@ const HomeScreenBody = () => {
       </div>
       <ShuttleAssignmentModal
         visible={shuttleAssignmentModalVisible}
+        setVisible={setShuttleAssignmentModalVisible}
+        setAutomationModalVisible={setAutomationModalVisible}
         onCancel={() => setShuttleAssignmentModalVisible(false)}
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
