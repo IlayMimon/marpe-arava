@@ -1,7 +1,7 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { useHomePageContext } from "../contexts/HomePage";
 import { addItemToList } from "../functions/postToSharepoint";
@@ -15,6 +15,7 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
+import GetStatus from "../hooks/data/useGetStatus";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -27,7 +28,17 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
+  const { data: statusData } = GetStatus();
+  const statusItem = statusData?.d.results[0];
+  const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
+  const isSucceeded = statusItem?.status === "succeeded";
+
+  useEffect(() => {
+    setIsShuttlesArranged(isToday && isSucceeded);
+  }, [isToday, isSucceeded]);
+
   const { selectedDate } = useHomePageContext();
+  const tableData = useGetTableData();
 
   const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
@@ -54,10 +65,31 @@ const HomeScreenBody = () => {
   const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-    setShuttleAssignmentModalVisible(false);
-    setAutomationModalVisible(true);
 
     onAssignClick();
+  };
+
+  const sendWhatsMessages = async () => {
+    const messagesInfo = tableData
+      .filter((r) => r.status === "שובץ")
+      .map((row) => ({
+        phone: `972${row.phone.slice(1)}`, // Remove the leading '0' and add country code
+        time: row.pickupTime,
+        name: row.fullName,
+        station: row.station,
+      }));
+
+    const res = await fetch("http://127.0.0.1:5000/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(messagesInfo),
+    });
+
+    if (res.ok) {
+      alert("✅ Message sent!");
+    } else {
+      alert("❌ Failed to send message");
+    }
   };
 
   const columns = useGetTableColumns(tripDirection);
@@ -115,11 +147,13 @@ const HomeScreenBody = () => {
               color="default"
               variant="filled"
               icon={<IconSend />}
-              className="home-screen-body__header__left__button"
               onClick={() => {
-                setMessagesAlreadySent(true);
                 setPopUpMsgOpen(false);
+
+                sendWhatsMessages();
+                setMessagesAlreadySent(true);
               }}
+              className="home-screen-body__header__left__button"
             >
               שליחת הודעות
             </Button>
@@ -149,6 +183,8 @@ const HomeScreenBody = () => {
       </div>
       <ShuttleAssignmentModal
         visible={shuttleAssignmentModalVisible}
+        setVisible={setShuttleAssignmentModalVisible}
+        setAutomationModalVisible={setAutomationModalVisible}
         onCancel={() => setShuttleAssignmentModalVisible(false)}
         onSubmit={handleSubmit}
         messagesAlreadySent={false}

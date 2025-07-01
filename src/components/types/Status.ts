@@ -3,4 +3,5 @@ export interface Status {
   isAssigned: boolean;
   step: number;
   isOver: boolean;
+  Modified: Date;
 }

@@ -14,7 +14,7 @@ import MedicSelect from "../MedicSelect";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
-const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
+const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit, setAutomationModalVisible, setVisible }) => {
   const [form] = Form.useForm();
   const [selectedMedic, setSelectedMedic] = React.useState<number | undefined>(undefined);
 
@@ -35,8 +35,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
     form
       .validateFields()
       .then(async () => {
-        // const { startTime, endTime, vehicleCount, medic } = values;
-
+        setVisible(false);
+        setAutomationModalVisible(true);
         await resetShuttles(shuttles, shuttlesDetailsPerRequest);
         patchItemInList(
           "Status",
