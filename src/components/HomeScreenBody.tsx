@@ -60,13 +60,6 @@ const HomeScreenBody = () => {
   };
 
   const sendWhatsMessages = async () => {
-    // const phone = `972${messageInfo.number}`;
-    // const message = `Hello, ${messageInfo.name}. \n You are japshan ${messageInfo.date}, `;
-    // const { contact } = messageInfo;
-
-    // const body = { message, phone, contact };
-    // if (phone) body.phone = phone;
-    // else if (contact) body.contact = contact;
     const messagesInfo = tableData
       .filter((r) => r.status === "שובץ")
       .map((row) => ({
@@ -140,7 +133,7 @@ const HomeScreenBody = () => {
           </BtnPopUpMsg>
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
-              // disabled={!isShuttlesArranged}
+              disabled={!isShuttlesArranged}
               color="default"
               variant="filled"
               icon={<IconSend />}
