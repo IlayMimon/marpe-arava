@@ -19,8 +19,8 @@ export const useStatusManager = (setModalOpen: React.Dispatch<React.SetStateActi
     const { data: shuttleData } = await refetchShuttles();
     if (!data || !shuttleData) return;
 
-    const { isOver, step, isAssigned, status } = data.d.results[0] || {};
-    setStatus({ isOver, step, isAssigned, status });
+    const { isOver, step, isAssigned, status, Modified } = data.d.results[0] || {};
+    setStatus({ isOver, step, isAssigned, status, Modified });
 
     const shuttles = shuttleData?.d.results.map((shuttle) => {
       return {
