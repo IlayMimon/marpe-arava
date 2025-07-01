@@ -2,6 +2,7 @@ import { statusDetails } from "../constants/statusDetails";
 import { ShuttleDetailsPerRequest } from "../hooks/data/useGetShuttleDetailsPerRequest";
 import { ShuttleRequests } from "../hooks/data/useGetShuttleRequests";
 import { Shuttle } from "../hooks/data/useGetShuttles";
+import { IPatientStatus } from "../types/status";
 
 interface IUseGetPatientsStatusParams {
   shuttleRequests: ShuttleRequests[] | undefined;
@@ -13,7 +14,7 @@ export const patientsStatus = ({
   shuttleRequests: patients,
   shuttleDetailsPerRequest,
   shuttles,
-}: IUseGetPatientsStatusParams) => {
+}: IUseGetPatientsStatusParams): IPatientStatus[] | undefined => {
   const now = new Date();
 
   const patientIdToShuttleDetails = new Map(

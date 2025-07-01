@@ -15,3 +15,8 @@ export type StatusDetails = {
     titleColor: string;
     borderColor: string;
 };
+
+export interface IPatientStatus {
+  patientId: number;
+  status: string;
+}
