@@ -15,6 +15,9 @@ export type Shuttle = {
   RequestsId: { results: number[] };
   DriverId: number | null;
   totalDistance: number;
+  Driver: {
+    Title: string;
+  };
   driverData: {
     ID: number;
     Title: string;
@@ -27,7 +30,7 @@ const useGetShuttles = () => {
   const { data: shuttlesData, refetch: refetchShuttles } = useQueryFetchRequest<
     SharepointQueryResultArray<Shuttle>
   >(
-    `/_api/web/lists/getbytitle('shuttles')/items?$select=ID,Title,StartTime,ArrivalTime,Details,RequestsId,DriverId,totalDistance,driverData/ID,driverData/Title&$expand=driverData&${filterByToday(date, "StartTime")}`
+    `/_api/web/lists/getbytitle('shuttles')/items?$select=ID,Title,StartTime,ArrivalTime,Details,RequestsId,DriverId,totalDistance,driverData/ID,driverData/Title,Driver/Title&$expand=driverData,Driver&${filterByToday(date, "StartTime")}`
   );
 
   const stationsList = useGetStations();
