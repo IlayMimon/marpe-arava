@@ -37,9 +37,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit, 
       .then(async () => {
         setVisible(false);
         setAutomationModalVisible(true);
-        console.log("aaa");
         await resetShuttles(shuttles, shuttlesDetailsPerRequest);
-        console.log("bbb");
         patchItemInList(
           "Status",
           { isOver: false, status: "pending", step: 1, isAssigned: false },
