@@ -77,6 +77,7 @@ const HomeScreenBody = () => {
         time: row.pickupTime,
         name: row.fullName,
         station: row.station,
+        driver: row.driver,
       }));
 
     const res = await fetch("http://127.0.0.1:5000/send-message", {
