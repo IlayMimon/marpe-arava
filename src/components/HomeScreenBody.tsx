@@ -16,6 +16,7 @@ import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
+import useCreateShuttles from "../automation/main";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -27,6 +28,8 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const { createShuttles, isLoading, isError } = useCreateShuttles()
 
   const { data: statusData } = GetStatus();
   const statusItem = statusData?.d.results[0];
@@ -127,11 +130,7 @@ const HomeScreenBody = () => {
               }
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setShuttleAssignmentModalVisible(true)
-                }
+                onClick={createShuttles}
                 disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
