@@ -10,8 +10,9 @@ import { SharepointQueryResultArray } from '../types/spFetchTypes';
 import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetchTypes';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import Status from '../types/Status';
 
-const useCreateShuttles = (): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
+const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status | null>>): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
   const tomorrow = dayjs().add(1, 'day').startOf('day');
   const dayAfterTomorrow = tomorrow.add(1, 'day');
 
@@ -93,9 +94,7 @@ const useCreateShuttles = (): { createShuttles: () => void; isLoading: boolean; 
       const expandedRequests = buildExpandedShuttleRequests(createShuttlesParams);
       const groupedRequests = groupShuttleRequestsByArea(expandedRequests);
       const ShuttleGroupsWithHayoon = assignHayoonRequestsToShuttleGroups(expandedRequests, groupedRequests);
-      console.log(ShuttleGroupsWithHayoon);
       const splitShuttleGroups = splitOverflowedShuttleGroups(ShuttleGroupsWithHayoon);
-      console.log(splitShuttleGroups);
       const enrichedShuttleGroups = enrichShuttleGroups(splitShuttleGroups);
       const shuttleGroupsWithTimes = calculateShuttleStationsTimes(
         enrichedShuttleGroups,

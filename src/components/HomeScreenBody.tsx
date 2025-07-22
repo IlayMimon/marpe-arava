@@ -7,7 +7,6 @@ import { useHomePageContext } from "../contexts/HomePage";
 import { addItemToList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
-import { useStatusManager } from "../hooks/useStatusManager";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import AutomationModal from "./AutomationModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
@@ -16,7 +15,8 @@ import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
-import useCreateShuttles from "../automation/main";
+import useCreateShuttles from "../automation/autoMain";
+import Status from "../types/Status";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -28,22 +28,23 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+  const [status, setStatus] = useState<Status | null>(null);
 
-  const { createShuttles, isLoading, isError } = useCreateShuttles()
+  const { createShuttles, isLoading, isError } = useCreateShuttles(setStatus)
 
-  const { data: statusData } = GetStatus();
-  const statusItem = statusData?.d.results[0];
-  const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
-  const isSucceeded = statusItem?.status === "succeeded";
+  // const { data: statusData } = GetStatus();
+  // const statusItem = statusData?.d.results[0];
+  // const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
+  // const isSucceeded = statusItem?.status === "succeeded";
 
-  useEffect(() => {
-    setIsShuttlesArranged(isToday && isSucceeded);
-  }, [isToday, isSucceeded]);
+  // useEffect(() => {
+  //   setIsShuttlesArranged(isToday && isSucceeded);
+  // }, [isToday, isSucceeded]);
 
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
 
-  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
+  
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -66,10 +67,10 @@ const HomeScreenBody = () => {
   };
 
   const handleSubmit = () => {
+    createShuttles()
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-
-    onAssignClick();
+     setAutomationModalVisible(false);
   };
 
   const sendWhatsMessages = async () => {
@@ -130,7 +131,7 @@ const HomeScreenBody = () => {
               }
             >
               <Button
-                onClick={createShuttles}
+                onClick={() => setShuttleAssignmentModalVisible(true)}
                 disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
