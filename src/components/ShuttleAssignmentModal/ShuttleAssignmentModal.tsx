@@ -6,7 +6,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
 import { useGetTomorrowShuttles } from "../../functions/useGetTomorrowShuttles";
-import { patchItemInList } from "../../functions/postToSharepoint";
+import runShuttleAssignment from "../../functions/createShuttles/testFile";
 import resetShuttles from "../../functions/resetShuttles";
 import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
 import { Props } from "../../types/shuttleAssignmentProps";
@@ -38,14 +38,15 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit, 
         setVisible(false);
         setAutomationModalVisible(true);
         await resetShuttles(shuttles, shuttlesDetailsPerRequest);
-        patchItemInList(
-          "Status",
-          { isOver: false, status: "pending", step: 1, isAssigned: false },
-          1,
-          "*"
-        );
-        patchItemInList("trigger", { Title: "000" }, 1, "*");
+        // patchItemInList(
+        //   "Status",
+        //   { isOver: false, status: "pending", step: 1, isAssigned: false },
+        //   1,
+        //   "*"
+        // );
+        // patchItemInList("trigger", { Title: "000" }, 1, "*");
         form.resetFields();
+        
         onSubmit();
       })
       .catch(() => {

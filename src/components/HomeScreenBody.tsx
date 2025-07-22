@@ -16,6 +16,8 @@ import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
+import runShuttleAssignment from "../functions/createShuttles/testFile";
+import { Status } from "./types/Status";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -27,12 +29,12 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+  const [status, setStatus] = useState<Status | null>(null);
 
   const { data: statusData } = GetStatus();
   const statusItem = statusData?.d.results[0];
   const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
   const isSucceeded = statusItem?.status === "succeeded";
-
   useEffect(() => {
     setIsShuttlesArranged(isToday && isSucceeded);
   }, [isToday, isSucceeded]);
@@ -40,7 +42,7 @@ const HomeScreenBody = () => {
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
 
-  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
+  // const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -65,8 +67,8 @@ const HomeScreenBody = () => {
   const handleSubmit = () => {
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-
-    onAssignClick();
+    runShuttleAssignment(setStatus);
+    // onAssignClick();
   };
 
   const sendWhatsMessages = async () => {
