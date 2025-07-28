@@ -28,25 +28,21 @@ export interface StationWithTravelTime extends Station {
     travelTime: number; // travel time to the next station in minutes
 }
 
-export interface Shuttle{
-  ID: number;
-  Title: string;
+export interface SPShuttle{
   StartTime: Date;
   ArrivalTime: Date;
   Details: string;
-  stations: string[];
-  area: string;
   RequestsId: { results: number[] };
-  DriverId: number | null;
+  driverData: number | null;
   totalDistance: number;
   Driver: {
     Title: string;
   };
-  driverData: {
-    ID: number;
-    Title: string;
-  };
 };
+
+export interface SPShuttleDetailsPerRequest {
+  
+}
 
 export interface Route {
     id: number;

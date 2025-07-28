@@ -39,7 +39,7 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit, 
         setVisible(false);
         setAutomationModalVisible(true);
     
-        await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+        // await resetShuttles(shuttles, shuttlesDetailsPerRequest);
         
         form.resetFields();
         onSubmit();

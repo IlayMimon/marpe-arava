@@ -5,6 +5,8 @@ import assignHayoonRequestsToShuttleGroups from './addHayoon/addHayoon';
 import splitOverflowedShuttleGroups from './splitOverFlowedShuttles/splitOverflowedShuttleGroups';
 import enrichShuttleGroups from './addAdditionalParams/enrichShuttleGroups';
 import calculateShuttleStationsTimes from './addStations/addStations';
+import {assignShuttlesToDrivers} from './driversAssign/assignDrivers';
+import {initDrivers} from './driversAssign/initDrivers';
 import { useQueryFetchRequest } from '../hooks/useQueryFetch';
 import { SharepointQueryResultArray } from '../types/spFetchTypes';
 import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetchTypes';
@@ -101,6 +103,8 @@ const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status
         createShuttlesParams.stations,
         createShuttlesParams.routes
       );
+      
+      // const shuttlesWithDrivers = assignShuttlesToDrivers(shuttleGroupsWithTimes, initDrivers(3))
       return {
         createShuttles: () =>
           shuttleGroupsWithTimes.forEach((shuttleGroup) => {
