@@ -13,6 +13,12 @@ import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetch
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import Status from '../types/Status';
+import creatSPItems from './createSPItems/createSPItems';
+
+
+
+
+
 
 const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status | null>>): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
   const tomorrow = dayjs().add(1, 'day').startOf('day');
@@ -98,12 +104,8 @@ const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status
       const ShuttleGroupsWithHayoon = assignHayoonRequestsToShuttleGroups(expandedRequests, groupedRequests);
       const splitShuttleGroups = splitOverflowedShuttleGroups(ShuttleGroupsWithHayoon);
       const enrichedShuttleGroups = enrichShuttleGroups(splitShuttleGroups);
-      const shuttleGroupsWithTimes = calculateShuttleStationsTimes(
-        enrichedShuttleGroups,
-        createShuttlesParams.stations,
-        createShuttlesParams.routes
-      );
-      
+      const shuttleGroupsWithTimes = calculateShuttleStationsTimes( enrichedShuttleGroups, createShuttlesParams.stations, createShuttlesParams.routes);
+      creatSPItems(shuttleGroupsWithTimes);
       // const shuttlesWithDrivers = assignShuttlesToDrivers(shuttleGroupsWithTimes, initDrivers(3))
       return {
         createShuttles: () =>

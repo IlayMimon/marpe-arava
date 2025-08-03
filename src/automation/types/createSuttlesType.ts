@@ -35,13 +35,20 @@ export interface SPShuttle{
   RequestsId: { results: number[] };
   driverData: number | null;
   totalDistance: number;
-  Driver: {
-    Title: string;
-  };
+//   Driver: {
+//     Title: string;
+//   };
 };
 
 export interface SPShuttleDetailsPerRequest {
-  
+    Request: {
+        Id: number;
+        Time: string;
+        Phone: string;
+    }
+   
+    PickupTime: Date;
+    ArrivalTime: Date;
 }
 
 export interface Route {
