@@ -1,16 +1,17 @@
 import { canAssignShuttle } from "./canAssignDriver";
 import { Driver, Shuttle, ShuttleAssignment } from "../types/driversAssignTypes";
+import { SPShuttle } from "../types/createSuttlesType";
 
 
 function getTotalKm(driver: Driver): number {
     return driver.schedule.reduce((sum, a) => sum + a.totalDistance, 0);
   }
   
-export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]) {
-    const result: ShuttleAssignment[] = [];
+export function assignShuttlesToDrivers(shuttles: SPShuttle[], drivers: Driver[]) {
+  
     // מיון השאטלים לפי זמן התחלה
-    const sortedShuttles = shuttles.sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime());
-    
+    const sortedShuttles = shuttles.sort((a, b) => a.StartTime.valueOf() - b.StartTime.valueOf());
+
     for (const shuttle of sortedShuttles) {
       let assigned = false;
       
@@ -19,38 +20,25 @@ export function assignShuttlesToDrivers(shuttles: Shuttle[], drivers: Driver[]) 
   
       for (const driver of sortedDrivers) {
         if (canAssignShuttle(driver, shuttle)) {
-          // אם הנהג יכול לקבל את השאטל, מוסיף אותו ללוח הזמנים של הנהג
-          driver.schedule.push({
-            shuttleId: shuttle.Id,
-            StartTime: shuttle.StartTime,
-            ArrivalTime: shuttle.ArrivalTime,
-            totalDistance: shuttle.totalDistance
-          });
+            // אם הנהג יכול לקבל את השאטל, מוסיף אותו ללוח הזמנים של הנהג
+            driver.schedule.push({
+              // shuttleId: shuttle.Id,
+              StartTime: shuttle.StartTime,
+              ArrivalTime: shuttle.ArrivalTime,
+              totalDistance: shuttle.totalDistance
+            });
   
-          result.push({
-            shuttleId: shuttle.Id,
-            driverId: driver.id,
-            driverName: driver.name
-          });
-          
-          assigned = true;
-          break;
+            // מוסיף את ההקצאה לתוצאה
+            shuttle.driverDataId = driver.id;
+            assigned = true;
+            break;
         }
       }
   
       if (!assigned) {
-        console.warn(`לא נמצא נהג זמין לנסיעה ${shuttle.Id}`);
+        console.warn(`לא נמצא נהג זמין לנסיעה ${shuttle}`);
       }
     }
+    return shuttles
     
-    // for (const driver of drivers) {
-    //   patchItemInList('driversData', {Distance: 0}, driver.id, '*')
-    //     if (driver.schedule.length !== 0) {
-    //       patchItemInList('driversData', {Distance: getTotalKm(driver)}, driver.id, '*')
-    //     }
-    // }
-    // for (const assignment of result) {
-    //     patchItemInList('Shuttles', {driverDataId: assignment.driverId}, assignment.shuttleId, '*')
-    // }
-    // // patchItemInList("Status", {isAssigned: true}, 1, '*')
   }

@@ -13,7 +13,10 @@ import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetch
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import Status from '../types/Status';
-import creatSPItems from './createSPItems/createSPItems';
+import {creatSPItems} from './createSPItems/createSPItems';
+import { useGetTomorrowShuttles } from '../functions/useGetTomorrowShuttles';
+import useGetTomorrowShuttleDetailsPerRequest from '../hooks/data/useGetTomorrowShuttlesDetailsPerRequest';
+import resetShuttles from '../functions/resetShuttles';
 
 
 
@@ -21,6 +24,10 @@ import creatSPItems from './createSPItems/createSPItems';
 
 
 const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status | null>>): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
+  const { shuttles } = useGetTomorrowShuttles();
+  const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
+
+  
   const tomorrow = dayjs().add(1, 'day').startOf('day');
   const dayAfterTomorrow = tomorrow.add(1, 'day');
 
@@ -54,13 +61,15 @@ const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status
   } = useQueryFetchRequest<SharepointQueryResultArray<SPRoute>>("/_api/web/lists/getbytitle('Routes')/items");
 
   const shuttleRequests = shuttleRequestsData?.d.results.map(
-    (item): ShuttleRequest => ({
-      id: item.Id,
-      requestedService: item.RequestedServicesId || [],
-      isReturnShuttleRequired: item.IsReturnShuttleRequired || false,
-      shuttleDateTime: dayjs.utc(item.Time).local(),
-      stationId: item.StationId,
-      returnStationId: item.ReturnStationId,
+    (item): SPShuttleRequest => ({
+      Id: item.Id,
+      Time: dayjs.utc(item.Time).local(),
+      StationId: item.StationId,
+      Phone: item.Phone,
+      IsReturnShuttleRequired: item.IsReturnShuttleRequired || false,
+      RequestedServicesId: item.RequestedServicesId || [],
+      ReturnStationId: item.ReturnStationId,
+      FullName: item.FullName,
     })
   );
 
@@ -105,13 +114,12 @@ const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status
       const splitShuttleGroups = splitOverflowedShuttleGroups(ShuttleGroupsWithHayoon);
       const enrichedShuttleGroups = enrichShuttleGroups(splitShuttleGroups);
       const shuttleGroupsWithTimes = calculateShuttleStationsTimes( enrichedShuttleGroups, createShuttlesParams.stations, createShuttlesParams.routes);
-      creatSPItems(shuttleGroupsWithTimes);
-      // const shuttlesWithDrivers = assignShuttlesToDrivers(shuttleGroupsWithTimes, initDrivers(3))
+
       return {
-        createShuttles: () =>
-          shuttleGroupsWithTimes.forEach((shuttleGroup) => {
-            console.log(shuttleGroup);
-          }),
+        createShuttles: async () => {
+          await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+          await creatSPItems(shuttleGroupsWithTimes);
+        },
         isLoading,
         isError,
       };

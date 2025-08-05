@@ -70,7 +70,7 @@ const HomeScreenBody = () => {
     createShuttles()
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-     setAutomationModalVisible(false);
+    setAutomationModalVisible(false);
   };
 
   const sendWhatsMessages = async () => {

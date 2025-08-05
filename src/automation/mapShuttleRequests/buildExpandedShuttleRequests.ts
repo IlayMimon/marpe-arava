@@ -13,17 +13,17 @@ const buildExpandedShuttleRequests = (input: CreateShuttlesParams): ExpandedShut
 
   for (const request of shuttleRequest) {
     // האם יש שירות שאוסר איחור
-    const isLatenessForbidden = request.requestedService.results.some(serviceId => {
+    const isLatenessForbidden = request.RequestedServicesId.results.some(serviceId => {
       const service = services.find(s => s.id === serviceId);
       return service?.isLatenessForbidden ?? false;
     });
 
     // מציאת תחנה מתאימה
-    const station = stations.find(s => s.id === request.stationId);
+    const station = stations.find(s => s.id === request.StationId);
     if (!station) continue;
 
     // חישובי זמנים
-    const shuttleTime = request.shuttleDateTime;
+    const shuttleTime = request.Time;
     const minArrivalTime = shuttleTime.subtract(30, 'minutes'); // מינוס 30 דקות
     const maxArrivalTime = isLatenessForbidden
       ? shuttleTime
@@ -31,9 +31,10 @@ const buildExpandedShuttleRequests = (input: CreateShuttlesParams): ExpandedShut
 
     // בניית האובייקט המורחב
     result.push({
-      shuttlesRequestId: request.id,
+      shuttlesRequestId: request.Id,
       shuttleDateTime: shuttleTime,
-      isReturnShuttleRequired: request.isReturnShuttleRequired,
+      phone: request.Phone,
+      isReturnShuttleRequired: request.IsReturnShuttleRequired || false,
       isLatenessForbidden,
       stationId: station.id,
       stationName: station.title,

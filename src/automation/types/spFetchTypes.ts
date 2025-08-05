@@ -4,17 +4,19 @@
 //// for example: ShuttleRequest.shuttleDateTime only exists when constructed in testFile.ts
 //// the SharePoint list ShuttleRequests doesn't have a shuttleDateTime column
 
+import { Dayjs } from 'dayjs';
+
 export interface SPShuttleRequest {
   Id: number;
   Title?: string;
-  Time: string; // remember to parse using dayjs(Time) - this is an ISO string, not a date object
+  Time: Dayjs; // remember to parse using dayjs(Time) - this is an ISO string, not a date object
   StationId: number; // reference to station using ID
   Phone: string; // stored in SharePoint as '050-0000000'
   IsReturnShuttleRequired?: boolean;
   RequestedServicesId: { results: number[] };
   ReturnStationId?: number;
   FullName: string;
-  notes?: string;
+  notes?: string; 
 }
 
 export interface SPService {

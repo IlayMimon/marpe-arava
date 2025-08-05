@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-
+import {SPShuttleRequest} from "./spFetchTypes";
 export interface ShuttleRequest {
     id: number;
     requestedService: { results: number[] };
@@ -29,24 +29,16 @@ export interface StationWithTravelTime extends Station {
 }
 
 export interface SPShuttle{
-  StartTime: Date;
-  ArrivalTime: Date;
+  StartTime: Dayjs;
+  ArrivalTime: Dayjs;
   Details: string;
-  RequestsId: { results: number[] };
-  driverData: number | null;
+  RequestsId: number[];
+  driverDataId: number | null;
   totalDistance: number;
-//   Driver: {
-//     Title: string;
-//   };
 };
 
 export interface SPShuttleDetailsPerRequest {
-    Request: {
-        Id: number;
-        Time: string;
-        Phone: string;
-    }
-   
+    Id: number;
     PickupTime: Date;
     ArrivalTime: Date;
 }
@@ -60,7 +52,7 @@ export interface Route {
 }
 
 export interface CreateShuttlesParams {
-    shuttleRequests: ShuttleRequest[];
+    shuttleRequests: SPShuttleRequest[];
     services: Service[];
     stations: Station[];
     routes: Route[];
