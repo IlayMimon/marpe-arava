@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { useHomePageContext } from "../contexts/HomePage";
-import { addItemToList } from "../functions/postToSharepoint";
+import { addItemToList, patchItemInList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
@@ -16,35 +16,32 @@ import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
 import useCreateShuttles from "../automation/autoMain";
-import Status from "../types/Status";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
+    useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
-  const [status, setStatus] = useState<Status | null>(null);
 
-  const { createShuttles, isLoading, isError } = useCreateShuttles(setStatus)
+  const { createShuttles, isLoading, isError } = useCreateShuttles();
 
-  // const { data: statusData } = GetStatus();
-  // const statusItem = statusData?.d.results[0];
-  // const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
-  // const isSucceeded = statusItem?.status === "succeeded";
+  const { data: statusData } = GetStatus();
+  const statusItem = statusData?.d.results[0];
+  const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
+  const isSucceeded = statusItem?.status === "succeeded";
 
-  // useEffect(() => {
-  //   setIsShuttlesArranged(isToday && isSucceeded);
-  // }, [isToday, isSucceeded]);
+  useEffect(() => {
+    setIsShuttlesArranged(isToday && isSucceeded);
+  }, [isToday, isSucceeded]);
 
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
-
-  
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -67,10 +64,11 @@ const HomeScreenBody = () => {
   };
 
   const handleSubmit = () => {
-    createShuttles()
+    createShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     setAutomationModalVisible(false);
+    patchItemInList("Status", { isOver: true, status: "succeeded", step: 8, isAssigned: true }, 1, "*");
   };
 
   const sendWhatsMessages = async () => {
@@ -173,7 +171,10 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
@@ -190,7 +191,7 @@ const HomeScreenBody = () => {
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-      <AutomationModal visible={automationModalVisible} status={status} />
+      <AutomationModal visible={automationModalVisible} />
 
       <AddPatientModal
         isOpen={escortModalOpen}

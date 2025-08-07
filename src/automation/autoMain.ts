@@ -1,33 +1,24 @@
-import { CreateShuttlesParams, Route, Service, ShuttleRequest, Station } from './types/createSuttlesType';
-import buildExpandedShuttleRequests from './mapShuttleRequests/buildExpandedShuttleRequests';
-import groupShuttleRequestsByArea from './groupsByAreaAndArrival/groupsByAreaAndArrival';
-import assignHayoonRequestsToShuttleGroups from './addHayoon/addHayoon';
-import splitOverflowedShuttleGroups from './splitOverFlowedShuttles/splitOverflowedShuttleGroups';
-import enrichShuttleGroups from './addAdditionalParams/enrichShuttleGroups';
-import calculateShuttleStationsTimes from './addStations/addStations';
-import {assignShuttlesToDrivers} from './driversAssign/assignDrivers';
-import {initDrivers} from './driversAssign/initDrivers';
-import { useQueryFetchRequest } from '../hooks/useQueryFetch';
-import { SharepointQueryResultArray } from '../types/spFetchTypes';
-import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetchTypes';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import Status from '../types/Status';
-import {creatSPItems} from './createSPItems/createSPItems';
+import resetShuttles from '../functions/resetShuttles';
 import { useGetTomorrowShuttles } from '../functions/useGetTomorrowShuttles';
 import useGetTomorrowShuttleDetailsPerRequest from '../hooks/data/useGetTomorrowShuttlesDetailsPerRequest';
-import resetShuttles from '../functions/resetShuttles';
+import { useQueryFetchRequest } from '../hooks/useQueryFetch';
+import { SharepointQueryResultArray } from '../types/spFetchTypes';
+import enrichShuttleGroups from './addAdditionalParams/enrichShuttleGroups';
+import assignHayoonRequestsToShuttleGroups from './addHayoon/addHayoon';
+import calculateShuttleStationsTimes from './addStations/addStations';
+import { creatSPItems } from './createSPItems/createSPItems';
+import groupShuttleRequestsByArea from './groupsByAreaAndArrival/groupsByAreaAndArrival';
+import buildExpandedShuttleRequests from './mapShuttleRequests/buildExpandedShuttleRequests';
+import splitOverflowedShuttleGroups from './splitOverFlowedShuttles/splitOverflowedShuttleGroups';
+import { CreateShuttlesParams, Route, Service, Station } from './types/createSuttlesType';
+import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetchTypes';
 
-
-
-
-
-
-const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status | null>>): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
+const useCreateShuttles = (): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
   const { shuttles } = useGetTomorrowShuttles();
   const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
 
-  
   const tomorrow = dayjs().add(1, 'day').startOf('day');
   const dayAfterTomorrow = tomorrow.add(1, 'day');
 
@@ -130,6 +121,8 @@ const useCreateShuttles = (setStatus: React.Dispatch<React.SetStateAction<Status
     createdShuttles || {
       createShuttles: () => {},
       isLoading,
+      isError,
+      isError,
       isError,
     }
   );

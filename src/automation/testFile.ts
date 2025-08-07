@@ -14,25 +14,25 @@
 // axios.defaults.baseURL = 'http://localhost:3000/sites/MarpeArava/_api/web/lists';
 // axios.defaults.headers.Accept = 'application/json;odata=verbose';
 
-export async function getshuttlesRequests(): Promise<ShuttleRequest[]> {
-  const tomorrow = dayjs().add(1,'day').startOf('day');
-  const dayAfterTomorrow = tomorrow.add(1, "day");
+// export async function getshuttlesRequests(): Promise<ShuttleRequest[]> {
+//   const tomorrow = dayjs().add(1,'day').startOf('day');
+//   const dayAfterTomorrow = tomorrow.add(1, "day");
 
-  const isoTomorrow = tomorrow.subtract(1,'day').toISOString();
-  const isoDayAfter = dayAfterTomorrow.subtract(1,'day').toISOString();
+//   const isoTomorrow = tomorrow.subtract(1,'day').toISOString();
+//   const isoDayAfter = dayAfterTomorrow.subtract(1,'day').toISOString();
 
-  const res = await axios.get<SharepointQueryResultArray<SPShuttleRequest>>(
-    `/getbytitle('ShuttleRequests')/items?$filter=Time ge datetime'${isoTomorrow}' and Time lt datetime'${isoDayAfter}'`
-  );
-  return res.data.d.results.map((item): ShuttleRequest => ({
-    id: item.Id,
-    requestedService: item.RequestedServicesId || [],
-    isReturnShuttleRequired: item.IsReturnShuttleRequired || false,
-    shuttleDateTime: dayjs.utc(item.Time).local(),
-    stationId: item.StationId,
-    returnStationId: item.ReturnStationId
-  }));
-}
+//   const res = await axios.get<SharepointQueryResultArray<SPShuttleRequest>>(
+//     `/getbytitle('ShuttleRequests')/items?$filter=Time ge datetime'${isoTomorrow}' and Time lt datetime'${isoDayAfter}'`
+//   );
+//   return res.data.d.results.map((item): ShuttleRequest => ({
+//     id: item.Id,
+//     requestedService: item.RequestedServicesId || [],
+//     isReturnShuttleRequired: item.IsReturnShuttleRequired || false,
+//     shuttleDateTime: dayjs.utc(item.Time).local(),
+//     stationId: item.StationId,
+//     returnStationId: item.ReturnStationId
+//   }));
+// }
 
 // export async function getServices(): Promise<Service[]> {
 //   const res = await axios.get<SharepointQueryResultArray<SPService>>("/getbytitle('Services')/items");

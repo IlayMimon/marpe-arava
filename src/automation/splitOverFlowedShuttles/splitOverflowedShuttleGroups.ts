@@ -25,8 +25,7 @@ function splitOverflowedShuttleGroups(
 
     // חישוב כמות קבוצות הדרושה  
     const numNewGroups = Math.max(Math.ceil(peopleCount / MAX_PEOPLE_PER_SHUTTLE), 3);
-    console.log("validgroups", validGroups)
-    console.log("overflowGroups", overflowGroups)
+    
 
     // חישוב כמות האנשים לכל קבוצה חדשה (באופן שווה יחסית)
     const avgPeopleInShuttle = Math.floor(peopleCount / numNewGroups) + Math.min(peopleCount % numNewGroups, 1);

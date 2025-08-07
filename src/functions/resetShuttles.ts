@@ -12,7 +12,7 @@ const resetShuttles = async (
   for (const shuttle of shuttles) {
     await removeItemFromList("Shuttles", shuttle.Id, "*");
   }
-  console.log("shuttlesDetailsPerRequest", shuttlesDetailsPerRequest);
+  // מחיקת כל הפריטים מרשימת ShuttleDetailsPerRequest
   for (const shuttleDetailsPerRequest of shuttlesDetailsPerRequest) {
     await removeItemFromList("ShuttleDetailsPerRequest", shuttleDetailsPerRequest.ID, "*");
   }

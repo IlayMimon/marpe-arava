@@ -50,13 +50,5 @@ export const parseStations = (
     };
   });
 
-  return [
-    ...parsedStations,
-    {
-      name: "מרפא ערבה",
-      arrivalTime: dayjs(arrivalTime).format("HH:mm"),
-      isOrigin: undefined,
-      isDestination: true,
-    },
-  ];
+  return parsedStations
 };
