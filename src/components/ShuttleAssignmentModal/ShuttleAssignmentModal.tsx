@@ -5,10 +5,6 @@ import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { useGetTomorrowShuttles } from "../../functions/useGetTomorrowShuttles";
-import { patchItemInList } from "../../functions/postToSharepoint";
-import resetShuttles from "../../functions/resetShuttles";
-import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
 import { Props } from "../../types/shuttleAssignmentProps";
 import MedicSelect from "../MedicSelect";
 

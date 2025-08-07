@@ -64,6 +64,7 @@ const HomeScreenBody = () => {
   };
 
   const handleSubmit = () => {
+    patchItemInList("Status", { isOver: false, status: "failed", step: 0, isAssigned: false }, 1, "*");
     createShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
