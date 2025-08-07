@@ -1,5 +1,5 @@
 import { canAssignShuttle } from "./canAssignDriver";
-import { Driver, Shuttle, ShuttleAssignment } from "../types/driversAssignTypes";
+import { Driver } from "../types/driversAssignTypes";
 import { SPShuttle } from "../types/createSuttlesType";
 
 

@@ -1,5 +1,5 @@
 import { SPShuttle } from "../types/createSuttlesType";
-import { Driver, Shuttle } from "../types/driversAssignTypes";
+import { Driver } from "../types/driversAssignTypes";
 
 export function canAssignShuttle(driver: Driver, shuttle: SPShuttle): boolean {
     // מיון לפי זמן

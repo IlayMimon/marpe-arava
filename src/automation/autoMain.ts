@@ -15,7 +15,7 @@ import splitOverflowedShuttleGroups from './splitOverFlowedShuttles/splitOverflo
 import { CreateShuttlesParams, Route, Service, Station } from './types/createSuttlesType';
 import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetchTypes';
 
-const useCreateShuttles = (): { createShuttles: () => void; isLoading: boolean; isError: boolean } => {
+const useCreateShuttles = (): { createShuttles: () => void } => {
   const { shuttles } = useGetTomorrowShuttles();
   const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
 
@@ -111,8 +111,8 @@ const useCreateShuttles = (): { createShuttles: () => void; isLoading: boolean; 
           await resetShuttles(shuttles, shuttlesDetailsPerRequest);
           await creatSPItems(shuttleGroupsWithTimes);
         },
-        isLoading,
-        isError,
+        // isLoading,
+        // isError,
       };
     }
   }, [isError, isLoading, routes, services, shuttleRequests, stations]);
@@ -120,10 +120,8 @@ const useCreateShuttles = (): { createShuttles: () => void; isLoading: boolean; 
   return (
     createdShuttles || {
       createShuttles: () => {},
-      isLoading,
-      isError,
-      isError,
-      isError,
+      // isLoading,
+      // isError,
     }
   );
 };

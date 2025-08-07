@@ -1,6 +1,7 @@
-interface Status {
-    step: number;
-    CompletionStatus: "Failed" | "InProgress" | "Completed";
+export interface Status {
+  status: string;
+  isAssigned: boolean;
+  step: number;
+  isOver: boolean;
+  Modified: Date;
 }
-
-export default Status;

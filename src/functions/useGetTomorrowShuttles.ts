@@ -1,6 +1,6 @@
 import {SharepointQueryResultArray} from "../types/spFetchTypes";
 import { useQueryFetchRequest } from "../hooks/useQueryFetch";
-import { Shuttle } from "../hooks/data/useGetShuttles";
+
 
 export interface ShuttlesPerDay {
   Id: number;

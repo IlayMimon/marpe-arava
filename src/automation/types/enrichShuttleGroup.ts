@@ -1,5 +1,5 @@
 import { ExpandedShuttleRequest } from "./expandShuttleReq";
-import { Station, StationWithTravelTime } from "./createSuttlesType";
+import { StationWithTravelTime } from "./createSuttlesType";
 import { Dayjs } from "dayjs";
 interface enrichShuttleGroup {
   value: ExpandedShuttleRequest[];

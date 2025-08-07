@@ -29,7 +29,7 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const { createShuttles, isLoading, isError } = useCreateShuttles();
+  const { createShuttles} = useCreateShuttles();
 
   const { data: statusData } = GetStatus();
   const statusItem = statusData?.d.results[0];
@@ -131,7 +131,7 @@ const HomeScreenBody = () => {
             >
               <Button
                 onClick={() => setShuttleAssignmentModalVisible(true)}
-                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
+                // disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
