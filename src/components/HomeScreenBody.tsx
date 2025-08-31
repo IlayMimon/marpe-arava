@@ -44,9 +44,7 @@ const HomeScreenBody = () => {
   const tableData = useGetTableData();
 
   let locale = {
-    emptyText: (
-      <CustomEmpty></CustomEmpty>
-    ),
+    emptyText: <CustomEmpty></CustomEmpty>,
   };
   const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
