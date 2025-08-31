@@ -1,10 +1,11 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
-import { Button, message, Tooltip } from "antd";
+import { Button, Empty, message, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { useHomePageContext } from "../contexts/HomePage";
 import { addItemToList } from "../functions/postToSharepoint";
+import GetStatus from "../hooks/data/useGetStatus";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
 import { useStatusManager } from "../hooks/useStatusManager";
@@ -15,13 +16,15 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
-import GetStatus from "../hooks/data/useGetStatus";
+import notfound from "../assets/notfound.svg";
+import CustomEmpty from "./CustomEmpty/CustomEmpty";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
+    useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
@@ -40,6 +43,11 @@ const HomeScreenBody = () => {
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
 
+  let locale = {
+    emptyText: (
+      <CustomEmpty></CustomEmpty>
+    ),
+  };
   const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
@@ -173,11 +181,24 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
-            <Table data={data} columns={columns} rowKey={(row) => row.id} />
+            <Table
+              locale={locale}
+              data={data}
+              columns={columns}
+              rowKey={(row) => row.id}
+            />
           ) : (
-            <Table data={data} columns={columns} rowKey={(row) => row.id} />
+            <Table
+              locale={locale}
+              data={data}
+              columns={columns}
+              rowKey={(row) => row.id}
+            />
           )}
         </div>
         <TravelBar />

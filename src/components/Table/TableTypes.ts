@@ -1,4 +1,5 @@
 import { ColumnType } from "antd/es/table";
+import { TableProps } from "antd/lib";
 import dayjs from "dayjs";
 import { CSSProperties, ReactNode } from "react";
 
@@ -9,13 +10,13 @@ export interface TableColumn<T> extends Omit<ColumnType<T>, "dataIndex"> {
   render?: (value: any, record: T, index: number) => React.ReactNode;
 }
 
-export interface GenericGroupedTableProps<T> {
+export interface GenericGroupedTableProps<T>
+  extends Omit<TableProps<T>, "columns" | "dataSource" | "rowKey"> {
   data: T[];
   groupBy?: (record: T) => string;
   columns: TableColumn<T>[];
   rowKey: (record: T) => number;
 }
-
 export type CellType = {
   colSpan?: number;
   rowSpan?: number;
