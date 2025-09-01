@@ -1,3 +1,6 @@
+import { Dayjs } from "dayjs";
+
+
 export type Shuttle = {
     Id: number;
     StartTime: Date;
@@ -12,9 +15,9 @@ export type Shuttle = {
   };
   
   export type DriverAssignment = {
-    shuttleId: number;
-    StartTime: Date;
-    ArrivalTime: Date;
+    // shuttleId: number;
+    StartTime: Dayjs;
+    ArrivalTime: Dayjs;
     totalDistance: number;
   };
   

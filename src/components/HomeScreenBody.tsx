@@ -4,10 +4,9 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { useHomePageContext } from "../contexts/HomePage";
-import { addItemToList } from "../functions/postToSharepoint";
+import { addItemToList, patchItemInList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
-import { useStatusManager } from "../hooks/useStatusManager";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import AutomationModal from "./AutomationModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
@@ -16,17 +15,21 @@ import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
+import useCreateShuttles from "../automation/autoMain";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
+    useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+
+  const { createShuttles} = useCreateShuttles();
 
   const { data: statusData } = GetStatus();
   const statusItem = statusData?.d.results[0];
@@ -39,8 +42,6 @@ const HomeScreenBody = () => {
 
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
-
-  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -63,10 +64,12 @@ const HomeScreenBody = () => {
   };
 
   const handleSubmit = () => {
+    patchItemInList("Status", { isOver: false, status: "failed", step: 0, isAssigned: false }, 1, "*");
+    createShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-
-    onAssignClick();
+    setAutomationModalVisible(false);
+    patchItemInList("Status", { isOver: true, status: "succeeded", step: 8, isAssigned: true }, 1, "*");
   };
 
   const sendWhatsMessages = async () => {
@@ -127,12 +130,8 @@ const HomeScreenBody = () => {
               }
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setShuttleAssignmentModalVisible(true)
-                }
-                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
+                onClick={() => setShuttleAssignmentModalVisible(true)}
+                // disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
@@ -173,7 +172,10 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
@@ -190,7 +192,7 @@ const HomeScreenBody = () => {
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-      <AutomationModal visible={automationModalVisible} status={status} />
+      <AutomationModal visible={automationModalVisible} />
 
       <AddPatientModal
         isOpen={escortModalOpen}

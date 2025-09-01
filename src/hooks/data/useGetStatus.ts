@@ -1,4 +1,4 @@
-import { Status } from "../../components/types/Status";
+import { Status } from "../../types/Status";
 import { SharepointQueryResultArray } from "../../types/spFetchTypes";
 import { useQueryFetchRequest } from "../useQueryFetch";
 
