@@ -1,5 +1,5 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
-import { Button, Empty, message, Tooltip, Typography } from "antd";
+import { Button, message, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
@@ -11,13 +11,12 @@ import useGetTableData from "../hooks/useGetTableData";
 import { useStatusManager } from "../hooks/useStatusManager";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import AutomationModal from "./AutomationModal";
+import CustomEmpty from "./CustomEmpty/CustomEmpty";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
-import notfound from "../assets/notfound.svg";
-import CustomEmpty from "./CustomEmpty/CustomEmpty";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -43,7 +42,7 @@ const HomeScreenBody = () => {
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
 
-  let locale = {
+  const locale = {
     emptyText: <CustomEmpty></CustomEmpty>,
   };
   const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
