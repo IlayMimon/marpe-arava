@@ -54,7 +54,7 @@ export const addItemToList = async <T = unknown>(listTitle: string, body: object
   return postToSharepoint<T>(`${listPath}/items`, body);
 };
 
-export const removeItemFromLsit = async <T = unknown>(listTitle: string, id: number, etag: string) => {
+export const removeItemFromList = async <T = unknown>(listTitle: string, id: number, etag: string) => {
   const listPath = `/_api/web/lists/getbytitle('${listTitle}')`;
 
   return postToSharepoint<T>(`${listPath}/items(${id})`, null, 'DELETE', etag);

@@ -11,7 +11,7 @@ import {
   Typography,
 } from "antd";
 import heIL from "antd/locale/he_IL";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import useGetServices from "../hooks/data/useGetServices";
 import useGetStations from "../hooks/data/useGetStations";
@@ -39,7 +39,7 @@ type IAddPatientModalProps = {
 const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModalProps) => {
   const [form] = Form.useForm<PatientFormValues>();
   const [hasPickup, setHasPickup] = useState(true);
-  const [hasDropoff, setHasDropoff] = useState(false);
+  const [hasDropoff, setHasDropoff] = useState(true);
 
   // Watch all required fields
   const pickupStation = Form.useWatch("pickupStation", form);
@@ -51,8 +51,12 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const appointmentTypes = Form.useWatch("appointmentTypes", form);
 
   const servicesData = useGetServices();
-
   const stationsData = useGetStations();
+
+  const disableDaysNotMonToWed = (current: Dayjs) => {
+    const day = current.day();
+    return day < 1 || day > 3;
+  };
 
   const isFormValid = () => {
     return (
@@ -153,7 +157,13 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
                   },
                 ]}
               >
-                <Select disabled={!hasPickup} placeholder="בחר תחנה">
+                <Select
+                  disabled={!hasPickup}
+                  placeholder="בחר תחנה"
+                  onChange={(e) => {
+                    form.setFieldsValue({ dropoffStation: e });
+                  }}
+                >
                   {stationsData?.map((station) => (
                     <Option key={station.ID} value={station.ID}>
                       {station.Title}
@@ -198,7 +208,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="תאריך התור"
               rules={[{ required: true, message: "יש לבחור תאריך" }]}
             >
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" />
+              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableDaysNotMonToWed} />
             </Form.Item>
 
             <Form.Item

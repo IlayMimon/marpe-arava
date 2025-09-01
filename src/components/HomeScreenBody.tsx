@@ -1,11 +1,12 @@
 import { IconSend, IconSparkles } from "@tabler/icons-react";
 import { Button, message, Tooltip } from "antd";
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import { addItemToList } from "../functions/postToSharepoint";
+import { useHomePageContext } from "../contexts/HomePage";
+import { addItemToList, patchItemInList } from "../functions/postToSharepoint";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
-import { useStatusManager } from "../hooks/useStatusManager";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import AutomationModal from "./AutomationModal";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
@@ -13,23 +14,34 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
-import { useHomePageContext } from "../contexts/HomePage";
-import dayjs from "dayjs";
+import GetStatus from "../hooks/data/useGetStatus";
+import useCreateShuttles from "../automation/autoMain";
 
 export type TripDirection = "outbound" | "inbound";
 
 const HomeScreenBody = () => {
   const [isShuttlesArranged, setIsShuttlesArranged] = useState(false);
-  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] = useState(false);
+  const [shuttleAssignmentModalVisible, setShuttleAssignmentModalVisible] =
+    useState(false);
   const [automationModalVisible, setAutomationModalVisible] = useState(false);
   const [messagesAlreadySent, setMessagesAlreadySent] = useState(false);
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const { selectedDate } = useHomePageContext();
+  const { createShuttles} = useCreateShuttles();
 
-  const { onAssignClick } = useStatusManager(setAutomationModalVisible);
+  const { data: statusData } = GetStatus();
+  const statusItem = statusData?.d.results[0];
+  const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
+  const isSucceeded = statusItem?.status === "succeeded";
+
+  useEffect(() => {
+    setIsShuttlesArranged(isToday && isSucceeded);
+  }, [isToday, isSucceeded]);
+
+  const { selectedDate } = useHomePageContext();
+  const tableData = useGetTableData();
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -52,19 +64,44 @@ const HomeScreenBody = () => {
   };
 
   const handleSubmit = () => {
+    patchItemInList("Status", { isOver: false, status: "failed", step: 0, isAssigned: false }, 1, "*");
+    createShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-    setShuttleAssignmentModalVisible(false);
-    setAutomationModalVisible(true);
+    setAutomationModalVisible(false);
+    patchItemInList("Status", { isOver: true, status: "succeeded", step: 8, isAssigned: true }, 1, "*");
+  };
 
-    onAssignClick();
+  const sendWhatsMessages = async () => {
+    const messagesInfo = tableData
+      .filter((r) => r.status === "שובץ")
+      .map((row) => ({
+        phone: `972${row.phone.slice(1)}`, // Remove the leading '0' and add country code
+        time: row.pickupTime,
+        name: row.fullName,
+        station: row.station,
+        driver: row.driver,
+      }));
+
+    const res = await fetch("http://127.0.0.1:5000/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(messagesInfo),
+    });
+
+    if (res.ok) {
+      alert("✅ Message sent!");
+    } else {
+      alert("❌ Failed to send message");
+    }
   };
 
   const columns = useGetTableColumns(tripDirection);
   const data = useGetTableData();
 
   const isSelectedDateTomorrow =
-    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) && selectedDate.isAfter(dayjs().endOf("day"));
+    selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
+    selectedDate.isAfter(dayjs().endOf("day"));
 
   return (
     <div className="home-screen-body">
@@ -93,12 +130,8 @@ const HomeScreenBody = () => {
               }
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setShuttleAssignmentModalVisible(true)
-                }
-                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
+                onClick={() => setShuttleAssignmentModalVisible(true)}
+                // disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
@@ -114,11 +147,13 @@ const HomeScreenBody = () => {
               color="default"
               variant="filled"
               icon={<IconSend />}
-              className="home-screen-body__header__left__button"
               onClick={() => {
-                setMessagesAlreadySent(true);
                 setPopUpMsgOpen(false);
+
+                sendWhatsMessages();
+                setMessagesAlreadySent(true);
               }}
+              className="home-screen-body__header__left__button"
             >
               שליחת הודעות
             </Button>
@@ -137,7 +172,10 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          <ShuttleTableHeader
+            handleChange={handleChangeDirection}
+            tripDirection={tripDirection}
+          />
           {tripDirection === "outbound" ? (
             <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
@@ -148,11 +186,14 @@ const HomeScreenBody = () => {
       </div>
       <ShuttleAssignmentModal
         visible={shuttleAssignmentModalVisible}
+        setVisible={setShuttleAssignmentModalVisible}
+        setAutomationModalVisible={setAutomationModalVisible}
         onCancel={() => setShuttleAssignmentModalVisible(false)}
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
       <AutomationModal visible={automationModalVisible} />
+
       <AddPatientModal
         isOpen={escortModalOpen}
         onClose={() => setEscortModalOpen(false)}

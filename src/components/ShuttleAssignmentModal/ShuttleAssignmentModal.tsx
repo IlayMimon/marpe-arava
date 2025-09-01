@@ -5,22 +5,19 @@ import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import React from "react";
 import { TbArrowNarrowLeft } from "react-icons/tb";
-import { useGetTomorrowShuttles } from "../../functions/useGetTomorrowShuttles";
-import { patchItemInList } from "../../functions/postToSharepoint";
-import resetShuttles from "../../functions/resetShuttles";
-import useGetTomorrowShuttleDetailsPerRequest from "../../hooks/data/useGetTomorrowShuttlesDetailsPerRequest";
 import { Props } from "../../types/shuttleAssignmentProps";
 import MedicSelect from "../MedicSelect";
+
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
-const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }) => {
+const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit, setAutomationModalVisible, setVisible }) => {
   const [form] = Form.useForm();
   const [selectedMedic, setSelectedMedic] = React.useState<number | undefined>(undefined);
 
-  const { shuttles } = useGetTomorrowShuttles();
-  const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
-
+  // const { shuttles } = useGetTomorrowShuttles();
+  // const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
+  
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
     if (!startTime || !endTime) return Promise.resolve();
@@ -35,16 +32,8 @@ const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit }
     form
       .validateFields()
       .then(async () => {
-        // const { startTime, endTime, vehicleCount, medic } = values;
-
-        await resetShuttles(shuttles, shuttlesDetailsPerRequest);
-        patchItemInList(
-          "Status",
-          { isOver: false, status: "pending", step: 1, isAssigned: false },
-          1,
-          "*"
-        );
-        patchItemInList("trigger", { Title: "000" }, 1, "*");
+        setVisible(false);
+        setAutomationModalVisible(true);
         form.resetFields();
         onSubmit();
       })
