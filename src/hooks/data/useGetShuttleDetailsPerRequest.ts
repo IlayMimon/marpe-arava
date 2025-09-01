@@ -19,8 +19,7 @@ export type ShuttleDetailsPerRequest = {
 const useGetShuttleDetailsPerRequest = () => {
     const date = useHomePageContext().selectedDate;
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleDetailsPerRequest>>(
-        `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$select=ID,Title,RequestId,PickupTime${/*,DriverId*/''},ReturnDriverId,ArrivalTime,FinishTime,InboundTime&${filterByToday(date, 'PickupTime')}`
-    // removed drivedID cuz it gave me errors -> in order to code rn. PLS FIX AND UNCOMMENT LATER
+        `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$select=ID,Title,RequestId,PickupTime,DriverId,ReturnDriverId,ArrivalTime,FinishTime,InboundTime&${filterByToday(date, 'PickupTime')}`
     );
 
     const shuttleDetailsPerRequest = data?.d.results
