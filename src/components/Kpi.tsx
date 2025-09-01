@@ -4,7 +4,7 @@ import { Tooltip } from "antd";
 interface KpiProps {
   title: string;
   icon?: JSX.Element;
-  value: number | undefined;
+  value: number | string | undefined;
   titleColor?: string;
   borderColor?: string;
 }
@@ -31,7 +31,7 @@ const Kpi = ({ title, icon, value, titleColor, borderColor }: KpiProps) => {
           value === 0 ? { color: "var(--Text-color-text-tertiary)" } : undefined
         }
       >
-        {value || 0}
+        {value} {/* is this an ok change ? looks like its working fine */}
       </div>
     </div>
   );
