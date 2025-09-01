@@ -143,7 +143,7 @@ const HomeScreenBody = () => {
           </BtnPopUpMsg>
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
-              disabled={!isShuttlesArranged}
+              disabled={!isShuttlesArranged || !isSelectedDateTomorrow}
               color="default"
               variant="filled"
               icon={<IconSend />}
