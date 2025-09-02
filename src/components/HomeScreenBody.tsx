@@ -131,7 +131,7 @@ const HomeScreenBody = () => {
             >
               <Button
                 onClick={() => setShuttleAssignmentModalVisible(true)}
-                // disabled={messagesAlreadySent || !isSelectedDateTomorrow}
+                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
