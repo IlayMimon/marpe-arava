@@ -11,6 +11,7 @@ const formatTime = (value: dayjs.Dayjs | undefined) => {
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
   const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
+  const stations = Array.from(new Set(useGetStations()?.map((station) => station.Title)));
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
@@ -31,6 +32,8 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             key: "station",
             title: "תחנה",
             dataIndex: "station",
+            filters: stations.map((station) => ({ text: station, value: station })),
+
           },
           {
             key: "area",
