@@ -37,12 +37,13 @@ const DriverOrganizationHeader = ({
         </Button>
       </div>
       <div className="driver-organization-header__title__container">
+           <span className="driver-organization-header__title__name">
+          {paramedic}
+        </span>
         <span className="driver-organization-header__title">
           סידור עבודה יומי לנהג
         </span>
-        <span className="driver-organization-header__title__name">
-          {paramedic}
-        </span>
+     
       </div>
     </div>
   );

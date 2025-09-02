@@ -44,7 +44,11 @@ const DriverOrganizationCardPath = ({
               <span>{name}</span>
               <span className="driver-organization-card-content__path__station__details__name-and-passengers__passengers">
                 {passengers &&
-                  passengers.join(", ") + ` (${passengers.length.toString()})`}
+                  passengers
+                    .map(p => p.split(" ")[0]) // take only the first word
+                    .join(", ") +
+                  ` (${passengers.length})`}
+
               </span>
             </div>
           </div>
