@@ -1,5 +1,6 @@
-import { ConfigProvider, Flex, Segmented } from "antd";
+import { ConfigProvider, Flex, Segmented, Tooltip } from "antd";
 import { TripDirection } from "../HomeScreenBody";
+import { AiOutlineSearch } from 'react-icons/ai';
 interface IShuttleTableHeaderProps {
   tripDirection: TripDirection;
   handleChange: (direction: TripDirection) => void;
@@ -34,6 +35,22 @@ export default function ShuttleTableHeader({
           />
         </Flex>
       </ConfigProvider>
+      <div className="search-bar-container">
+        <Tooltip title={'חיפוש'}>
+          <div className="search-bar-container__active-button">
+            <AiOutlineSearch className="search-bar-container__icon" />
+          </div>
+        </Tooltip>
+
+        <input className="search-bar-container__search-bar">
+
+        </input>
+        <div className="search-bar-container__close-button">
+
+        </div>
+
+
+      </div>
     </div>
   );
 }
