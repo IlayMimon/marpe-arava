@@ -10,7 +10,7 @@ export interface StationInfo {
   isDestination?: boolean;
 }
 
-export interface TravelItem extends Shuttle {
+export interface TravelItem extends Omit<Shuttle, "stations"> {
   code: string;
   colorType: ColorType;
   stations: StationInfo[];

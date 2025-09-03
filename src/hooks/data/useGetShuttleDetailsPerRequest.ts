@@ -8,7 +8,6 @@ export type ShuttleDetailsPerRequest = {
     ID: number
     Title: string
     RequestId: number
-    DriverId: number
     PickupTime: dayjs.Dayjs;
     ArrivalTime: dayjs.Dayjs;
     FinishTime: dayjs.Dayjs;
@@ -19,7 +18,7 @@ export type ShuttleDetailsPerRequest = {
 const useGetShuttleDetailsPerRequest = () => {
     const date = useHomePageContext().selectedDate;
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleDetailsPerRequest>>(
-        `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$select=ID,Title,RequestId,PickupTime,DriverId,ReturnDriverId,ArrivalTime,FinishTime,InboundTime&${filterByToday(date, 'PickupTime')}`
+        `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$select=ID,Title,RequestId,PickupTime,ReturnDriverId,ArrivalTime,FinishTime,InboundTime&${filterByToday(date, 'PickupTime')}`
     );
 
     const shuttleDetailsPerRequest = data?.d.results

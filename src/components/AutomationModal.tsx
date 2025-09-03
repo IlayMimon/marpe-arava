@@ -7,6 +7,7 @@ interface AutomationModalProps {
 }
 
 const AutomationModal = ({ visible }: AutomationModalProps) => {
+
   return (
     <Modal className="automation-modal" open={visible} centered footer={null} closable={false}>
       <div className="automation-modal__content">

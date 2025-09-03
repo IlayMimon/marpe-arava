@@ -1,6 +1,6 @@
-import { SharePointResponse } from "../components/types/SharePointResponse";
+import {SharepointQueryResultArray} from "../types/spFetchTypes";
 import { useQueryFetchRequest } from "../hooks/useQueryFetch";
-import { Shuttle } from "../types/assignDriversTypes";
+
 
 export interface ShuttlesPerDay {
   Id: number;
@@ -22,7 +22,7 @@ export const useGetTomorrowShuttles = () => {
   const isoTomorrow = tomorrow.toISOString();
   const isoDayAfter = dayAfterTomorrow.toISOString();
 
-  const { data, refetch } = useQueryFetchRequest<SharePointResponse<Shuttle>>(
+  const { data, refetch } = useQueryFetchRequest<SharepointQueryResultArray<ShuttlesPerDay>>(
     `/_api/web/lists/getbytitle('Shuttles')/items?$filter=StartTime ge datetime'${isoTomorrow}' and StartTime lt datetime'${isoDayAfter}'`,
     true,
     "GET"

@@ -1,8 +1,8 @@
 import { Dayjs } from 'dayjs';
 
 const filterByToday = (date: Dayjs, columnName: string): string => {
-  const startOfDay = date.utc().startOf('day').toISOString();
-  const endOfDay = date.utc().endOf('day').toISOString();
+  const startOfDay = date.startOf('day').utc().toISOString();
+  const endOfDay = date.endOf('day').utc().toISOString();
 
   return `$filter=${columnName} ge datetime'${startOfDay}' and ${columnName} lt datetime'${endOfDay}'`;
 };

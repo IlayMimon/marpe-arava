@@ -5,7 +5,6 @@ import useGetShuttleRequests from "../hooks/data/useGetShuttleRequests";
 import useGetShuttles from "../hooks/data/useGetShuttles";
 import Kpi from "./Kpi";
 import SummarizeNumbers from "./SummarizeNumbers";
-import { parseStations } from "../functions/parseStations";
 
 const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
@@ -14,12 +13,12 @@ const Kpies = () => {
   const currentStations =
     shuttles &&
     new Set(
-      parseStations(
-        shuttles.map(drive => drive.Details).join('\n') || '',
-        new Date()
-      ).map(station => station.name).filter(name => name && name !== "מרפא ערבה")
-    );
-  console.log(currentStations) // delete this
+      shuttles?.map(drive => drive.Details)
+        .join('\n')
+        .split('\n')
+        .filter(name =>  !name.includes("מרפא ערבה") && name)
+        .map(name => name?.split(':')[0])
+    )
 
   const patientStatuses = useMemo(
     () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),
