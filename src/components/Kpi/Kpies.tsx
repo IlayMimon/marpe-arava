@@ -11,6 +11,15 @@ const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const { shuttles } = useGetShuttles();
+  const currentStations =
+  shuttles &&
+  new Set(
+    shuttles?.map(drive => drive.Details)
+      .join('\n')
+      .split('\n')
+      .filter(name =>  !name.includes("מרפא ערבה") && name)
+      .map(name => name?.split(':')[0])
+  )
 
   const patientStatuses = useMemo(
     () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),
@@ -30,7 +39,7 @@ const Kpies = () => {
 
   return (
     <div className="kpies">
-      <SummarizeNumbers totalPatients={patientStatuses?.length} totalTrips={shuttles?.length} />
+      <SummarizeNumbers totalPatients={patientStatuses?.length} totalStations={currentStations?.size} totalTrips={shuttles?.length} />
       <div className="kpies__seperator" />
       {getMatchingKpi({
         title: "טרם שובצו",
