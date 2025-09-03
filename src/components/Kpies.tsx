@@ -5,11 +5,21 @@ import useGetShuttleRequests from "../hooks/data/useGetShuttleRequests";
 import useGetShuttles from "../hooks/data/useGetShuttles";
 import Kpi from "./Kpi";
 import SummarizeNumbers from "./SummarizeNumbers";
+import { parseStations } from "../functions/parseStations";
 
 const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
-  const {shuttles} = useGetShuttles();
+  const { shuttles } = useGetShuttles();
+  const currentStations =
+    shuttles &&
+    new Set(
+      parseStations(
+        shuttles.map(drive => drive.Details).join('\n') || '',
+        new Date()
+      ).map(station => station.name).filter(name => name && name !== "מרפא ערבה")
+    );
+  console.log(currentStations) // delete this
 
   const patientStatuses = useMemo(
     () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),
@@ -29,7 +39,7 @@ const Kpies = () => {
 
   return (
     <div className="kpies">
-      <SummarizeNumbers totalPatients={patientStatuses?.length} totalTrips={shuttles?.length} />
+      <SummarizeNumbers totalPatients={patientStatuses?.length} totalStations={currentStations?.size} totalTrips={shuttles?.length} />
       <div className="kpies__seperator" />
       <Kpi
         title="טרם שובצו"
