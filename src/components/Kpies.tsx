@@ -6,106 +6,67 @@ import useGetShuttles from "../hooks/data/useGetShuttles";
 import Kpi from "./Kpi";
 import SummarizeNumbers from "./SummarizeNumbers";
 
-export const getMatchingKpi = (title: string, value: string | number | undefined) => {
+interface IGetMatchingKpi {
+  title: string,
+  value: string | number | undefined,
+  inline: boolean,
+}
+export const getMatchingKpi = ({ title, value, inline }: IGetMatchingKpi) => {
   switch (title) {
     case "טרם שובצו":
-      return <Kpi
-        title="טרם שובצו"
-        value={value}
-        titleColor="--Colors-orange-6"
-        borderColor="--Colors-orange-3"
-      />
     case "טרם שובץ":
+    case "ממתינים לחזור":
+    case "ממתין לחזור":
       return <Kpi
-        title="טרם שובץ"
+        title={title}
         value={value}
         titleColor="--Colors-orange-6"
         borderColor="--Colors-orange-3"
+        inline={inline}
       />
+
     case "שובצו":
-      return <Kpi
-        title="שובצו"
-        value={value}
-        titleColor="--Colors-purple-6"
-        borderColor="--Colors-purple-3"
-      />
     case "שובץ":
       return <Kpi
-        title="שובץ"
+        title={title}
         value={value}
         titleColor="--Colors-purple-6"
         borderColor="--Colors-purple-3"
+        inline={inline}
       />
+
     case "נשלחה הודעה":
+    case "במרפאה":
+    case "חזרו":
+    case "חזר":
       return <Kpi
-        title="נשלחה הודעה"
-        value={0}
+        title={title}
+        value={value}
         titleColor="--Colors-green-6"
         borderColor="--Colors-green-3"
+        inline={inline}
       />
+
     case "מגיעים בקרוב":
-      return <Kpi
-        title="מגיעים בקרוב"
-        value={value}
-        titleColor="--Colors-cyan-6"
-        borderColor="--Colors-cyan-3"
-      />
     case "מגיע בקרוב":
       return <Kpi
-        title="מגיע בקרוב"
+        title={title}
         value={value}
         titleColor="--Colors-cyan-6"
         borderColor="--Colors-cyan-3"
+        inline={inline}
       />
-    case "במרפאה":
-      return <Kpi
-        title="במרפאה"
-        value={value}
-        titleColor="--Colors-green-6"
-        borderColor="--Colors-green-3"
-      />
+
     case "מסיימים בקרוב":
+    case "מסיים בקרוב":
       return <Kpi
-        title="מסיימים בקרוב"
-        value={0}
+        title={title}
+        value={value}
         titleColor="--Colors-geekblue-6"
         borderColor="--Colors-geekblue-3"
+        inline={inline}
       />
-      case "מסיים בקרוב":
-        return <Kpi
-          title="מסיים בקרוב"
-          value={0}
-          titleColor="--Colors-geekblue-6"
-          borderColor="--Colors-geekblue-3"
-        />
-    case "ממתינים לחזור":
-      return <Kpi
-        title="ממתינים לחזור"
-        value={0}
-        titleColor="--Colors-orange-6"
-        borderColor="--Colors-orange-3"
-      />
-      case "ממתין לחזור":
-        return <Kpi
-          title="ממתין לחזור"
-          value={0}
-          titleColor="--Colors-orange-6"
-          borderColor="--Colors-orange-3"
-        />
-    case "חזרו":
-      return <Kpi
-        title="חזרו"
-        value={value}
-        titleColor="--Colors-green-6"
-        borderColor="--Colors-green-3"
-      />
-      case "חזר":
-        return <Kpi
-          title="חזר"
-          value={value}
-          titleColor="--Colors-green-6"
-          borderColor="--Colors-green-3"
-        />
+
     default:
       return ""
   }
@@ -136,16 +97,49 @@ const Kpies = () => {
     <div className="kpies">
       <SummarizeNumbers totalPatients={patientStatuses?.length} totalTrips={shuttles?.length} />
       <div className="kpies__seperator" />
-      {getMatchingKpi("טרם שובצו", statuses.find((status) => status.statusType === "initial")?.value)}
-      {getMatchingKpi("שובצו", statuses.find((status) => status.statusType === "assigned")?.value)}
-      {getMatchingKpi("נשלחה הודעה", 0)}
+      {getMatchingKpi({
+        title: "טרם שובצו",
+        value: statuses.find((status) => status.statusType === "initial")?.value,
+        inline: false
+      })}
+      {getMatchingKpi({
+        title: "שובצו",
+        value: statuses.find((status) => status.statusType === "assigned")?.value,
+        inline: false
+      })}
+      {getMatchingKpi({
+        title: "נשלחה הודעה",
+        value: 0,
+        inline: false
+      })}
       <div className="kpies__seperator" />
-      {getMatchingKpi("מגיעים בקרוב", statuses.find((status) => status.statusType === "arrivingSoon")?.value)}
-      {getMatchingKpi("במרפאה", statuses.find((status) => status.statusType === "inClinic")?.value)}
+      {getMatchingKpi({
+        title: "מגיעים בקרוב",
+        value: statuses.find((status) => status.statusType === "arrivingSoon")?.value,
+        inline: false
+      })}
+      {getMatchingKpi({
+        title: "במרפאה",
+        value: statuses.find((status) => status.statusType === "inClinic")?.value,
+        inline: false
+      })}
       <div className="kpies__seperator" />
-      {getMatchingKpi("מסיימים בקרוב", 0)}
-      {getMatchingKpi("ממתינים לחזור", 0)}
-      {getMatchingKpi("חזרו", statuses.find((status) => status.statusType === "done")?.value)}
+      {getMatchingKpi({
+        title: "מסיימים בקרוב",
+        value: 0,
+        inline: false
+      })}
+      {getMatchingKpi({
+        title: "ממתינים לחזור",
+        value: 0,
+        inline: false
+      })}
+      {getMatchingKpi({
+        title: "חזרו",
+        value: statuses.find((status) => status.statusType === "done")?.value,
+        inline: false
+      })}
+
 
     </div>
   );

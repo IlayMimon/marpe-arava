@@ -4,7 +4,6 @@ import { TableColumn, TableRow } from "../components/Table/TableTypes";
 import dayjs from "dayjs";
 import TimeDeviation from "../components/TimeDeviation";
 import useGetStations from "./data/useGetStations";
-import Kpi from "../components/Kpi";
 import { getMatchingKpi } from "../components/Kpies";
 
 const formatTime = (value: dayjs.Dayjs | undefined) => {
@@ -134,7 +133,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
         { text: "בוטל", value: "בוטל" },
       ],
       sorter: true,
-      render: (value) => {console.log(value); return getMatchingKpi(value, '')},
+      render: (status) => getMatchingKpi({title:status, value:'', inline:true}),
     },
     {
       key: "phone",
