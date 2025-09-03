@@ -131,7 +131,7 @@ const HomeScreenBody = () => {
             >
               <Button
                 onClick={() => setShuttleAssignmentModalVisible(true)}
-                // disabled={messagesAlreadySent || !isSelectedDateTomorrow}
+                disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
                 icon={<IconSparkles />}
@@ -143,7 +143,7 @@ const HomeScreenBody = () => {
           </BtnPopUpMsg>
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
-              disabled={!isShuttlesArranged}
+              disabled={!isShuttlesArranged || !isSelectedDateTomorrow}
               color="default"
               variant="filled"
               icon={<IconSend />}
