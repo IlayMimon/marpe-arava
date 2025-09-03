@@ -4,7 +4,7 @@ import { TableColumn, TableRow } from "../components/Table/TableTypes";
 import dayjs from "dayjs";
 import TimeDeviation from "../components/TimeDeviation";
 import useGetStations from "./data/useGetStations";
-import { getMatchingKpi } from "../components/Kpies";
+import getMatchingKpi from "../components/Kpi/KpiGet";
 
 const formatTime = (value: dayjs.Dayjs | undefined) => {
   return value ? dayjs(value).format("HH:mm") : null;
