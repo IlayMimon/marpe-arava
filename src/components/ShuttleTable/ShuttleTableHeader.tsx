@@ -1,15 +1,17 @@
 import { ConfigProvider, Flex, Segmented, Tooltip } from "antd";
 import { TripDirection } from "../HomeScreenBody";
 import { AiOutlineSearch } from 'react-icons/ai';
+import { useState } from "react";
 interface IShuttleTableHeaderProps {
   tripDirection: TripDirection;
   handleChange: (direction: TripDirection) => void;
 }
 
-export default function ShuttleTableHeader({
-  handleChange,
-  tripDirection,
-}: IShuttleTableHeaderProps) {
+export default function ShuttleTableHeader({handleChange,tripDirection,}: IShuttleTableHeaderProps){
+
+  const [searchToggle, setSearchToggle] = useState(false)
+
+  
   return (
     <div className="shuttle-table-header">
       <ConfigProvider direction="rtl">
@@ -36,20 +38,21 @@ export default function ShuttleTableHeader({
         </Flex>
       </ConfigProvider>
       <div className="search-bar-container">
-        <Tooltip title={'חיפוש'}>
-          <div className="search-bar-container__active-button">
-            <AiOutlineSearch className="search-bar-container__icon" />
+        { !searchToggle &&
+          <Tooltip title={'חיפוש'}>
+            <div className="search-bar-container__active-button" onClick={() => setSearchToggle(!searchToggle)}>
+              <AiOutlineSearch className="search-bar-container__icon" />
+            </div>
+          </Tooltip>
+        }
+        { searchToggle &&
+          <div className="search-bar-container__expanded">
+            <input className="search-bar-container__expanded--search-bar">
+            </input>
+            <div className="search-bar-container__expanded--close-button" onClick={() => setSearchToggle(!searchToggle)}>
+            </div>
           </div>
-        </Tooltip>
-
-        <input className="search-bar-container__search-bar">
-
-        </input>
-        <div className="search-bar-container__close-button">
-
-        </div>
-
-
+        }
       </div>
     </div>
   );
