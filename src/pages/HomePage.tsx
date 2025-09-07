@@ -3,19 +3,21 @@ import HomeScreenBody from "../components/HomeScreenBody";
 import SidebarNavigation from "../components/sidebarNavigation";
 import React, { useState } from "react";
 import { HomePageContext } from "../contexts/HomePage";
+import StayInTouchModal from "../components/StayInTouchModal";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 const HomePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [isStayInTouchOpen, setIsStayInTouchOpen] = useState(false);
 
   return (
     <HomePageContext.Provider value={{ selectedDate, setSelectedDate }}>
       <div className="home-page">
         <div className="home-page__sidebar">
-          <SidebarNavigation />
+          <SidebarNavigation onStayInTouch={() => setIsStayInTouchOpen(true)} />
         </div>
         <div className="home-page__content">
           <header className="home-page__content__header">
@@ -26,6 +28,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+      <StayInTouchModal setStayInTouchOpen={()=>setIsStayInTouchOpen(false)} stayInTouchOpen ={isStayInTouchOpen}/>
     </HomePageContext.Provider>
   );
 };
