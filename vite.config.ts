@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/_api': 'http://localhost:3000/sites/MarpeArava',
+      '/_api': 'http://localhost:3000/sites/MarpeArava_NP',
       '^/sites/[^/]+/_api': 'http://localhost:3000',
     },
   },
