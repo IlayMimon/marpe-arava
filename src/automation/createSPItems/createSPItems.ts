@@ -4,7 +4,7 @@ import timezone from "dayjs/plugin/timezone";
 import { postToSharepoint } from "../../functions/postToSharepoint";
 import { assignShuttlesToDrivers } from "../driversAssign/assignDrivers";
 import { initDrivers } from "../driversAssign/initDrivers";
-import { SPShuttle, SPShuttleDetailsPerRequest } from "../types/createSuttlesType";
+import { SPShuttle } from "../types/createSuttlesType";
 import enrichShuttleGroup from "../types/enrichShuttleGroup";
 import { SharepointQueryResult } from "../types/spFetchTypes";
 
@@ -90,7 +90,7 @@ export async function creatSPItems(shuttleGroups: enrichShuttleGroup[]) {
     const shuttlesWithDrivers = assignShuttlesToDrivers(SPSuttles, initDrivers(3))
     for (const shuttle of shuttlesWithDrivers) {
       console.log("Creating SharePoint item for shuttle:", shuttle);
-      // await postToSharepoint<SharepointQueryResult<SPShuttle>>(`_api/web/lists/getbytitle('Shuttles')/items`, shuttle);
+      await postToSharepoint<SharepointQueryResult<SPShuttle>>(`_api/web/lists/getbytitle('Shuttles')/items`, shuttle);
     }
 }
 

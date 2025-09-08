@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import resetShuttles from '../functions/resetShuttles';
 import { useGetTomorrowShuttles } from '../functions/useGetTomorrowShuttles';
-import useGetTomorrowShuttleDetailsPerRequest from '../hooks/data/useGetTomorrowShuttlesDetailsPerRequest';
 import { useQueryFetchRequest } from '../hooks/useQueryFetch';
 import { SharepointQueryResultArray } from '../types/spFetchTypes';
 import enrichShuttleGroups from './addAdditionalParams/enrichShuttleGroups';
@@ -17,7 +16,6 @@ import { SPRoute, SPService, SPShuttleRequest, SPStation } from './types/spFetch
 
 const useCreateShuttles = (): { createShuttles: () => void } => {
   const { shuttles } = useGetTomorrowShuttles();
-  const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
 
   const tomorrow = dayjs().add(1, 'day').startOf('day');
   const dayAfterTomorrow = tomorrow.add(1, 'day');
@@ -108,7 +106,7 @@ const useCreateShuttles = (): { createShuttles: () => void } => {
 
       return {
         createShuttles: async () => {
-          await resetShuttles(shuttles, shuttlesDetailsPerRequest);
+          await resetShuttles(shuttles);
           await creatSPItems(shuttleGroupsWithTimes);
         },
         // isLoading,
