@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Route, Station, StationWithTravelTime } from "../types/createSuttlesType";
 import enrichShuttleGroup from "../types/enrichShuttleGroup";
 
@@ -34,8 +34,8 @@ const getStationsOrders = (group: enrichShuttleGroup): { StationOrder: number; S
   return stationOrders;
 }
 // פונקציית עזר להמרת זמן בפורמט ISO והחסרת דקות
-const subtractMinutes = (dateString: string, minutes: number): string => {
-  return dayjs(dateString).subtract(minutes, 'minutes').toISOString();
+const subtractMinutes = (dateString: dayjs.Dayjs, minutes: number): dayjs.Dayjs => {
+  return dayjs(dateString).subtract(minutes, 'minutes');
 }
 
 const getRoute = (currentStation: Station, prevStation: Station, routes: Route[]): Route => {
@@ -85,7 +85,7 @@ function calculateShuttleStationsTimes(
     const stationOrders = getStationsOrders(group);
 
     // מערך לתחנות עם זמני הגעה
-    const shuttleStations: { station: StationWithTravelTime; arrivalTime: string }[] = [];
+    const shuttleStations: { station: StationWithTravelTime; arrivalTime: Dayjs }[] = [];
 
     // משתנה למעקב אחרי התחנה הקודמת
     let prevStation: Station | null = null;
@@ -127,7 +127,7 @@ function calculateShuttleStationsTimes(
           distance: distance,
           travelTime: travelTimeMinutes,
         },
-        arrivalTime: '',
+        arrivalTime: dayjs(),
       });
 
       // עדכן את התחנה הקודמת
@@ -136,10 +136,10 @@ function calculateShuttleStationsTimes(
 
    for (let i = shuttleStations.length - 1; i >= 0; i--) {
      if(i === shuttleStations.length - 1) {
-       shuttleStations[i].arrivalTime = group.arrivalTime.toISOString();
+       shuttleStations[i].arrivalTime = group.arrivalTime;
       } else {
         const previousStation = shuttleStations[i + 1]
-        shuttleStations[i].arrivalTime = subtractMinutes(previousStation.arrivalTime, previousStation.station.travelTime);
+        shuttleStations[i].arrivalTime =  previousStation.arrivalTime.subtract(previousStation.station.travelTime, 'minutes');
       }
 }
 
