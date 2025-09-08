@@ -4,14 +4,15 @@ import { Tooltip } from "antd";
 interface KpiProps {
   title: string;
   icon?: JSX.Element;
-  value: number | undefined;
+  value: number | string | undefined;
   titleColor?: string;
   borderColor?: string;
+  inline?: boolean
 }
 
-const Kpi = ({ title, icon, value, titleColor, borderColor }: KpiProps) => {
+const Kpi = ({ title, icon, value, titleColor, borderColor, inline=false }: KpiProps) => {
   return (
-    <div className="kpi">
+    <div className={inline ? '' : "kpi"}>
       {icon ? (
         <Tooltip title={title}>{icon}</Tooltip>
       ) : (
@@ -31,7 +32,7 @@ const Kpi = ({ title, icon, value, titleColor, borderColor }: KpiProps) => {
           value === 0 ? { color: "var(--Text-color-text-tertiary)" } : undefined
         }
       >
-        {value || 0}
+        {value}
       </div>
     </div>
   );

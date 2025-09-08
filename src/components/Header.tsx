@@ -1,5 +1,5 @@
 import DatePicker from "./DatePicker";
-import Kpies from "./Kpies";
+import Kpies from "./Kpi/Kpies";
 import MedicSelect from "./MedicSelect";
 
 const Header = () => {
