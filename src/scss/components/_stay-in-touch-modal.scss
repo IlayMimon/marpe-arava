@@ -1,14 +1,14 @@
 .stay-in-touch-modal {
-  width: 60% !important;
-  text-align: center !important;
-
   display: flex;
   flex-direction: column;
   gap: 4rem;
 
-  font-family: Rubik;
+  width: 60% !important;
 
-  &__main-title {
+  font-family: Rubik;
+  text-align: center !important;
+
+  &--main-title {
     color: rgba(0, 0, 0, 0.88);
     text-align: center;
     font-size: 2rem;
@@ -18,21 +18,21 @@
   &__content {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+
+    margin-bottom: 5rem;
 
     align-items: center;
     text-align: center;
 
-    gap: 1.5rem;
-    margin-bottom: 5rem;
-
-    &__title {
+    &--title {
       color: rgba(0, 0, 0, 0.88);
       text-align: center;
       font-size: 1.8rem;
       font-weight: 500;
     }
 
-    &__txt {
+    &--txt {
       color: rgba(0, 0, 0, 0.65);
       text-align: center;
       font-size: 1.4rem;
@@ -44,7 +44,7 @@
     text-align: center;
     font-size: 1.6rem;
 
-    &__phone {
+    &--phone {
       display: flex;
       flex-direction: row;
       gap: 1rem;
@@ -55,11 +55,11 @@
     }
   }
 
-  &__footer {
+  &--footer {
     display: flex;
     flex-direction: row;
-
     gap: 1rem;
+
     align-items: center;
     align-self: center;
     justify-content: center;
