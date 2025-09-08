@@ -63,13 +63,13 @@ const HomeScreenBody = () => {
     setTripDirection(direction);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     patchItemInList("Status", { isOver: false, status: "failed", step: 0, isAssigned: false }, 1, "*");
-    createShuttles();
+    await createShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-    setAutomationModalVisible(false);
     patchItemInList("Status", { isOver: true, status: "succeeded", step: 8, isAssigned: true }, 1, "*");
+    setAutomationModalVisible(false);
   };
 
   const sendWhatsMessages = async () => {
