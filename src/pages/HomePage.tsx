@@ -6,8 +6,10 @@ import { HomePageContext } from "../contexts/HomePage";
 import StayInTouchModal from "../components/StayInTouchModal";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import timezone from 'dayjs/plugin/timezone';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const HomePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());

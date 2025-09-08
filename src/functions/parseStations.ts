@@ -1,5 +1,4 @@
 import { StationInfo } from "../types/travelBar";
-import dayjs from "dayjs";
 import findRequestByShuttleId from "./findRequestByShuttleId";
 import { Shuttle } from "../hooks/data/useGetShuttles";
 import { ShuttleDetailsPerRequest } from "../hooks/data/useGetShuttleDetailsPerRequest";
@@ -8,7 +7,7 @@ import { Station } from "../hooks/data/useGetStations";
 
 export const parseStations = (
   input: string,
-  arrivalTime: Date,
+  _arrivalTime: Date,
   shuttle: Shuttle,
   shuttleDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined,
   shuttleRequests: ShuttleRequests[] | undefined,
@@ -30,11 +29,17 @@ export const parseStations = (
   const lines = input.trim().split("\n");
   const parsedStations = lines.map((line, index) => {
     const [rawName, rawTime] = line.split(": ").map((part) => part.trim());
-    
+
     const passengers = shuttle.RequestsId.results
       .map((requestId) => {
-        const passenger = findRequestByShuttleId(requestId, shuttleDetailsPerRequest, shuttleRequests);
-        const station = stations?.find((station) => station.ID === passenger?.StationId);
+        const passenger = findRequestByShuttleId(
+          requestId,
+          shuttleDetailsPerRequest,
+          shuttleRequests
+        );
+        const station = stations?.find(
+          (station) => station.ID === passenger?.StationId
+        );
         if (passenger && station && station.Title === rawName) {
           return passenger.FullName;
         }
@@ -50,13 +55,5 @@ export const parseStations = (
     };
   });
 
-  return [
-    ...parsedStations,
-    {
-      name: "מרפא ערבה",
-      arrivalTime: dayjs(arrivalTime).format("HH:mm"),
-      isOrigin: undefined,
-      isDestination: true,
-    },
-  ];
+  return parsedStations;
 };

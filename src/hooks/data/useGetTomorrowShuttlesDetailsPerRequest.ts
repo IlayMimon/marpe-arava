@@ -16,7 +16,7 @@ const useGetTomorrowShuttleDetailsPerRequest = () => {
     const isoDayAfter = dayAfterTomorrow.toISOString();
     
     const { data } = useQueryFetchRequest<SharepointQueryResultArray<ShuttleDetailsPerRequest>>(
-        `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$select=ID,Title,RequestId,PickupTime,ArrivalTime?$filter=PickupTime ge datetime'${isoTomorrow}' and PickupTime lt datetime'${isoDayAfter}'`
+        `/_api/web/lists/getbytitle('ShuttleDetailsPerRequest')/items?$filter=PickupTime ge datetime'${isoTomorrow}' and PickupTime lt datetime'${isoDayAfter}'`
     );
 
     const shuttleDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined = data?.d.results.map((item) => ({
