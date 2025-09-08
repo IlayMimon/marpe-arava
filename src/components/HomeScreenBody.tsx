@@ -42,7 +42,7 @@ const HomeScreenBody = () => {
   }, [isToday, isSucceeded]);
 
   const { selectedDate } = useHomePageContext();
-  const tableData = useGetTableData();
+  const tableData = useGetTableData(searchFilter, tripDirection);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {

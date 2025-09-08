@@ -7,8 +7,9 @@ import useGetShuttleRequests from "./data/useGetShuttleRequests";
 import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
 import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
+import filterDataBySearch from "../functions/filterDataBySearch";
 
-const useGetTableData = () => {
+const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[] => {
   const { shuttles } = useGetShuttles();
   const shuttleRequests = useGetShuttleRequests();
   const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
@@ -85,7 +86,9 @@ const useGetTableData = () => {
       return passengerData;
     }) || [];
 
-  return data;
+    const filteredData = filterDataBySearch(searchFilter, data, tripDirection as "outbound" | "inbound")
+  
+  return filteredData;
 };
 
 export default useGetTableData;

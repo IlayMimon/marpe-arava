@@ -53,8 +53,8 @@ export default function ShuttleTableHeader({ handleChange, tripDirection, setSea
           className={classNames({ "search-bar-container--close-button": true, "search-bar-container--close-button-disabled": !searchToggle })}
           onClick={() => { 
             if (searchToggle) {
-              setSearchFilter('') 
-              setSearchToggle(false) 
+              setInputValue('')
+              setSearchToggle(false)
             }
           }}
         >✖</div>
