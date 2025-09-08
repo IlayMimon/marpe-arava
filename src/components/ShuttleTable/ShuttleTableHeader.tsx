@@ -1,17 +1,26 @@
 import { ConfigProvider, Flex, Segmented, Tooltip } from "antd";
 import { TripDirection } from "../HomeScreenBody";
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import classNames from "classnames";
 interface IShuttleTableHeaderProps {
   tripDirection: TripDirection;
   handleChange: (direction: TripDirection) => void;
+  setSearchFilter: Dispatch<SetStateAction<string>>;
 }
 
-export default function ShuttleTableHeader({ handleChange, tripDirection, }: IShuttleTableHeaderProps) {
+export default function ShuttleTableHeader({ handleChange, tripDirection, setSearchFilter }: IShuttleTableHeaderProps) {
 
   const [searchToggle, setSearchToggle] = useState(false)
+  const [inputValue, setInputValue ] = useState('')
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchFilter(inputValue);
+    }, 300);
+  
+    return () => clearTimeout(timeout);
+  }, [inputValue]);
 
   return (
     <div className="shuttle-table-header">
@@ -38,12 +47,28 @@ export default function ShuttleTableHeader({ handleChange, tripDirection, }: ISh
           />
         </Flex>
       </ConfigProvider>
+
       <div className="search-bar-container">
-        <div className={classNames({"search-bar-container--close-button":true, "search-bar-container--close-button-disabled":!searchToggle})} onClick={() => searchToggle && setSearchToggle(false)}>✖</div>
+        <div
+          className={classNames({ "search-bar-container--close-button": true, "search-bar-container--close-button-disabled": !searchToggle })}
+          onClick={() => { 
+            if (searchToggle) {
+              setSearchFilter('') 
+              setSearchToggle(false) 
+            }
+          }}
+        >✖</div>
         <Tooltip title={!searchToggle && 'חיפוש בטבלה' || ''}>
-          <div className={classNames({"search-bar-container__active-button":true, "search-bar-container__active-button--active":!searchToggle})} onClick={() => !searchToggle && setSearchToggle(true)}>
+          <div
+            className={classNames({ "search-bar-container__active-button": true, "search-bar-container__active-button--active": !searchToggle })}
+            onClick={() => !searchToggle && setSearchToggle(true)}
+          >
             <AiOutlineSearch className="search-bar-container__icon" />
-            <input className={classNames({"search-bar-container__active-button--search-bar":true, "search-bar-container__active-button--search-bar-disabled":!searchToggle})}/>
+            <input
+              className={classNames({ "search-bar-container__active-button--search-bar": true, "search-bar-container__active-button--search-bar-disabled": !searchToggle })}
+              onChange={e => searchToggle && setInputValue(e.target.value)}
+              value={inputValue}
+            />
           </div>
         </Tooltip>
       </div>

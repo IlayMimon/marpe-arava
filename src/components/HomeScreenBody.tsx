@@ -28,6 +28,7 @@ const HomeScreenBody = () => {
   const [popUpMsgOpen, setPopUpMsgOpen] = useState(false);
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('')
 
   const { createShuttles} = useCreateShuttles();
 
@@ -97,8 +98,7 @@ const HomeScreenBody = () => {
   };
 
   const columns = useGetTableColumns(tripDirection);
-  const data = useGetTableData();
-
+  
   const isSelectedDateTomorrow =
     selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
     selectedDate.isAfter(dayjs().endOf("day"));
@@ -175,11 +175,12 @@ const HomeScreenBody = () => {
           <ShuttleTableHeader
             handleChange={handleChangeDirection}
             tripDirection={tripDirection}
+            setSearchFilter={setSearchFilter}
           />
           {tripDirection === "outbound" ? (
-            <Table data={data} columns={columns} rowKey={(row) => row.id} />
+            <Table data={tableData} columns={columns} rowKey={(row) => row.id} />
           ) : (
-            <Table data={data} columns={columns} rowKey={(row) => row.id} />
+            <Table data={tableData} columns={columns} rowKey={(row) => row.id} />
           )}
         </div>
         <TravelBar />
