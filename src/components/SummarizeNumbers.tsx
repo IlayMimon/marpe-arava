@@ -1,5 +1,5 @@
 import { IconBusStop, IconRoute, IconUsersGroup } from "@tabler/icons-react";
-import Kpi from "./Kpi";
+import Kpi from "./Kpi/Kpi";
 
 interface ISummarizeNumbersProps {
   totalPatients?: number;
