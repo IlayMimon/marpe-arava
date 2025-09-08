@@ -9,14 +9,14 @@ import enrichShuttleGroup from "../types/enrichShuttleGroup";
 import { SharepointQueryResult } from "../types/spFetchTypes";
 
 // משתני עזר
-let ShuttleDetailsPerRequestIds: { Id: number }[] = [];
 let TotalDistance = 0;
+
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // הגדרת timezone ברירת מחדל
 dayjs.tz.setDefault("Asia/Jerusalem");
-
 
 const combineDateAndTime = (datePart: Dayjs | undefined, timePart: Dayjs): Dayjs => {
   if (!datePart) return timePart;
@@ -27,15 +27,12 @@ const combineDateAndTime = (datePart: Dayjs | undefined, timePart: Dayjs): Dayjs
     .set("millisecond", timePart.millisecond());
 };
 
-
 const getPossibleTravelTimeAddition = (startTime: Dayjs | undefined, endTime: Dayjs | undefined): number => {
   // לוגיקה לחישוב תוספת זמן הנסיעה האפשרית
   const sixThirty = combineDateAndTime(startTime, dayjs("06:30", "HH:mm"));
   const lunchStart = combineDateAndTime(startTime, dayjs("11:30", "HH:mm"));
   const lunchEnd = combineDateAndTime(startTime, dayjs("12:30", "HH:mm"));
   
-
-
   if(startTime?.isAfter(sixThirty) && endTime?.isBefore(lunchStart) && startTime?.isAfter(lunchEnd)) {
     return 0
   }else if (startTime?.isBefore(sixThirty)) {
@@ -51,7 +48,6 @@ const getPossibleTravelTimeAddition = (startTime: Dayjs | undefined, endTime: Da
   } else {
     return shiftToAfterLunch; // להזיז קדימה
   }
-
   }
 };
 
@@ -84,7 +80,7 @@ export async function creatSPItems(shuttleGroups: enrichShuttleGroup[]) {
         StartTime: firstArrival ? dayjs(firstArrival).add(possibleTravelTimeAddition, "minute") : dayjs(),
         ArrivalTime: group.arrivalTime.add(possibleTravelTimeAddition, "minute"),
         Details: stationsText,
-        // RequestsId: ShuttleDetailsPerRequestIds.map((item) => item.Id),
+        RequestsId: group.value.map((req) => req.shuttlesRequestId),
         driverDataId: null,
         totalDistance: TotalDistance,
       }
@@ -93,7 +89,8 @@ export async function creatSPItems(shuttleGroups: enrichShuttleGroup[]) {
   }
     const shuttlesWithDrivers = assignShuttlesToDrivers(SPSuttles, initDrivers(3))
     for (const shuttle of shuttlesWithDrivers) {
-      await postToSharepoint<SharepointQueryResult<SPShuttle>>(`_api/web/lists/getbytitle('Shuttles')/items`, shuttle);
+      console.log("Creating SharePoint item for shuttle:", shuttle);
+      // await postToSharepoint<SharepointQueryResult<SPShuttle>>(`_api/web/lists/getbytitle('Shuttles')/items`, shuttle);
     }
 }
 
