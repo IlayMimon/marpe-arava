@@ -8,7 +8,7 @@ interface enrichShuttleGroup {
   area: string;
   arrivalTime: Dayjs;
   index: number;
-  stations?: { station: StationWithTravelTime; arrivalTime: string }[];
+  stations?: { station: StationWithTravelTime; arrivalTime: Dayjs }[];
 }
 
 export default enrichShuttleGroup
