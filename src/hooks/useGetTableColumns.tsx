@@ -34,6 +34,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             title: "תחנה",
             dataIndex: "station",
             filters: stations.map((station) => ({ text: station, value: station })),
+            sorter: true,
 
           },
           {
