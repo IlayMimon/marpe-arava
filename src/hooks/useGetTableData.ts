@@ -86,7 +86,7 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
       return passengerData;
     }) || [];
 
-    const filteredData = filterDataBySearch(searchFilter, data, tripDirection as "outbound" | "inbound")
+    const filteredData = searchFilter ? filterDataBySearch(searchFilter, data, tripDirection as "outbound" | "inbound") : data
   
   return filteredData;
 };
