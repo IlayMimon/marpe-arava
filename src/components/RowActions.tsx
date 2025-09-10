@@ -1,6 +1,6 @@
 import { Menu } from "antd";
 import { useState } from "react";
-import { TbDotsVertical, TbPencil } from "react-icons/tb";
+import { TbDotsVertical, TbPencil, TbSend } from "react-icons/tb";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
 import { TableRow } from "./Table/TableTypes";
@@ -14,15 +14,39 @@ interface RowActionsProps {
 
 const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
   const [isEditPatientModalOpen, setisEditPatientModalOpen] = useState(false);
-  const {shuttles} = useGetShuttles();
+  const { shuttles } = useGetShuttles();
 
   const handleEditColumn = () => {
     setisEditPatientModalOpen(true);
   };
 
+  const sendWhatsapp = async (values: PatientFormValues) => {
+    const data = {
+      phone: `972${values.phone.slice(1)}`, // Remove the leading '0' and add country code
+      time: values.pickupTime,
+      name: values.fullName,
+      station: values.pickupStation,
+      driver: values.driver,
+    };
+
+    const res = await fetch("http://127.0.0.1:5000/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      alert("✅ Message sent!");
+    } else {
+      alert("❌ Failed to send message");
+    }
+  };
+
   const handleSubmitForm = async (values: PatientFormValues) => {
     let oldShuttle;
-    const newShuttle = shuttles?.find((shuttle) => values.rideId === shuttle.ID);
+    const newShuttle = shuttles?.find(
+      (shuttle) => values.rideId === shuttle.ID
+    );
 
     if (!newShuttle?.RequestsId.results.includes(values.requestDetailsId)) {
       oldShuttle = shuttles?.find((shuttle) =>
@@ -54,7 +78,10 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       ),
     };
     const newShuttleData = {
-      RequestsId: [...(newShuttle?.RequestsId.results || []), values.requestDetailsId],
+      RequestsId: [
+        ...(newShuttle?.RequestsId.results || []),
+        values.requestDetailsId,
+      ],
     };
 
     try {
@@ -103,6 +130,12 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           label: "ערוך מטופל",
           icon: <TbPencil />,
           onClick: handleEditColumn,
+        },
+        {
+          key: "2",
+          label: "שליחת הודעה",
+          icon: <TbSend />,
+          onClick: sendWhatsapp,
         },
       ],
     },
