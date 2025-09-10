@@ -1,5 +1,4 @@
-import { ShuttleDetailsPerRequest } from "../hooks/data/useGetShuttleDetailsPerRequest";
-import { ShuttleRequests } from "../hooks/data/useGetShuttleRequests";
+import { ShuttleRequest } from "../hooks/data/useGetShuttleRequests";
 import { Shuttle } from "../hooks/data/useGetShuttles";
 
 export enum assignedStatusEnum {
@@ -16,36 +15,31 @@ interface IPatientStatus {
 }
 
 interface IUseGetPatientsStatusParams {
-  shuttleRequests: ShuttleRequests[] | undefined;
-  shuttleDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined;
+  shuttleRequests: ShuttleRequest[] | undefined;
   shuttles: Shuttle[] | undefined;
 }
 
 export const patientsStatus = ({
-  shuttleRequests: patients,
-  shuttleDetailsPerRequest,
+  shuttleRequests,
   shuttles,
 }: IUseGetPatientsStatusParams): IPatientStatus[] | undefined => {
   const now = new Date();
 
-  const patientIdToShuttleDetails = new Map(
-    shuttleDetailsPerRequest?.map((shuttleDetail) => [shuttleDetail.RequestId, shuttleDetail.ID])
-  );
-
   const shuttleDetailsIdToShuttle = new Map<number, Shuttle>();
-  if (shuttles) {
-    for (const shuttle of shuttles) {
-      for (const shuttleDetailsId of shuttle.RequestsId.results) {
-        shuttleDetailsIdToShuttle.set(shuttleDetailsId, shuttle);
-      }
-    }
+  if (!shuttles) {
+    return;
   }
 
-  return patients?.map((patient) => {
-    const shuttleDetailsId = patientIdToShuttleDetails.get(patient.ID);
-    const shuttle = shuttleDetailsId ? shuttleDetailsIdToShuttle.get(shuttleDetailsId) : undefined;
+  shuttles.forEach((shuttle) => {
+    shuttle.RequestsId.results.forEach((requestId) => {
+      shuttleDetailsIdToShuttle.set(requestId, shuttle);
+    });
+  });
 
-    if (!shuttle) return { patientId: patient.ID, status: assignedStatusEnum.initial };
+  return shuttleRequests?.map((request) => {
+    const shuttle = request.ID ? shuttleDetailsIdToShuttle.get(request.ID) : undefined;
+
+    if (!shuttle) return { patientId: request.ID, status: assignedStatusEnum.initial };
 
     const arrivalTime = new Date(shuttle.ArrivalTime);
     const timeToArrival = (arrivalTime.getTime() - now.getTime()) / 60000;
@@ -57,6 +51,6 @@ export const patientsStatus = ({
     if (timeSinceArrival >= 0) status = assignedStatusEnum.inClinic;
     if (timeSinceArrival >= 30) status = assignedStatusEnum.done;
 
-    return { patientId: patient.ID, status };
+    return { patientId: request.ID, status };
   });
 };
