@@ -45,9 +45,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       RequestedServicesId: values.appointmentType,
       FullName: values.fullName,
       notes: values.notes,
-    };
-
-    const requestDetailsData = {
       ReturnDriverId: values.driver,
       PickupTime: values.pickupTime.toISOString(),
       FinishTime: values.finishTime.toISOString(),
@@ -62,17 +59,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     const newShuttleData = {
       RequestsId: [...(newShuttle?.RequestsId.results || []), values.requestDetailsId],
     };
-
-    try {
-      await patchItemInList(
-        "ShuttleDetailsPerRequest",
-        requestDetailsData,
-        rowData.requestDetailsId,
-        "*"
-      );
-    } catch (error) {
-      console.error("Error updating request details:", error);
-    }
 
     try {
       await patchItemInList("ShuttleRequests", requestData, rowData.id, "*");

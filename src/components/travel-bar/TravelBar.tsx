@@ -14,7 +14,6 @@ import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
 import { parseStations } from "../../functions/parseStations";
 import { patchItemInList } from "../../functions/postToSharepoint";
-import useGetShuttleDetailsPerRequest from "../../hooks/data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "../../hooks/data/useGetShuttleRequests";
 import useGetStations from "../../hooks/data/useGetStations";
 
@@ -27,7 +26,6 @@ const TravelBar = () => {
   const drivers = useGetDrivers();
   const driversData = useGetDriversData();
   const { shuttles, refetch: refetchShuttles } = useGetShuttles();
-  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const shuttleRequests = useGetShuttleRequests();
   const stations = useGetStations();
 
@@ -166,13 +164,13 @@ const TravelBar = () => {
             ...shuttle,
             code: shuttle.area,
             colorType: colors[shuttle.driverData.ID - 1],
-            stations: parseStations(shuttle.Details, shuttle.ArrivalTime, shuttle, shuttleDetailsPerRequest, shuttleRequests, stations)
+            stations: parseStations(shuttle.Details, shuttle.ArrivalTime, shuttle, shuttleRequests, stations)
           };
         }) as TravelItem[];
 
       setTravelItems(formattedShuttles);
     }
-  }, [colors, driverAssignments, shuttles, shuttleDetailsPerRequest, shuttleRequests, stations]);
+  }, [colors, driverAssignments, shuttles, shuttleRequests, stations]);
 
   return (
     <>
