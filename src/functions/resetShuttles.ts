@@ -1,20 +1,14 @@
-import { ShuttleDetailsPerRequest } from "../types/shuttleDetailsPerRequst";
 import { ShuttlesPerDay } from "./useGetTomorrowShuttles";
-import { removeItemFromLsit } from "./postToSharepoint";
+import { removeItemFromList } from "./postToSharepoint";
 
 const resetShuttles = async (
-  tempShuttles: ShuttlesPerDay[] | undefined,
-  tempShuttlesDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined
+  shuttles: ShuttlesPerDay[] | undefined,
 ) => {
-  const shuttles = tempShuttles || [];
-  const shuttlesDetailsPerRequest = tempShuttlesDetailsPerRequest || [];
+  if (!shuttles) return;
+  // מחיקת כל הפריטים מרשימת Shuttles
 
   for (const shuttle of shuttles) {
-    await removeItemFromLsit("Shuttles", shuttle.Id, "*");
-  }
-
-  for (const DetailsPerRequest of shuttlesDetailsPerRequest) {
-    removeItemFromLsit("ShuttleDetailsPerRequest", DetailsPerRequest.ID, "*");
+    await removeItemFromList("Shuttles", shuttle.Id, "*");
   }
 };
 

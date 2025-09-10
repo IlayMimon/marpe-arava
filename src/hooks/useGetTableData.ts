@@ -60,19 +60,17 @@ const useGetTableData = () => {
         actions: "actions",
       };
 
-      const estimatedArrival = requestDetails
-        ? dayjs(shuttle?.ArrivalTime || new Date())
+      const estimatedArrival = requestDetails?.ArrivalTime
+        ? dayjs(shuttle?.ArrivalTime)
         : undefined;
-      const desiredArrival = dayjs(request?.Time || new Date());
-      const finishTime = requestDetails
-        ? dayjs(requestDetails?.FinishTime || new Date())
-        : undefined;
-      const inboundTime = requestDetails
-        ? dayjs(requestDetails?.InboundTime || new Date())
+      const desiredArrival = dayjs(request?.Time);
+      const finishTime = requestDetails?.FinishTime ? dayjs(requestDetails?.FinishTime) : undefined;
+      const inboundTime = requestDetails?.InboundTime
+        ? dayjs(requestDetails?.InboundTime)
         : undefined;
 
       const directionPassangerData = {
-        pickupTime: requestDetails ? dayjs(requestDetails?.PickupTime || new Date()) : undefined,
+        pickupTime: requestDetails?.PickupTime ? dayjs(requestDetails?.PickupTime) : undefined,
         estimatedArrival,
         desiredArrival,
         outboundGap: estimatedArrival?.diff(desiredArrival, "minute"),

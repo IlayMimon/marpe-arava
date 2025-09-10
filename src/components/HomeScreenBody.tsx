@@ -3,15 +3,14 @@ import { Button, message, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
+import useCreateShuttles from "../automation/autoMain";
 import { useHomePageContext } from "../contexts/HomePage";
-import { addItemToList } from "../functions/postToSharepoint";
+import { addItemToList, patchItemInList } from "../functions/postToSharepoint";
 import GetStatus from "../hooks/data/useGetStatus";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
-import { useStatusManager } from "../hooks/useStatusManager";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
 import AutomationModal from "./AutomationModal";
-import CustomEmpty from "./CustomEmpty/CustomEmpty";
 import BtnPopUpMsg from "./generic/btnPopUpMsg";
 import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentModal";
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
@@ -30,6 +29,8 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
+  const { createShuttles} = useCreateShuttles();
+
   const { data: statusData } = GetStatus();
   const statusItem = statusData?.d.results[0];
   const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
@@ -41,11 +42,6 @@ const HomeScreenBody = () => {
 
   const { selectedDate } = useHomePageContext();
   const tableData = useGetTableData();
-
-  const locale = {
-    emptyText: <CustomEmpty></CustomEmpty>,
-  };
-  const { onAssignClick, status } = useStatusManager(setAutomationModalVisible);
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     const patientFormData = {
@@ -67,11 +63,13 @@ const HomeScreenBody = () => {
     setTripDirection(direction);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    patchItemInList("Status", { isOver: false, status: "failed", step: 0, isAssigned: false }, 1, "*");
+    await createShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
-
-    onAssignClick();
+    patchItemInList("Status", { isOver: true, status: "succeeded", step: 8, isAssigned: true }, 1, "*");
+    setAutomationModalVisible(false);
   };
 
   const sendWhatsMessages = async () => {
@@ -132,11 +130,7 @@ const HomeScreenBody = () => {
               }
             >
               <Button
-                onClick={() =>
-                  isShuttlesArranged
-                    ? setPopUpMsgOpen(true)
-                    : setShuttleAssignmentModalVisible(true)
-                }
+                onClick={() => setShuttleAssignmentModalVisible(true)}
                 disabled={messagesAlreadySent || !isSelectedDateTomorrow}
                 color="default"
                 variant="filled"
@@ -149,7 +143,7 @@ const HomeScreenBody = () => {
           </BtnPopUpMsg>
           <Tooltip title={isShuttlesArranged ? "" : "נדרש לשבץ נסיעות"}>
             <Button
-              disabled={!isShuttlesArranged}
+              disabled={!isShuttlesArranged || !isSelectedDateTomorrow}
               color="default"
               variant="filled"
               icon={<IconSend />}
@@ -208,7 +202,7 @@ const HomeScreenBody = () => {
         onSubmit={handleSubmit}
         messagesAlreadySent={false}
       />
-      <AutomationModal visible={automationModalVisible} status={status} />
+      <AutomationModal visible={automationModalVisible} />
 
       <AddPatientModal
         isOpen={escortModalOpen}

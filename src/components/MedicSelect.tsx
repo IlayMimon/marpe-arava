@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useHomePageContext } from "../contexts/HomePage";
 import useGetMedics from "../hooks/data/useGetMedics";
 import useGetMedicsPerDate from "../hooks/data/useGetMedicsPerDate";
-import { addItemToList, patchItemInList, removeItemFromLsit } from "../functions/postToSharepoint";
+import { addItemToList, patchItemInList, removeItemFromList } from "../functions/postToSharepoint";
 const { Option } = Select;
 
 interface IMedicSelectProps {
@@ -22,7 +22,7 @@ const MedicSelect = ({ setSelectedMedic }: IMedicSelectProps) => {
     async (value: number | undefined) => {
       setIsUpdatingMedic(true);
       if (value === undefined && existingEntry) {
-        await removeItemFromLsit("MedicPerDate", existingEntry.ID, "*");
+        await removeItemFromList("MedicPerDate", existingEntry.ID, "*");
       } else if (existingEntry) {
         if (existingEntry.medicId !== value) {
           await patchItemInList("MedicPerDate", { medicId: value }, existingEntry.ID, "*");

@@ -1,4 +1,4 @@
-import { Driver } from "../types/assignDriversTypes";
+import { Driver } from "../types/driversAssignTypes";
 
 export const initDrivers = (numberOfDrivers: number) => {
     const drivers: Driver[] = [];

@@ -1,0 +1,59 @@
+import { Dayjs } from "dayjs";
+import {SPShuttleRequest} from "./spFetchTypes";
+export interface ShuttleRequest {
+    id: number;
+    requestedService: { results: number[] };
+    isReturnShuttleRequired: boolean;
+    shuttleDateTime: Dayjs;
+    stationId: number;
+    returnStationId?: number;
+}
+
+export interface Service{
+    id: number;
+    name: string;
+    isLatenessForbidden: boolean;
+    duration: number; // in minutes
+}
+ 
+export interface Station {
+    id: number;
+    title: string;
+    area: string;
+    stationOrder: number; // order of the station in the route
+    distance?: number; // distance from the previous station in km
+}
+
+export interface StationWithTravelTime extends Station {
+    travelTime: number; // travel time to the next station in minutes
+}
+
+export interface SPShuttle{
+  StartTime: Dayjs;
+  ArrivalTime: Dayjs;
+  Details: string;
+  RequestsId: number[];
+  driverDataId: number | null;
+  totalDistance: number;
+};
+
+export interface SPShuttleDetailsPerRequest {
+    Id: number;
+    PickupTime: Date;
+    ArrivalTime: Date;
+}
+
+export interface Route {
+    id: number;
+    sourceId?: number;
+    destinationId?: number;
+    travelTime: number; // in minutes
+    distance: number; // in km
+}
+
+export interface CreateShuttlesParams {
+    shuttleRequests: SPShuttleRequest[];
+    services: Service[];
+    stations: Station[];
+    routes: Route[];
+}
