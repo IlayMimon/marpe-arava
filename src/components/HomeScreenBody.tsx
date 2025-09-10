@@ -3,10 +3,8 @@ import { Button, message, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import useCreateShuttles from "../automation/autoMain";
 import { useHomePageContext } from "../contexts/HomePage";
 import { addItemToList, patchItemInList } from "../functions/postToSharepoint";
-import GetStatus from "../hooks/data/useGetStatus";
 import useGetTableColumns from "../hooks/useGetTableColumns";
 import useGetTableData from "../hooks/useGetTableData";
 import AddPatientModal, { PatientFormValues } from "./AddPatientModal";
@@ -16,6 +14,9 @@ import ShuttleAssignmentModal from "./ShuttleAssignmentModal/ShuttleAssignmentMo
 import ShuttleTableHeader from "./ShuttleTable/ShuttleTableHeader";
 import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
+import GetStatus from "../hooks/data/useGetStatus";
+import useCreateShuttles from "../automation/autoMain";
+import CustomEmpty from "./CustomEmpty/CustomEmpty";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -35,6 +36,10 @@ const HomeScreenBody = () => {
   const statusItem = statusData?.d.results[0];
   const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
   const isSucceeded = statusItem?.status === "succeeded";
+
+    let locale = {
+    emptyText: <CustomEmpty></CustomEmpty>,
+  };
 
   useEffect(() => {
     setIsShuttlesArranged(isToday && isSucceeded);
@@ -176,9 +181,10 @@ const HomeScreenBody = () => {
             handleChange={handleChangeDirection}
             tripDirection={tripDirection}
           />
-          {tripDirection === "outbound" ? (
+           {tripDirection === "outbound" ? (
             <Table
               locale={locale}
+              pagination={false}
               data={data}
               columns={columns}
               rowKey={(row) => row.id}
@@ -186,6 +192,7 @@ const HomeScreenBody = () => {
           ) : (
             <Table
               locale={locale}
+              pagination={false}
               data={data}
               columns={columns}
               rowKey={(row) => row.id}
