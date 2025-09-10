@@ -14,9 +14,6 @@ const { Option } = Select;
 const ShuttleAssignmentModal: React.FC<Props> = ({ visible, onCancel, onSubmit, setAutomationModalVisible, setVisible }) => {
   const [form] = Form.useForm();
   const [selectedMedic, setSelectedMedic] = React.useState<number | undefined>(undefined);
-
-  // const { shuttles } = useGetTomorrowShuttles();
-  // const shuttlesDetailsPerRequest = useGetTomorrowShuttleDetailsPerRequest();
   
   const validateTimeRange = (_: FormRule, endTime: Dayjs) => {
     const startTime = form.getFieldValue("startTime");
