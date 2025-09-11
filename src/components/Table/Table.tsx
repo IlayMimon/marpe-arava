@@ -5,6 +5,7 @@ import heIL from "antd/locale/he_IL";
 import { useState } from "react";
 import { useSortFilterTableData } from "../../hooks/useSortFilterTableData";
 import { GenericGroupedTableProps, RenderedCell } from "./TableTypes";
+import CustomEmpty from "./CustomEmpty";
 
 const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableProps<T>) => {
   const [sortInfo, setSortInfo] = useState<SorterResult<T>>({});
@@ -12,7 +13,11 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
 
   const newData = useSortFilterTableData(data, filteredInfo, sortInfo);
 
-  const handleChange = (_pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, sorter: SorterResult<T> | SorterResult<T>[]) => {
+  const handleChange = (
+    _pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<T> | SorterResult<T>[]
+  ) => {
     setFilteredInfo(filters);
     if (!Array.isArray(sorter)) {
       setSortInfo(sorter);
@@ -32,10 +37,10 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
       },
       sorter: col.sorter
         ? (a, b) => {
-          const aValue = a[col.dataIndex as keyof T];
-          const bValue = b[col.dataIndex as keyof T];
-          return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-        }
+            const aValue = a[col.dataIndex as keyof T];
+            const bValue = b[col.dataIndex as keyof T];
+            return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+          }
         : undefined,
       sortOrder: sortInfo?.columnKey === col.key ? sortInfo.order : null,
       render: (value: T[keyof T], record: T, index: number): RenderedCell => {
@@ -58,6 +63,7 @@ const Table = <T extends object>({ data, columns, rowKey }: GenericGroupedTableP
         pagination={false}
         onChange={handleChange}
         style={{ height: "100%", overflowY: "auto" }}
+        locale={{ emptyText: <CustomEmpty />  }}
       />
     </ConfigProvider>
   );
