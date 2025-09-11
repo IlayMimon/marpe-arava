@@ -1,28 +1,36 @@
-import { Menu } from "antd";
+import { Menu} from "antd";
 import { useState } from "react";
-import { TbDotsVertical, TbPencil, TbSend } from "react-icons/tb";
+import { TbDotsVertical, TbPencil, TbSend, TbTrash } from "react-icons/tb";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
 import { TableRow } from "./Table/TableTypes";
 import { TripDirection } from "./HomeScreenBody";
 import useGetShuttles from "../hooks/data/useGetShuttles";
+import DeletePatientModal from "./DeletePatientModal";
 
 interface RowActionsProps {
   rowData: TableRow;
   tripDirection: TripDirection;
 }
 
-const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
-  const [isEditPatientModalOpen, setisEditPatientModalOpen] = useState(false);
-  const { shuttles } = useGetShuttles();
+const RowActions = ({ rowData, tripDirection }: RowActionsProps) => { 
+ const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false);
+  const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] = useState(false);
+  const {  shuttles  } = useGetShuttles();
 
   const handleEditColumn = () => {
-    setisEditPatientModalOpen(true);
+    setIsEditPatientModalOpen(true);
   };
+
+  const handleDeletePatient = () => {
+    setIsDeletePatientModalOpen(true);
+  };
+
+
 
   const sendWhatsapp = async (values: PatientFormValues) => {
     const data = {
-      phone: `972${values.phone.slice(1)}`, // Remove the leading '0' and add country code
+      phone: `972${values.phone.slice(1)}`,
       time: values.pickupTime,
       name: values.fullName,
       station: values.pickupStation,
@@ -63,9 +71,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       RequestedServicesId: values.appointmentType,
       FullName: values.fullName,
       notes: values.notes,
-    };
-
-    const requestDetailsData = {
       ReturnDriverId: values.driver,
       PickupTime: values.pickupTime.toISOString(),
       FinishTime: values.finishTime.toISOString(),
@@ -85,24 +90,12 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     };
 
     try {
-      await patchItemInList(
-        "ShuttleDetailsPerRequest",
-        requestDetailsData,
-        rowData.requestDetailsId,
-        "*"
-      );
-    } catch (error) {
-      console.error("Error updating request details:", error);
-    }
-
-    try {
       await patchItemInList("ShuttleRequests", requestData, rowData.id, "*");
     } catch (error) {
       console.error("Error updating request:", error);
     }
 
     if (oldShuttle && newShuttle) {
-      console.log("Updating shuttles:", oldShuttle.ID, newShuttle.ID);
 
       try {
         await patchItemInList("Shuttles", oldShuttleData, oldShuttle.ID, "*");
@@ -117,7 +110,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       }
     }
 
-    setisEditPatientModalOpen(false);
+    setIsEditPatientModalOpen(false);
   };
 
   const items = [
@@ -137,6 +130,13 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           icon: <TbSend />,
           onClick: sendWhatsapp,
         },
+        {
+          key: "delete",
+          label: "מחק מטופל", 
+          icon: <TbTrash />,
+          onClick: handleDeletePatient,
+          danger: true, 
+        },
       ],
     },
   ];
@@ -144,12 +144,19 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
   return (
     <>
       <Menu style={{ width: 0 }} items={items} />
+      
       <EditPatientModal
         isOpen={isEditPatientModalOpen}
-        onClose={() => setisEditPatientModalOpen(false)}
+        onClose={() => setIsEditPatientModalOpen(false)}
         onSubmit={handleSubmitForm}
         initialValues={rowData}
         tripDirection={tripDirection}
+      />
+
+      <DeletePatientModal
+        isOpen={isDeletePatientModalOpen}
+        onClose={() => setIsDeletePatientModalOpen(false)}
+        rowData={rowData}
       />
     </>
   );

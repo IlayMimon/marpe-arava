@@ -68,7 +68,7 @@ const DriverFilterButton: React.FC<DriverFilterButtonProps> = ({
         </Dropdown>
       )}
 
-      <div className="driver-filter-button__kilometers">{`${Math.floor(kilometers)} ק"מ`}</div>
+      <div className="driver-filter-button__kilometers">{kilometers?`${kilometers.toFixed(1)} ק"מ`:""}</div>
     </div>
   );
 };
