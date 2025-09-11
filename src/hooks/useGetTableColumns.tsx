@@ -154,7 +154,9 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
       key: "actions",
       title: "פעולות",
       dataIndex: "actions",
-      render: (_value, row) => <RowActions rowData={row} tripDirection={tripDirection} />,
+      render: (_value, row) => (
+        <RowActions rowData={row} tripDirection={tripDirection} />
+      ),
     },
   ];
 
