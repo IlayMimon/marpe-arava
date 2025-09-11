@@ -16,6 +16,7 @@ import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
 import useCreateShuttles from "../automation/autoMain";
+import sendWhatsMessages from "../functions/sendWhatsAppMessages";
 
 export type TripDirection = "outbound" | "inbound";
 
@@ -42,7 +43,7 @@ const HomeScreenBody = () => {
   }, [isToday, isSucceeded]);
 
   const { selectedDate } = useHomePageContext();
-  const tableData = useGetTableData(searchFilter, tripDirection);
+  const tableData = useGetTableData(searchFilter, tripDirection); //FIX 
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
     // Combine appointmentTime with selectedDate to get full datetime
@@ -62,7 +63,6 @@ const HomeScreenBody = () => {
     };
 
     await addItemToList("ShuttleRequests", patientFormData);
-
     setEscortModalOpen(false);
   };
 
@@ -79,30 +79,7 @@ const HomeScreenBody = () => {
     setAutomationModalVisible(false);
   };
 
-  const sendWhatsMessages = async () => {
-    const messagesInfo = tableData
-      .filter((r) => r.status === "שובץ")
-      .map((row) => ({
-        phone: `972${row.phone.slice(1)}`, // Remove the leading '0' and add country code
-        time: row.pickupTime,
-        name: row.fullName,
-        station: row.station,
-        driver: row.driver,
-      }));
-
-    const res = await fetch("http://127.0.0.1:5000/send-message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(messagesInfo),
-    });
-
-    if (res.ok) {
-      alert("✅ Message sent!");
-    } else {
-      alert("❌ Failed to send message");
-    }
-  };
-
+  
   const columns = useGetTableColumns(tripDirection);
   
   const isSelectedDateTomorrow =
@@ -155,8 +132,7 @@ const HomeScreenBody = () => {
               icon={<IconSend />}
               onClick={() => {
                 setPopUpMsgOpen(false);
-
-                sendWhatsMessages();
+                sendWhatsMessages(tableData);
                 setMessagesAlreadySent(true);
               }}
               className="home-screen-body__header__left__button"

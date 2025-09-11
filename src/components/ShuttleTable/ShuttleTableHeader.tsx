@@ -1,8 +1,8 @@
-import { ConfigProvider, Flex, Segmented, Tooltip } from "antd";
-import { TripDirection } from "../HomeScreenBody";
-import { AiOutlineSearch } from 'react-icons/ai';
+import { ConfigProvider, Flex, Segmented } from "antd";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import classNames from "classnames";
+import GenericSearchBar from "../generic/searchBar";
+import { TripDirection } from "../HomeScreenBody";
+
 interface IShuttleTableHeaderProps {
   tripDirection: TripDirection;
   handleChange: (direction: TripDirection) => void;
@@ -11,7 +11,6 @@ interface IShuttleTableHeaderProps {
 
 export default function ShuttleTableHeader({ handleChange, tripDirection, setSearchFilter }: IShuttleTableHeaderProps) {
 
-  const [searchToggle, setSearchToggle] = useState(false)
   const [inputValue, setInputValue ] = useState('')
 
   useEffect(() => {
@@ -48,30 +47,7 @@ export default function ShuttleTableHeader({ handleChange, tripDirection, setSea
         </Flex>
       </ConfigProvider>
 
-      <div className="search-bar-container">
-        <div
-          className={classNames({ "search-bar-container--close-button": true, "search-bar-container--close-button-disabled": !searchToggle })}
-          onClick={() => { 
-            if (searchToggle) {
-              setInputValue('')
-              setSearchToggle(false)
-            }
-          }}
-        >✖</div>
-        <Tooltip title={!searchToggle && 'חיפוש בטבלה' || ''}>
-          <div
-            className={classNames({ "search-bar-container__active-button": true, "search-bar-container__active-button--active": !searchToggle })}
-            onClick={() => !searchToggle && setSearchToggle(true)}
-          >
-            <AiOutlineSearch className="search-bar-container__icon" />
-            <input
-              className={classNames({ "search-bar-container__active-button--search-bar": true, "search-bar-container__active-button--search-bar-disabled": !searchToggle })}
-              onChange={e => searchToggle && setInputValue(e.target.value)}
-              value={inputValue}
-            />
-          </div>
-        </Tooltip>
-      </div>
+      <GenericSearchBar inputValue={inputValue} setInputValue={setInputValue} />
     </div>
   );
 }

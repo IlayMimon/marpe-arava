@@ -1,6 +1,40 @@
 import { TableRow } from "../components/Table/TableTypes";
 import dayjs from "dayjs";
 
+const SEARCHABLE_KEYS: Record<"outbound" | "inbound", (keyof TableRow)[]> = {
+  outbound: [
+    "fullName",
+    "status",
+    "phone",
+    "appointmentType",
+    "rideId",
+    "station",
+    "area",
+    "pickupTime",
+    "estimatedArrival",
+    "desiredArrival",
+    "outboundGap",
+    "driver",
+    "notes",
+    "actions",
+  ],
+  inbound: [
+    "fullName",
+    "status",
+    "phone",
+    "returnStation",
+    "returnArea",
+    "estimatedFinish",
+    "finishTime",
+    "inboundTime",
+    "inboundGap",
+    "returnDriver",
+    "notes",
+    "actions",
+  ],
+};
+
+
 const filterDataBySearch = (
     searchFilter: string,
     data: TableRow[],
@@ -8,46 +42,7 @@ const filterDataBySearch = (
 ): TableRow[] => {
     const normalizedFilter = searchFilter.toLowerCase().trim();
 
-    const getKeys = (): (keyof TableRow)[] => {
-        switch (tripDirection) {
-            case "outbound":
-                return [
-                    "fullName",
-                    "status",
-                    "phone",
-                    "appointmentType",
-                    "rideId",
-                    "station",
-                    "area",
-                    "pickupTime",
-                    "estimatedArrival",
-                    "desiredArrival",
-                    "outboundGap",
-                    "driver",
-                    "notes",
-                    "actions",
-                ];
-            case "inbound":
-                return [
-                    "fullName",
-                    "status",
-                    "phone",
-                    "returnStation",
-                    "returnArea",
-                    "estimatedFinish",
-                    "finishTime",
-                    "inboundTime",
-                    "inboundGap",
-                    "returnDriver",
-                    "notes",
-                    "actions",
-                ];
-            default:
-                return [];
-        }
-    };
-
-    const keys = getKeys();
+    const keys = SEARCHABLE_KEYS[tripDirection];
 
     const filteredRows = normalizedFilter
         ? data.filter((row) =>
