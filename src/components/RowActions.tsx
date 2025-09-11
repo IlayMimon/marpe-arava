@@ -28,19 +28,11 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
 
 
 
-  const sendWhatsapp = async (values: PatientFormValues) => {
-    const data = {
-      phone: `972${values.phone.slice(1)}`,
-      time: values.pickupTime,
-      name: values.fullName,
-      station: values.pickupStation,
-      driver: values.driver,
-    };
-
+  const sendWhatsapp = async (values: TableRow) => {
     const res = await fetch("http://127.0.0.1:5000/send-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(values),
     });
 
     if (res.ok) {
@@ -113,7 +105,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     setIsEditPatientModalOpen(false);
   };
 
-  const items = [
+ const items = (row: TableRow) => [
     {
       key: "options",
       icon: <TbDotsVertical />,
@@ -128,7 +120,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           key: "2",
           label: "שליחת הודעה",
           icon: <TbSend />,
-          onClick: sendWhatsapp,
+           onClick: () => sendWhatsapp(row),
         },
         {
           key: "delete",
@@ -143,7 +135,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
 
   return (
     <>
-      <Menu style={{ width: 0 }} items={items} />
+      <Menu style={{ width: 0 }} items={items(rowData)} />
       
       <EditPatientModal
         isOpen={isEditPatientModalOpen}
