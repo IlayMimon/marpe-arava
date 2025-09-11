@@ -1,23 +1,29 @@
-import { Menu } from "antd";
+import { Menu} from "antd";
 import { useState } from "react";
-import { TbDotsVertical, TbPencil } from "react-icons/tb";
+import { TbDotsVertical, TbPencil, TbTrash } from "react-icons/tb";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
 import { TableRow } from "./Table/TableTypes";
 import { TripDirection } from "./HomeScreenBody";
 import useGetShuttles from "../hooks/data/useGetShuttles";
+import DeletePatientModal from "./DeletePatientModal";
 
 interface RowActionsProps {
   rowData: TableRow;
   tripDirection: TripDirection;
 }
 
-const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
-  const [isEditPatientModalOpen, setisEditPatientModalOpen] = useState(false);
-  const {shuttles} = useGetShuttles();
+const RowActions = ({ rowData, tripDirection }: RowActionsProps) => { 
+ const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false);
+  const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] = useState(false);
+  const { shuttles } = useGetShuttles();
 
   const handleEditColumn = () => {
-    setisEditPatientModalOpen(true);
+    setIsEditPatientModalOpen(true);
+  };
+
+  const handleDeletePatient = () => {
+    setIsDeletePatientModalOpen(true);
   };
 
   const handleSubmitForm = async (values: PatientFormValues) => {
@@ -61,7 +67,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     }
 
     if (oldShuttle && newShuttle) {
-      console.log("Updating shuttles:", oldShuttle.ID, newShuttle.ID);
 
       try {
         await patchItemInList("Shuttles", oldShuttleData, oldShuttle.ID, "*");
@@ -76,7 +81,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       }
     }
 
-    setisEditPatientModalOpen(false);
+    setIsEditPatientModalOpen(false);
   };
 
   const items = [
@@ -90,6 +95,13 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           icon: <TbPencil />,
           onClick: handleEditColumn,
         },
+        {
+          key: "delete",
+          label: "מחק מטופל", 
+          icon: <TbTrash />,
+          onClick: handleDeletePatient,
+          danger: true, 
+        },
       ],
     },
   ];
@@ -97,12 +109,19 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
   return (
     <>
       <Menu style={{ width: 0 }} items={items} />
+      
       <EditPatientModal
         isOpen={isEditPatientModalOpen}
-        onClose={() => setisEditPatientModalOpen(false)}
+        onClose={() => setIsEditPatientModalOpen(false)}
         onSubmit={handleSubmitForm}
         initialValues={rowData}
         tripDirection={tripDirection}
+      />
+
+      <DeletePatientModal
+        isOpen={isDeletePatientModalOpen}
+        onClose={() => setIsDeletePatientModalOpen(false)}
+        rowData={rowData}
       />
     </>
   );

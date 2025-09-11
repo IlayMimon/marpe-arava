@@ -22,7 +22,7 @@ const DriverOrganizationCardDetails = ({
     },
     {
       icon: <IconRoute2 className="driver-organization-card__details__icon" />,
-      text: `${driverData.distance.toString()} ק"מ`,
+      text: `${driverData.distance.toFixed(1)} ק"מ`,
     },
     {
       icon: <IconClock className="driver-organization-card__details__icon" />,
