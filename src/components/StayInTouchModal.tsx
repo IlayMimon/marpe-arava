@@ -4,7 +4,7 @@ import stayInTouch from "../assets/stayInTouch.svg";
 import BIDataLogo from "../assets/BIDataLogo.png";
 
 type IstayInTouchProps = {
-  setStayInTouchOpen: (open: boolean) => void;
+  setStayInTouchOpen: () => void;
   stayInTouchOpen: boolean;
 };
 const StayInTouchModal: React.FC<IstayInTouchProps> = ({
@@ -16,7 +16,7 @@ const StayInTouchModal: React.FC<IstayInTouchProps> = ({
       className="stay-in-touch-modal"
       title={<span className="stay-in-touch-modal--main-title">דברו איתנו</span>}
       open={stayInTouchOpen}
-      onCancel={() => setStayInTouchOpen(false)}
+      onCancel={setStayInTouchOpen}
       centered
       footer={null}
     >
