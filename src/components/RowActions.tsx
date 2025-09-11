@@ -67,7 +67,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     }
 
     if (oldShuttle && newShuttle) {
-      console.log("Updating shuttles:", oldShuttle.ID, newShuttle.ID);
 
       try {
         await patchItemInList("Shuttles", oldShuttleData, oldShuttle.ID, "*");

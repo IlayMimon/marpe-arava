@@ -4,7 +4,7 @@ import { TableRow } from "./Table/TableTypes";
 import useGetShuttles from "../hooks/data/useGetShuttles";
 import { useState } from "react";
 
-interface DeletePatientModalProps {
+interface IDeletePatientModalProps {
   isOpen: boolean;
   onClose: () => void;
   rowData: TableRow;
@@ -14,7 +14,7 @@ const DeletePatientModal = ({
   isOpen,
   onClose,
   rowData,
-}: DeletePatientModalProps) => {
+}: IDeletePatientModalProps) => {
   const { shuttles } = useGetShuttles();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -113,7 +113,6 @@ const DeletePatientModal = ({
         <p className="error-text">
           ⚠️ פעולה זו לא ניתנת לביטול
         </p>
-        {/* Remove debug info in production */}
       </div>
     </Modal>
   );
