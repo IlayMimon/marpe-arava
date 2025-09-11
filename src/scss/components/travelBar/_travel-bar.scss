@@ -95,24 +95,25 @@ $color-text-dark: #595959;
 
       &__header {
         height: 7.2rem;
-        gap: 2rem;
         padding: 1rem;
         cursor: pointer;
         display: flex;
-        justify-content: space-between;
         align-items: center;
         flex-direction: row;
       }
 
       &__trip-id {
-        font-size: 1.1rem;
-        color: $color-text-dark;
-        font-weight: 700;
+        padding-left: 2.5rem;
+        font-size: 1.3rem;
+        color: rgba(0, 0, 0, 0.88);;
       }
 
-      &__expand-icon {
-        color: $color-text-dark;
-      }
+   &__expand-icon {
+   width:2.5rem;
+  &__left {
+    color: rgba(0, 0, 0, 0.45) !important;
+  }
+}
 
       &__left {
         display: flex;
@@ -121,13 +122,15 @@ $color-text-dark: #595959;
 
       &__driver {
         font-size: 1.3rem;
-        margin-right: 0.75rem;
+        width:8rem;
+        text-align: left;
       }
 
       &__time {
         display: flex;
         align-items: center;
         font-size: 1.3rem;
+        color: rgba(0, 0, 0, 0.65);
 
         &__separator {
           display: flex;
@@ -139,21 +142,25 @@ $color-text-dark: #595959;
       }
 
       &__right {
-        text-align: right;
-        align-items: center;
+        text-align: center;
+        align-items: flex-end;
         justify-content: center;
         display: flex;
-        gap: 1rem;
+        gap: 0.5rem;
+        padding-right: 1rem;
+       width: 9rem;
       }
 
       &__location {
         font-size: 1.4rem;
         font-weight: 500;
-        width: 3rem;
+
       }
 
       &__type {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+        padding-right: 0.1rem;
+
       }
 
       &__color-indicator {
@@ -194,103 +201,140 @@ $color-text-dark: #595959;
         // Remove the continuous line pseudo-element
       }
 
-      &__station {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #f0f0f0;
-        gap: 5rem;
-        height: 3rem;
-        position: relative;
-        padding-right: 30px; // Space for the timeline dots
+    &__stations {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
 
-        &:last-child {
-          border-bottom: none;
-        }
+&__station {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 5rem;
+  height: 3rem;
+  position: relative;
+  padding-right: 30px;
 
-        // Station dot/circle
-        &::before {
-          content: "";
-          position: absolute;
-          right: 10px; // For RTL layout
-          top: 50%;
-          transform: translateY(-50%);
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background-color: var(--Colors-purple-3); // Default color, will be overridden
-          z-index: 2;
-        }
+  &:last-child {
+    border-bottom: none;
+  }
 
-        // Line segment - appears only between stations
-        &::after {
-          content: "";
-          position: absolute;
-          right: 13px; // Center aligned with the dots (for RTL)
-          top: 50%;
-          height: 100%; // Height to reach the next dot
-          width: 2px;
-          background-color: var(--Colors-purple-3); // Default color, will be overridden
-          z-index: 1;
-        }
+  // Default station dot - unfilled (border only)
+  &::before {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: white; // Make it transparent by default
+    border: 1px solid var(--Colors-purple-3); // Just border, no fill
+    z-index: 2;
+  }
 
-        // Remove line after the last item
-        &:last-child::after {
-          display: none;
-        }
+  // First station - filled dot
+  &:first-child::before {
+    background-color: var(--Colors-purple-3); // Fill the first dot
+    border: 2px solid var(--Colors-purple-3);
+  }
 
-        // Purple color styles
-        &--purple::before {
-          background-color: var(--Colors-purple-3);
-        }
+  // Last station - filled dot
+  &:last-child::before {
+    background-color: var(--Colors-purple-3); // Fill the last dot
+    border: 2px solid var(--Colors-purple-3);
+  }
 
-        &--purple::after {
-          background-color: var(--Colors-purple-3);
-        }
+  // Line segment between stations
+  &::after {
+    content: "";
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    height: 100%;
+    width: 2px;
+    background-color: var(--Colors-purple-3);
+    z-index: 1;
+  }
 
-        // cyan color styles
-        &--cyan::before {
-          background-color: var(--Colors-cyan-3);
-        }
+  &:last-child::after {
+    display: none;
+  }
 
-        &--cyan::after {
-          background-color: var(--Colors-cyan-3);
-        }
+  // Purple color styles
+  &--purple::before {
+    border-color: var(--Colors-purple-3);
+  }
+  
+  &--purple:first-child::before,
+  &--purple:last-child::before {
+    background-color: var(--Colors-purple-3);
+    border-color: var(--Colors-purple-3);
+  }
 
-        // orange color styles
-        &--orange::before {
-          background-color: var(--Colors-orange-3);
-        }
+  &--purple::after {
+    background-color: var(--Colors-purple-3);
+  }
 
-        &--orange::after {
-          background-color: var(--Colors-orange-3);
-        }
+  // Cyan color styles
+  &--cyan::before {
+    border-color: var(--Colors-cyan-3);
+  }
+  
+  &--cyan:first-child::before,
+  &--cyan:last-child::before {
+    background-color: var(--Colors-cyan-3);
+    border-color: var(--Colors-cyan-3);
+  }
 
-        &__passengers {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
+  &--cyan::after {
+    background-color: var(--Colors-cyan-3);
+  }
 
-          &__icon {
-            margin-right: 0.25rem;
-            color: $color-text-dark;
-          }
+  // Orange color styles
+  &--orange::before {
+    border-color: var(--Colors-orange-3);
+  }
+  
+  &--orange:first-child::before,
+  &--orange:last-child::before {
+    background-color: var(--Colors-orange-3);
+    border-color: var(--Colors-orange-3);
+  }
 
-          &__count {
-            font-size: 1.3rem;
-          }
-        }
+  &--orange::after {
+    background-color: var(--Colors-orange-3);
+  }
 
-        &__name {
-          font-size: 1.3rem;
-          font-weight: 500;
-          width: 12rem;
-        }
+  &__passengers {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
-        &__time {
-          font-size: 1.3rem;
-        }
-      }
+    &__icon {
+      margin-right: 0.25rem;
+      color: $color-text-dark;
+    }
+
+    &__count {
+      font-size: 1.3rem;
+    }
+  }
+
+  &__name {
+    font-size: 1.3rem;
+    font-weight: 500;
+    width: 12rem;
+  }
+
+  &__time {
+    font-size: 1.3rem;
+  }
+}
     }
   }
 }
