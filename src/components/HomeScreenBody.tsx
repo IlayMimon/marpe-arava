@@ -29,6 +29,8 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
+  
+  // Change this line to pass refreshKey:
   const { createShuttles} = useCreateShuttles();
 
   const { data: statusData } = GetStatus();
@@ -44,14 +46,20 @@ const HomeScreenBody = () => {
   const tableData = useGetTableData();
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
+    // Combine appointmentTime with selectedDate to get full datetime
+    const appointmentDateTime = dayjs(values.appointmentDate)
+      .hour(values.appointmentTime.hour())
+      .minute(values.appointmentTime.minute())
+
     const patientFormData = {
-      Time: values.appointmentTime.toISOString(),
+      Time: appointmentDateTime.toISOString(),
       StationId: values.pickupStation,
       Phone: values.phone,
       IsReturnShuttleRequired: !!values.dropoffStation,
       ReturnStationId: values.dropoffStation,
       RequestedServicesId: values.appointmentTypes,
       FullName: values.fullName,
+      notes: values.notes || "",
     };
 
     await addItemToList("ShuttleRequests", patientFormData);

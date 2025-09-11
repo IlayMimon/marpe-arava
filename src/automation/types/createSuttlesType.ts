@@ -37,12 +37,6 @@ export interface SPShuttle{
   totalDistance: number;
 };
 
-export interface SPShuttleDetailsPerRequest {
-    Id: number;
-    PickupTime: Date;
-    ArrivalTime: Date;
-}
-
 export interface Route {
     id: number;
     sourceId?: number;
