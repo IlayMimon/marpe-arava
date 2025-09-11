@@ -1,14 +1,26 @@
 import { ConfigProvider, Flex, Segmented } from "antd";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import GenericSearchBar from "../generic/searchBar";
 import { TripDirection } from "../HomeScreenBody";
+
 interface IShuttleTableHeaderProps {
   tripDirection: TripDirection;
   handleChange: (direction: TripDirection) => void;
+  setSearchFilter: Dispatch<SetStateAction<string>>;
 }
 
-export default function ShuttleTableHeader({
-  handleChange,
-  tripDirection,
-}: IShuttleTableHeaderProps) {
+export default function ShuttleTableHeader({ handleChange, tripDirection, setSearchFilter }: IShuttleTableHeaderProps) {
+
+  const [inputValue, setInputValue ] = useState('')
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearchFilter(inputValue);
+    }, 300);
+  
+    return () => clearTimeout(timeout);
+  }, [inputValue]);
+
   return (
     <div className="shuttle-table-header">
       <ConfigProvider direction="rtl">
@@ -34,6 +46,8 @@ export default function ShuttleTableHeader({
           />
         </Flex>
       </ConfigProvider>
+
+      <GenericSearchBar inputValue={inputValue} setInputValue={setInputValue} />
     </div>
   );
 }

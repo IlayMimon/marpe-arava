@@ -23,6 +23,7 @@
 @use "./components/travelBar/driver-filter-button";
 @use "./components/side-bar";
 @use "./components/shuttletable/shuttle-table-header";
+@use "./components/shuttletable/shuttle-table-search-bar";
 @use "./components/ShuttleAssignmentModal/ShuttleAssignmentModal";
 @use "./components/DriverOrganization/driver-organization";
 @use "./components/Table/table";
@@ -31,3 +32,4 @@
 @use "./components/stay-in-touch-modal";
 @use "./components/delete-patient-modal";
 @use "./components/Table/custom-empty";
+@use "./components/generic/search-bar";
