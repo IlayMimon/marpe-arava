@@ -28,6 +28,9 @@
   &__title {
     font-size: 2.4rem;
     font-weight: 500;
+    border-left: 0.15rem solid #d9d9d9;
+    padding-left: 1rem;
+    line-height: 1.6rem;
 
     &__container {
       display: flex;
@@ -37,11 +40,10 @@
 
     &__name {
       height: 1.6rem;
-      padding-left: 1rem;
 
       font-size: 2.4rem;
       line-height: 1.6rem;
-      border-left: 0.15rem solid #d9d9d9;
+
     }
   }
 }

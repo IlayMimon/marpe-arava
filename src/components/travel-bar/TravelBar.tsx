@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { ChevronDown, ChevronLeft, Users } from "lucide-react";
+import {Users } from "lucide-react";
+import {TbCaretLeftFilled,TbCaretDownFilled} from 'react-icons/tb'
 import { useEffect, useMemo, useState } from "react";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
@@ -220,12 +221,12 @@ const TravelBar = () => {
                     >
                       <div className="travel-bar__list__item__expand-icon">
                         {expandedTrips.includes(item.ID) ? (
-                          <ChevronDown size={16} />
+                          <TbCaretDownFilled  size={16} />
                         ) : (
-                          <ChevronLeft size={16} />
+                          <TbCaretLeftFilled  className="travel-bar__list__item__expand-icon__left" size={16} />
                         )}
                       </div>
-                      <div className="travel-bar__list__item__trip-id">{item.ID}#</div>
+                      <div className="travel-bar__list__item__trip-id"># {item.ID}</div>
 
                       <div className="travel-bar__list__item__left">
                         <div className="travel-bar__list__item__time">
