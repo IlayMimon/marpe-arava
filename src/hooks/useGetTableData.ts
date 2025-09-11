@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import { TableRow } from "../components/Table/TableTypes";
 import useGetDrivers from "./data/useGetDrivers";
 import useGetServices from "./data/useGetServices";
-import useGetShuttleDetailsPerRequest from "./data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "./data/useGetShuttleRequests";
 import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
@@ -12,28 +11,24 @@ import filterDataBySearch from "../functions/filterDataBySearch";
 const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[] => {
   const { shuttles } = useGetShuttles();
   const shuttleRequests = useGetShuttleRequests();
-  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const stations = useGetStations();
   const services = useGetServices();
   const drivers = useGetDrivers();
-  const patientsStatuses = patientsStatus({ shuttleDetailsPerRequest, shuttleRequests, shuttles });
+  const patientsStatuses = patientsStatus({ shuttleRequests, shuttles });
 
   const data =
     shuttleRequests?.map((request) => {
-      const requestDetails = shuttleDetailsPerRequest?.find(
-        (detail) => detail.RequestId === request.ID
-      );
 
       const shuttle = shuttles?.find((shuttle) =>
-        requestDetails ? shuttle?.RequestsId?.results.includes(requestDetails.ID) : false
+        request ? shuttle?.RequestsId?.results.includes(request.ID) : false
       );
       const pickupStation = stations?.find((station) => station.ID === request.StationId);
       const dropoffStation = stations?.find((station) => station.ID === request.ReturnStationId);
       const driver =
         shuttles?.find((shuttle) =>
-          requestDetails?.ID ? shuttle.RequestsId.results.includes(requestDetails.ID) : false
+          request?.ID ? shuttle.RequestsId.results.includes(request.ID) : false
         )?.Driver.Title || "";
-      const returnDriver = drivers?.find((driver) => driver.ID === requestDetails?.ReturnDriverId);
+      const returnDriver = drivers?.find((driver) => driver.ID === request?.ReturnDriverId);
       const requestedServices =
         request.RequestedServicesId?.results
           .map((serviceId) => services?.find((service) => service.ID === serviceId))
@@ -44,7 +39,7 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
 
       const basicPassangerData = {
         id: request.ID,
-        requestDetailsId: requestDetails?.ID || 0,
+        requestDetailsId: request?.ID || 0,
         shuttleId: shuttle?.ID || 0,
         fullName: request.FullName || "",
         status: status?.status || assignedStatusEnum.initial,
@@ -61,17 +56,17 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
         actions: "actions",
       };
 
-      const estimatedArrival = requestDetails?.ArrivalTime
+      const estimatedArrival = shuttle?.ArrivalTime
         ? dayjs(shuttle?.ArrivalTime)
         : undefined;
       const desiredArrival = dayjs(request?.Time);
-      const finishTime = requestDetails?.FinishTime ? dayjs(requestDetails?.FinishTime) : undefined;
-      const inboundTime = requestDetails?.InboundTime
-        ? dayjs(requestDetails?.InboundTime)
+      const finishTime = request?.FinishTime ? dayjs(request?.FinishTime) : undefined;
+      const inboundTime = request?.InboundTime
+        ? dayjs(request?.InboundTime)
         : undefined;
 
       const directionPassangerData = {
-        pickupTime: requestDetails?.PickupTime ? dayjs(requestDetails?.PickupTime) : undefined,
+        pickupTime: request?.PickupTime ? dayjs(request?.PickupTime) : undefined,
         estimatedArrival,
         desiredArrival,
         outboundGap: estimatedArrival?.diff(desiredArrival, "minute"),
