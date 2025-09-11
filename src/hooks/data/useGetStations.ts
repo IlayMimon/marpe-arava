@@ -10,7 +10,7 @@ export type Station = {
 
 const useGetStations = () => {
   const { data } = useQueryFetchRequest<SharepointQueryResultArray<Station>>(
-    "/_api/web/lists/getbytitle('Stations')/items?$select=ID,Title,Area,StationOrder",
+    "/_api/web/lists/getbytitle('Stations')/items?$select=ID,Title,Area,StationOrder"
   );
 
   const Stations = data?.d.results;

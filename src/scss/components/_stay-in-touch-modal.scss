@@ -1,0 +1,79 @@
+.stay-in-touch-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+
+  width: 60% !important;
+
+  font-family: Rubik;
+  text-align: center !important;
+
+  &--main-title {
+    color: rgba(0, 0, 0, 0.88);
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    margin-bottom: 5rem;
+
+    align-items: center;
+    text-align: center;
+
+    &--title {
+      color: rgba(0, 0, 0, 0.88);
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 500;
+    }
+
+    &--txt {
+      color: rgba(0, 0, 0, 0.65);
+      text-align: center;
+      font-size: 1.4rem;
+    }
+  }
+
+  &__contacts {
+    color: rgba(0, 0, 0, 0.65);
+    text-align: center;
+    font-size: 1.6rem;
+
+    &__phone {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+
+      align-items: center;
+      align-self: center;
+      justify-content: center;
+
+      &--blue {
+        color: rgb(22, 119, 255);
+      }
+
+      &--red {
+        color: rgb(245, 34, 45);
+      }
+    }
+  }
+
+  &--footer {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+}
