@@ -1,16 +1,14 @@
 import { StationInfo } from "../types/travelBar";
 import findRequestByShuttleId from "./findRequestByShuttleId";
 import { Shuttle } from "../hooks/data/useGetShuttles";
-import { ShuttleDetailsPerRequest } from "../hooks/data/useGetShuttleDetailsPerRequest";
-import { ShuttleRequests } from "../hooks/data/useGetShuttleRequests";
+import { ShuttleRequest } from "../hooks/data/useGetShuttleRequests";
 import { Station } from "../hooks/data/useGetStations";
 
 export const parseStations = (
   input: string,
   _arrivalTime: Date,
   shuttle: Shuttle,
-  shuttleDetailsPerRequest: ShuttleDetailsPerRequest[] | undefined,
-  shuttleRequests: ShuttleRequests[] | undefined,
+  shuttleRequests: ShuttleRequest[] | undefined,
   stations: Station[] | undefined
 ): StationInfo[] => {
   const fixTime = (rawTime: string): string => {
@@ -32,14 +30,8 @@ export const parseStations = (
 
     const passengers = shuttle.RequestsId.results
       .map((requestId) => {
-        const passenger = findRequestByShuttleId(
-          requestId,
-          shuttleDetailsPerRequest,
-          shuttleRequests
-        );
-        const station = stations?.find(
-          (station) => station.ID === passenger?.StationId
-        );
+        const passenger = findRequestByShuttleId(requestId, shuttleRequests);
+        const station = stations?.find((station) => station.ID === passenger?.StationId);
         if (passenger && station && station.Title === rawName) {
           return passenger.FullName;
         }

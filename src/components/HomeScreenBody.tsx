@@ -30,8 +30,6 @@ const HomeScreenBody = () => {
   const [tripDirection, setTripDirection] = useState<TripDirection>("outbound");
   const [escortModalOpen, setEscortModalOpen] = useState(false);
 
-  const { createShuttles} = useCreateShuttles();
-
   const { data: statusData } = GetStatus();
   const statusItem = statusData?.d.results[0];
   const isToday = dayjs(statusItem?.Modified).isSame(dayjs(), "day");
@@ -49,14 +47,20 @@ const HomeScreenBody = () => {
   const tableData = useGetTableData();
 
   const handleEscortSubmit = async (values: PatientFormValues) => {
+    // Combine appointmentTime with selectedDate to get full datetime
+    const appointmentDateTime = dayjs(values.appointmentDate)
+      .hour(values.appointmentTime.hour())
+      .minute(values.appointmentTime.minute())
+
     const patientFormData = {
-      Time: values.appointmentTime.toISOString(),
+      Time: appointmentDateTime.toISOString(),
       StationId: values.pickupStation,
       Phone: values.phone,
       IsReturnShuttleRequired: !!values.dropoffStation,
       ReturnStationId: values.dropoffStation,
       RequestedServicesId: values.appointmentTypes,
       FullName: values.fullName,
+      notes: values.notes || "",
     };
 
     await addItemToList("ShuttleRequests", patientFormData);
@@ -70,7 +74,7 @@ const HomeScreenBody = () => {
 
   const handleSubmit = async () => {
     patchItemInList("Status", { isOver: false, status: "failed", step: 0, isAssigned: false }, 1, "*");
-    await createShuttles();
+    await useCreateShuttles();
     message.success("שיבוץ הנסיעות בוצע בהצלחה");
     setIsShuttlesArranged(true);
     patchItemInList("Status", { isOver: true, status: "succeeded", step: 8, isAssigned: true }, 1, "*");
@@ -177,18 +181,9 @@ const HomeScreenBody = () => {
 
       <div className="home-screen-body__container">
         <div className="home-screen-body__container__body">
-          <ShuttleTableHeader
-            handleChange={handleChangeDirection}
-            tripDirection={tripDirection}
-          />
-           {tripDirection === "outbound" ? (
-            <Table
-              locale={locale}
-              pagination={false}
-              data={data}
-              columns={columns}
-              rowKey={(row) => row.id}
-            />
+          <ShuttleTableHeader handleChange={handleChangeDirection} tripDirection={tripDirection} />
+          {tripDirection === "outbound" ? (
+            <Table data={data} columns={columns} rowKey={(row) => row.id} />
           ) : (
             <Table
               locale={locale}

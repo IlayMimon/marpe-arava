@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { assignedStatusEnum, patientsStatus } from "../../functions/patientsStatus";
-import useGetShuttleDetailsPerRequest from "../../hooks/data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "../../hooks/data/useGetShuttleRequests";
 import useGetShuttles from "../../hooks/data/useGetShuttles";
 import SummarizeNumbers from "../SummarizeNumbers";
@@ -9,7 +8,6 @@ import getMatchingKpi from "./KpiGet";
 
 const Kpies = () => {
   const shuttleRequests = useGetShuttleRequests();
-  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const { shuttles } = useGetShuttles();
   const currentStations =
   shuttles &&
@@ -22,8 +20,8 @@ const Kpies = () => {
   )
 
   const patientStatuses = useMemo(
-    () => patientsStatus({ shuttleDetailsPerRequest, shuttles, shuttleRequests }),
-    [shuttleDetailsPerRequest, shuttles, shuttleRequests]
+    () => patientsStatus({ shuttles, shuttleRequests }),
+    [shuttles, shuttleRequests]
   );
 
   const statuses = Object.keys(assignedStatusEnum).map((assignedStatus) => {

@@ -12,65 +12,69 @@ const formatTime = (value: dayjs.Dayjs | undefined) => {
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
   const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
+  const stations = Array.from(new Set(useGetStations()?.map((station) => station.Title)));
 
   const directionColumns: TableColumn<TableRow>[] =
     tripDirection === "outbound"
       ? [
-        {
-          key: "appointmentType",
-          title: "סוג תור",
-          dataIndex: "appointmentType",
-          render: (types: string[]) => types?.join(", "),
-        },
-        {
-          key: "rideId",
-          title: "מס״ד נסיעה",
-          dataIndex: "rideId",
-          sorter: true,
-        },
-        {
-          key: "station",
-          title: "תחנה",
-          dataIndex: "station",
-        },
-        {
-          key: "area",
-          title: "אזור",
-          dataIndex: "area",
-          filters: areas.map((area) => ({ text: area, value: area })),
-          sorter: true,
-        },
-        {
-          key: "pickupTime",
-          title: "שעת איסוף",
-          dataIndex: "pickupTime",
-          render: (value) => formatTime(value),
-        },
-        {
-          key: "estimatedArrival",
-          title: "הגעה משוערת",
-          dataIndex: "estimatedArrival",
-          render: (value) => formatTime(value),
-        },
-        {
-          key: "desiredArrival",
-          title: "הגעה רצויה",
-          dataIndex: "desiredArrival",
-          render: (value) => formatTime(value),
-        },
-        {
-          key: "outboundGap",
-          title: "פער",
-          dataIndex: "outboundGap",
-          render: (value?: number) =>
-            value !== undefined ? <TimeDeviation value={value} /> : null,
-        },
-        {
-          key: "driver",
-          title: "נהג",
-          dataIndex: "driver",
-        },
-      ]
+          {
+            key: "appointmentType",
+            title: "סוג תור",
+            dataIndex: "appointmentType",
+            render: (types: string[]) => types?.join(", "),
+          },
+          {
+            key: "rideId",
+            title: "מס״ד נסיעה",
+            dataIndex: "rideId",
+            sorter: true,
+          },
+          {
+            key: "station",
+            title: "תחנה",
+            dataIndex: "station",
+            filters: stations.map((station) => ({ text: station, value: station })),
+            sorter: true,
+
+          },
+          {
+            key: "area",
+            title: "אזור",
+            dataIndex: "area",
+            filters: areas.map((area) => ({ text: area, value: area })),
+            sorter: true,
+          },
+          {
+            key: "pickupTime",
+            title: "שעת איסוף",
+            dataIndex: "pickupTime",
+            render: (value) => formatTime(value),
+          },
+          {
+            key: "estimatedArrival",
+            title: "הגעה משוערת",
+            dataIndex: "estimatedArrival",
+            render: (value) => formatTime(value),
+          },
+          {
+            key: "desiredArrival",
+            title: "הגעה רצויה",
+            dataIndex: "desiredArrival",
+            render: (value) => formatTime(value),
+          },
+          {
+            key: "outboundGap",
+            title: "פער",
+            dataIndex: "outboundGap",
+            render: (value?: number) =>
+              value !== undefined ? <TimeDeviation value={value} /> : null,
+          },
+          {
+            key: "driver",
+            title: "נהג",
+            dataIndex: "driver",
+          },
+        ]
       : [
         {
           key: "returnStation",

@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { ChevronDown, ChevronLeft, Users } from "lucide-react";
+import {Users } from "lucide-react";
+import {TbCaretLeftFilled,TbCaretDownFilled} from 'react-icons/tb'
 import { useEffect, useMemo, useState } from "react";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { TbChevronsLeft } from "react-icons/tb";
@@ -13,7 +14,6 @@ import DriverOrganization from "../DriverOrganization/DriverOrganization";
 import DriverFilterButton from "./DriverFilterButton";
 import { parseStations } from "../../functions/parseStations";
 import { patchItemInList } from "../../functions/postToSharepoint";
-import useGetShuttleDetailsPerRequest from "../../hooks/data/useGetShuttleDetailsPerRequest";
 import useGetShuttleRequests from "../../hooks/data/useGetShuttleRequests";
 import useGetStations from "../../hooks/data/useGetStations";
 
@@ -26,7 +26,6 @@ const TravelBar = () => {
   const drivers = useGetDrivers();
   const driversData = useGetDriversData();
   const { shuttles, refetch: refetchShuttles } = useGetShuttles();
-  const shuttleDetailsPerRequest = useGetShuttleDetailsPerRequest();
   const shuttleRequests = useGetShuttleRequests();
   const stations = useGetStations();
 
@@ -165,13 +164,13 @@ const TravelBar = () => {
             ...shuttle,
             code: shuttle.area,
             colorType: colors[shuttle.driverData.ID - 1],
-            stations: parseStations(shuttle.Details, shuttle.ArrivalTime, shuttle, shuttleDetailsPerRequest, shuttleRequests, stations)
+            stations: parseStations(shuttle.Details, shuttle.ArrivalTime, shuttle, shuttleRequests, stations)
           };
         }) as TravelItem[];
 
       setTravelItems(formattedShuttles);
     }
-  }, [colors, driverAssignments, shuttles, shuttleDetailsPerRequest, shuttleRequests, stations]);
+  }, [colors, driverAssignments, shuttles, shuttleRequests, stations]);
 
   return (
     <>
@@ -222,12 +221,12 @@ const TravelBar = () => {
                     >
                       <div className="travel-bar__list__item__expand-icon">
                         {expandedTrips.includes(item.ID) ? (
-                          <ChevronDown size={16} />
+                          <TbCaretDownFilled  size={16} />
                         ) : (
-                          <ChevronLeft size={16} />
+                          <TbCaretLeftFilled  className="travel-bar__list__item__expand-icon__left" size={16} />
                         )}
                       </div>
-                      <div className="travel-bar__list__item__trip-id">{item.ID}#</div>
+                      <div className="travel-bar__list__item__trip-id"># {item.ID}</div>
 
                       <div className="travel-bar__list__item__left">
                         <div className="travel-bar__list__item__time">
