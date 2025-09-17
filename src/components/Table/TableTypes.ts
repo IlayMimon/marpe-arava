@@ -52,7 +52,7 @@ export type TableRow = {
   driver: string;
   notes?: string;
   actions: string;
-  rideId: string | number;
+  rideId: number;
   returnDriver: string;
   returnArea: string;
   returnStation: string;
