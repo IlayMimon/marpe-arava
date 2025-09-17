@@ -58,6 +58,25 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
     return day < 1 || day > 3;
   };
 
+   const disabledTime = () => {
+    return {
+      disabledHours: () => {
+        const hours: number[] = [];
+        for (let i = 0; i < 24; i++) {
+          if (i < 8 || i > 18) hours.push(i);
+        }
+        return hours;
+      },
+      disabledMinutes: (hour: number) => {
+        if (hour === 18) {
+          // disable minutes 1–59 at 18:00 so only 18:00 is allowed
+          return Array.from({ length: 59 }, (_, i) => i + 1);
+        }
+        return [];
+      },
+    };
+  };
+
   const isFormValid = () => {
     return (
       !!fullName?.trim() &&
@@ -216,7 +235,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="שעת הגעה רצויה"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker  disabledTime={disabledTime} format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
 
             <Form.Item

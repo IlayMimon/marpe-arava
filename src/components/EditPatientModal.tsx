@@ -85,6 +85,25 @@ const EditPatientModal = ({
   const finishTime = Form.useWatch("finishTime", form);
   const inboundTime = Form.useWatch("inboundTime", form);
 
+   const disabledTime = () => {
+    return {
+      disabledHours: () => {
+        const hours: number[] = [];
+        for (let i = 0; i < 24; i++) {
+          if (i < 8 || i > 18) hours.push(i);
+        }
+        return hours;
+      },
+      disabledMinutes: (hour: number) => {
+        if (hour === 18) {
+          // disable minutes 1–59 at 18:00 so only 18:00 is allowed
+          return Array.from({ length: 59 }, (_, i) => i + 1);
+        }
+        return [];
+      },
+    };
+  };
+
   const shuttleRequest = useMemo(() => {
     return requests.find((request) => request.ID === initialValues.id);
   }, [requests, initialValues.id]);
@@ -317,7 +336,7 @@ const EditPatientModal = ({
               label="שעת הגעה רצויה"
               rules={[{ required: formTripDirection === "outbound", message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker disabledTime={disabledTime} format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
 
             <Form.Item
@@ -325,7 +344,7 @@ const EditPatientModal = ({
               label="שעת איסוף"
               rules={[{ required: formTripDirection === "outbound", message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker disabledTime={disabledTime} format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
           </div>
 
@@ -362,7 +381,7 @@ const EditPatientModal = ({
               label="שעת סיום"
               rules={[{ required: formTripDirection === "inbound", message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker disabledTime={disabledTime} format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
 
             <Form.Item
@@ -370,7 +389,7 @@ const EditPatientModal = ({
               label="שעת חזרה"
               rules={[{ required: formTripDirection === "inbound", message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker disabledTime={disabledTime} format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
           </div>
         </Form>
