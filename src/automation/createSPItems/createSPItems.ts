@@ -89,7 +89,6 @@ export async function creatSPItems(shuttleGroups: enrichShuttleGroup[]) {
   }
     const shuttlesWithDrivers = assignShuttlesToDrivers(SPSuttles, initDrivers(3))
     for (const shuttle of shuttlesWithDrivers) {
-      console.log("Creating SharePoint item for shuttle:", shuttle);
       await postToSharepoint<SharepointQueryResult<SPShuttle>>(`_api/web/lists/getbytitle('Shuttles')/items`, shuttle);
     }
 }

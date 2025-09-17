@@ -33,10 +33,6 @@ const getStationsOrders = (group: enrichShuttleGroup): { StationOrder: number; S
 
   return stationOrders;
 }
-// פונקציית עזר להמרת זמן בפורמט ISO והחסרת דקות
-const subtractMinutes = (dateString: dayjs.Dayjs, minutes: number): dayjs.Dayjs => {
-  return dayjs(dateString).subtract(minutes, 'minutes');
-}
 
 const getRoute = (currentStation: Station, prevStation: Station, routes: Route[]): Route => {
 

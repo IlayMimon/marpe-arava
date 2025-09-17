@@ -11,13 +11,6 @@ export default function CustomEmpty() {
         description={
           <Typography.Text className="custom-empty__content--text">
             אין מטופלים להצגה
-            <br />
-            <Typography.Text
-              type="secondary"
-              className="custom-empty__content--text-sub"
-            >
-              נסה להקל מעט את הסינונים
-            </Typography.Text>
           </Typography.Text>
         }
       ></Empty>

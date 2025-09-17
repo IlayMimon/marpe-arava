@@ -45,7 +45,7 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
         status: status?.status || assignedStatusEnum.initial,
         appointmentType: requestedServicesTitles,
         phone: (request?.Phone || "").replace(/-/g, ""),
-        rideId: shuttle?.ID || "",
+        rideId: shuttle?.ID,
         station: pickupStation?.Title || "",
         returnStation: dropoffStation?.Title || "",
         area: pickupStation?.Area || "",
