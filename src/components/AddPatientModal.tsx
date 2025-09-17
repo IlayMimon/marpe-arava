@@ -54,8 +54,16 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const stationsData = useGetStations();
 
   const disableDaysNotMonToWed = (current: Dayjs) => {
-    const day = current.day();
-    return day < 1 || day > 3;
+    const tomorrow = dayjs().add(1, "day").startOf("day");
+
+  // חסימת כל התאריכים לפני מחר
+  if (current < tomorrow) {
+    return true;
+  }
+
+  // השבתות למעט שני עד רביעי
+  const day = current.day(); // 0 = ראשון, 1 = שני ...
+  return day < 1 || day > 3;
   };
 
    const disabledTime = () => {
@@ -75,6 +83,10 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
         return [];
       },
     };
+  };
+
+  const disabledDate = (current: dayjs.Dayjs) => {
+    return current && current < dayjs().add(1, "day").startOf("day");
   };
 
   const isFormValid = () => {
@@ -227,7 +239,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="תאריך התור"
               rules={[{ required: true, message: "יש לבחור תאריך" }]}
             >
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableDaysNotMonToWed} />
+              <DatePicker  style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableDaysNotMonToWed} />
             </Form.Item>
 
             <Form.Item
