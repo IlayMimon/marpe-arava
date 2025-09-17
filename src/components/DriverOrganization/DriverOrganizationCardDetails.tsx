@@ -11,14 +11,21 @@ const DriverOrganizationCardDetails = ({
   driverData,
   index,
 }: DriverOrganizationCardDetailsProps) => {
+  console.log(driverData);
+
   const details = [
     {
       icon: <IconUserCircle className="driver-organization-card__details__icon" />,
       text: driverData.name || "נהג " + (index + 1).toString(),
     },
+
     {
       icon: <IconRoute className="driver-organization-card__details__icon" />,
-      text: driverData.paths.filter((path) => "pathId" in path).length.toString(),
+      text: (() => {
+        const pathWithId = driverData.paths.find((path) => "pathId" in path);
+        const stationCount = pathWithId?.stations.length ?? 0;
+        return stationCount > 0 ? (stationCount - 2).toString() : "0";
+      })(),
     },
     {
       icon: <IconRoute2 className="driver-organization-card__details__icon" />,
@@ -35,9 +42,9 @@ const DriverOrganizationCardDetails = ({
             return !times.length
               ? { first: "00:00", last: "00:00" }
               : {
-                  first: times[0],
-                  last: times[times.length - 1],
-                };
+                first: times[0],
+                last: times[times.length - 1],
+              };
           })
       ),
     },
