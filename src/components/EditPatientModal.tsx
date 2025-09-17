@@ -28,7 +28,7 @@ const { Option } = Select;
 export type PatientFormValues = {
   id: number;
   requestDetailsId: number;
-  rideId?: number;
+  rideId: string | number;
   fullName: string;
   phone: string;
   pickupStation?: number | null;
