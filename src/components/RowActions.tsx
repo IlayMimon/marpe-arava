@@ -1,5 +1,6 @@
 import { Menu } from "antd";
 import { useState } from "react";
+import dayjs from "dayjs";
 import { TbDotsVertical, TbPencil, TbSend, TbTrash } from "react-icons/tb";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
@@ -8,6 +9,7 @@ import { TripDirection } from "./HomeScreenBody";
 import useGetShuttles from "../hooks/data/useGetShuttles";
 import DeletePatientModal from "./DeletePatientModal";
 import sendWhatsMessages from "../functions/sendWhatsAppMessages";
+import { useHomePageContext } from "../contexts/HomePage";
 
 interface RowActionsProps {
   rowData: TableRow;
@@ -16,7 +18,8 @@ interface RowActionsProps {
 
 const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
   const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false);
-  const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] = useState(false);
+  const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] =
+    useState(false);
   const { shuttles } = useGetShuttles();
 
   const handleEditColumn = () => {
@@ -29,7 +32,9 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
 
   const handleSubmitForm = async (values: PatientFormValues) => {
     let oldShuttle;
-    const newShuttle = shuttles?.find((shuttle) => values.rideId === shuttle.ID);
+    const newShuttle = shuttles?.find(
+      (shuttle) => values.rideId === shuttle.ID
+    );
 
     if (!newShuttle?.RequestsId.results.includes(values.requestDetailsId)) {
       oldShuttle = shuttles?.find((shuttle) =>
@@ -58,7 +63,10 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
       ),
     };
     const newShuttleData = {
-      RequestsId: [...(newShuttle?.RequestsId.results || []), values.requestDetailsId],
+      RequestsId: [
+        ...(newShuttle?.RequestsId.results || []),
+        values.requestDetailsId,
+      ],
     };
 
     try {
@@ -84,6 +92,23 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     setIsEditPatientModalOpen(false);
   };
 
+  const { selectedDate } = useHomePageContext();
+
+    const isSelectedDateTomorrow =
+      selectedDate.isBefore(dayjs().add(1, "day").endOf("day")) &&
+      selectedDate.isAfter(dayjs().endOf("day"));
+
+  const shouldDisable = (tableData: TableRow) => {
+    if(!isSelectedDateTomorrow){
+      return true
+    }
+
+    if (tableData.status === "טרם שובץ") {
+      return true;
+    }
+    return false;
+  };
+
   const items = [
     {
       key: "options",
@@ -99,6 +124,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           key: "2",
           label: "שליחת הודעה",
           icon: <TbSend />,
+          disabled: shouldDisable(rowData),
           onClick: () => sendWhatsMessages([rowData]),
         },
         {
