@@ -53,18 +53,20 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const servicesData = useGetServices();
   const stationsData = useGetStations();
 
-  const disableDaysNotMonToWed = (current: Dayjs) => {
-    const tomorrow = dayjs().add(1, "day").startOf("day");
-
-  // חסימת כל התאריכים לפני מחר
-  if (current < tomorrow) {
+const disableAllExceptTomorrow = (current: Dayjs) => {
+  const tomorrow = dayjs().add(1, "day").startOf("day");
+  
+  // אם זה לא מחר - חסום
+  if (!current.isSame(tomorrow, 'day')) {
     return true;
   }
-
-  // השבתות למעט שני עד רביעי
-  const day = current.day(); // 0 = ראשון, 1 = שני ...
-  return day < 1 || day > 3;
-  };
+  
+  // בדוק אם מחר הוא יום עבודה (שני-רביעי)
+  const tomorrowDay = tomorrow.day(); // 0 = ראשון, 1 = שני, 2 = שלישי, 3 = רביעי...
+  
+  // חסום אם מחר לא יום שני (1), שלישי (2), או רביעי (3)
+  return tomorrowDay < 1 || tomorrowDay > 3;
+};
 
    const disabledTime = () => {
     return {
@@ -85,9 +87,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
     };
   };
 
-  const disabledDate = (current: dayjs.Dayjs) => {
-    return current && current < dayjs().add(1, "day").startOf("day");
-  };
+
 
   const isFormValid = () => {
     return (
@@ -239,7 +239,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="תאריך התור"
               rules={[{ required: true, message: "יש לבחור תאריך" }]}
             >
-              <DatePicker  style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableDaysNotMonToWed} />
+              <DatePicker  style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableAllExceptTomorrow} />
             </Form.Item>
 
             <Form.Item
