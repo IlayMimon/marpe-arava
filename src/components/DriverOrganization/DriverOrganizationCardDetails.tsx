@@ -11,7 +11,6 @@ const DriverOrganizationCardDetails = ({
   driverData,
   index,
 }: DriverOrganizationCardDetailsProps) => {
-  console.log(driverData);
 
   const details = [
     {

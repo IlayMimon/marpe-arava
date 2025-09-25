@@ -20,33 +20,16 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
   const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] = useState(false);
   const { shuttles } = useGetShuttles();
 
-  // Check if actions should be disabled
-  const isActionsDisabled = () => {
-    const today = dayjs();
-    const yesterday = today.subtract(1, 'day');
-    
-    // Get the date from rowData - adjust this based on which date field you want to use
-    // This could be pickupTime, desiredArrival, or any other date field from your row
-    const rowDate = dayjs(rowData.pickupTime || rowData.desiredArrival);
-    
-    // Actions are enabled only if the row date is yesterday
-    return !rowDate.isSame(yesterday, 'day');
-  };
-
-  const actionsDisabled = isActionsDisabled();
-
+  
   const handleEditColumn = () => {
-    if (actionsDisabled) return;
     setIsEditPatientModalOpen(true);
   };
 
   const handleDeletePatient = () => {
-    if (actionsDisabled) return;
     setIsDeletePatientModalOpen(true);
   };
 
   const handleSendMessage = () => {
-    if (actionsDisabled) return;
     sendWhatsMessages([rowData]);
   };
 
@@ -117,14 +100,12 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           label: "ערוך מטופל",
           icon: <TbPencil />,
           onClick: handleEditColumn,
-          disabled: actionsDisabled,
         },
         {
           key: "2",
           label: "שליחת הודעה",
           icon: <TbSend />,
           onClick: handleSendMessage,
-          disabled: actionsDisabled,
         },
         {
           key: "delete",
@@ -132,7 +113,6 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           icon: <TbTrash />,
           onClick: handleDeletePatient,
           danger: true,
-          disabled: actionsDisabled,
         },
       ],
     },
