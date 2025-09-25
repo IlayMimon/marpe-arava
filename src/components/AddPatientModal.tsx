@@ -56,8 +56,8 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
 const disableAllExceptTomorrow = (current: Dayjs) => {
   const tomorrow = dayjs().add(1, "day").startOf("day");
   
-  // אם זה לא מחר - חסום
-  if (!current.isSame(tomorrow, 'day')) {
+  // אם זה לא מחר או אחרי - חסום
+  if (!(current.isSame(tomorrow, 'day') || current.isAfter(tomorrow, 'day'))) {
     return true;
   }
   
