@@ -7,8 +7,9 @@ import useGetShuttles from "./data/useGetShuttles";
 import useGetStations from "./data/useGetStations";
 import { assignedStatusEnum, patientsStatus } from "../functions/patientsStatus";
 import filterDataBySearch from "../functions/filterDataBySearch";
+import { getStationTime } from "../functions/getStationTime";
 
-const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[] => {
+const useGetTableData = (searchFilter: string, tripDirection: string): TableRow[] => {
   const { shuttles } = useGetShuttles();
   const shuttleRequests = useGetShuttleRequests();
   const stations = useGetStations();
@@ -18,7 +19,6 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
 
   const data =
     shuttleRequests?.map((request) => {
-
       const shuttle = shuttles?.find((shuttle) =>
         request ? shuttle?.RequestsId?.results.includes(request.ID) : false
       );
@@ -56,17 +56,13 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
         actions: "actions",
       };
 
-      const estimatedArrival = shuttle?.ArrivalTime
-        ? dayjs(shuttle?.ArrivalTime)
-        : undefined;
+      const estimatedArrival = shuttle?.ArrivalTime ? dayjs(shuttle?.ArrivalTime) : undefined;
       const desiredArrival = dayjs(request?.Time);
       const finishTime = request?.FinishTime ? dayjs(request?.FinishTime) : undefined;
-      const inboundTime = request?.InboundTime
-        ? dayjs(request?.InboundTime)
-        : undefined;
+      const inboundTime = request?.InboundTime ? dayjs(request?.InboundTime) : undefined;
 
       const directionPassangerData = {
-        pickupTime: request?.PickupTime ? dayjs(request?.PickupTime) : undefined,
+        pickupTime: getStationTime(pickupStation?.Title || "", shuttle?.Details || ""),
         estimatedArrival,
         desiredArrival,
         outboundGap: estimatedArrival?.diff(desiredArrival, "minute"),
@@ -81,7 +77,9 @@ const useGetTableData = (searchFilter: string, tripDirection:string): TableRow[]
       return passengerData;
     }) || [];
 
-    const filteredData = searchFilter ? filterDataBySearch(searchFilter, data, tripDirection as "outbound" | "inbound") : data;
+  const filteredData = searchFilter
+    ? filterDataBySearch(searchFilter, data, tripDirection as "outbound" | "inbound")
+    : data;
 
   return filteredData;
 };
