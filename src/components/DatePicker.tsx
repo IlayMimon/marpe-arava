@@ -10,7 +10,7 @@ import { useHomePageContext } from "../contexts/HomePage";
 dayjs.extend(customParseFormat);
 dayjs.locale("he");
 
-const allowedDays = [1, 2, 3, 5]; // Sunday, Monday, Tuesday
+const allowedDays = [1, 2, 3]; // Sunday, Monday, Tuesday
 
 const DatePicker = () => {
   const { selectedDate, setSelectedDate } = useHomePageContext();

@@ -1,7 +1,6 @@
 import { Menu } from "antd";
 import { useState } from "react";
 import { TbDotsVertical, TbPencil, TbSend, TbTrash } from "react-icons/tb";
-import dayjs from "dayjs";
 import { patchItemInList } from "../functions/postToSharepoint";
 import EditPatientModal, { PatientFormValues } from "./EditPatientModal";
 import { TableRow } from "./Table/TableTypes";
