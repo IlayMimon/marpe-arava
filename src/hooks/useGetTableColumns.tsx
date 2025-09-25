@@ -11,7 +11,9 @@ const formatTime = (value: dayjs.Dayjs | undefined) => {
 };
 
 const useGetTableColumns = (tripDirection: TripDirection) => {
-  const areas = Array.from(new Set(useGetStations()?.map((station) => station.Area)));
+  const areas = Array.from(
+    new Set(useGetStations()?.map((station) => `${station.Area}${station.StationOrder}`))
+  );
   const stations = Array.from(new Set(useGetStations()?.map((station) => station.Title)));
 
   const directionColumns: TableColumn<TableRow>[] =
@@ -35,7 +37,6 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
             dataIndex: "station",
             filters: stations.map((station) => ({ text: station, value: station })),
             sorter: true,
-
           },
           {
             key: "area",
@@ -76,49 +77,49 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
           },
         ]
       : [
-        {
-          key: "returnStation",
-          title: "תחנת חזרה",
-          dataIndex: "returnStation",
-        },
-        {
-          key: "returnArea",
-          title: "אזור חזרה",
-          dataIndex: "returnArea",
-          filters: areas.map((area) => ({ text: area, value: area })),
-          sorter: true,
-        },
-        {
-          key: "estimatedFinish",
-          title: "סיום משוער",
-          dataIndex: "estimatedFinish",
-          render: (value) => formatTime(value),
-        },
-        {
-          key: "finishTime",
-          title: "שעת סיום",
-          dataIndex: "finishTime",
-          render: (value) => formatTime(value),
-        },
-        {
-          key: "inboundTime",
-          title: "שעת חזרה",
-          dataIndex: "inboundTime",
-          render: (value) => formatTime(value),
-        },
-        {
-          key: "inboundGap",
-          title: "פער",
-          dataIndex: "inboundGap",
-          render: (value?: number) =>
-            value !== undefined ? <TimeDeviation value={value} /> : null,
-        },
-        {
-          key: "returnDriver",
-          title: "נהג",
-          dataIndex: "returnDriver",
-        },
-      ];
+          {
+            key: "returnStation",
+            title: "תחנת חזרה",
+            dataIndex: "returnStation",
+          },
+          {
+            key: "returnArea",
+            title: "אזור חזרה",
+            dataIndex: "returnArea",
+            filters: areas.map((area) => ({ text: area, value: area })),
+            sorter: true,
+          },
+          {
+            key: "estimatedFinish",
+            title: "סיום משוער",
+            dataIndex: "estimatedFinish",
+            render: (value) => formatTime(value),
+          },
+          {
+            key: "finishTime",
+            title: "שעת סיום",
+            dataIndex: "finishTime",
+            render: (value) => formatTime(value),
+          },
+          {
+            key: "inboundTime",
+            title: "שעת חזרה",
+            dataIndex: "inboundTime",
+            render: (value) => formatTime(value),
+          },
+          {
+            key: "inboundGap",
+            title: "פער",
+            dataIndex: "inboundGap",
+            render: (value?: number) =>
+              value !== undefined ? <TimeDeviation value={value} /> : null,
+          },
+          {
+            key: "returnDriver",
+            title: "נהג",
+            dataIndex: "returnDriver",
+          },
+        ];
 
   const columns: TableColumn<TableRow>[] = [
     {
@@ -137,7 +138,7 @@ const useGetTableColumns = (tripDirection: TripDirection) => {
         { text: "בוטל", value: "בוטל" },
       ],
       sorter: true,
-      render: (status) => getMatchingKpi({title:status, value:'', inline:true}),
+      render: (status) => getMatchingKpi({ title: status, value: "", inline: true }),
     },
     {
       key: "phone",
