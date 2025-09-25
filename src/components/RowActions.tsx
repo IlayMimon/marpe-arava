@@ -22,12 +22,17 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
     useState(false);
   const { shuttles } = useGetShuttles();
 
+  
   const handleEditColumn = () => {
     setIsEditPatientModalOpen(true);
   };
 
   const handleDeletePatient = () => {
     setIsDeletePatientModalOpen(true);
+  };
+
+  const handleSendMessage = () => {
+    sendWhatsMessages([rowData]);
   };
 
   const handleSubmitForm = async (values: PatientFormValues) => {
@@ -125,7 +130,7 @@ const RowActions = ({ rowData, tripDirection }: RowActionsProps) => {
           label: "שליחת הודעה",
           icon: <TbSend />,
           disabled: shouldDisable(rowData),
-          onClick: () => sendWhatsMessages([rowData]),
+          onClick: handleSendMessage,
         },
         {
           key: "delete",

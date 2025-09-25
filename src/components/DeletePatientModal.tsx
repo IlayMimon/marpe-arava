@@ -111,8 +111,11 @@ const DeletePatientModal = ({
           <strong>{rowData.fullName}</strong>?
         </p>
         <p className="error-text">
-          ⚠️ פעולה זו לא ניתנת לביטול
+           פעולה זו לא ניתנת לביטול ⚠️ 
         </p>
+            <p className="error-text">
+במידה ומחקת מטופל יש להריץ את האוטומציה מחדש
+        </p>       
       </div>
     </Modal>
   );

@@ -53,10 +53,41 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
   const servicesData = useGetServices();
   const stationsData = useGetStations();
 
-  const disableDaysNotMonToWed = (current: Dayjs) => {
-    const day = current.day();
-    return day < 1 || day > 3;
+const disableAllExceptTomorrow = (current: Dayjs) => {
+  const tomorrow = dayjs().add(1, "day").startOf("day");
+  
+  // אם זה לא מחר או אחרי - חסום
+  if (!(current.isSame(tomorrow, 'day') || current.isAfter(tomorrow, 'day'))) {
+    return true;
+  }
+  
+  // בדוק אם מחר הוא יום עבודה (שני-רביעי)
+  const tomorrowDay = tomorrow.day(); // 0 = ראשון, 1 = שני, 2 = שלישי, 3 = רביעי...
+  
+  // חסום אם מחר לא יום שני (1), שלישי (2), או רביעי (3)
+  return tomorrowDay < 1 || tomorrowDay > 3;
+};
+
+   const disabledTime = () => {
+    return {
+      disabledHours: () => {
+        const hours: number[] = [];
+        for (let i = 0; i < 24; i++) {
+          if (i < 8 || i > 18) hours.push(i);
+        }
+        return hours;
+      },
+      disabledMinutes: (hour: number) => {
+        if (hour === 18) {
+          // disable minutes 1–59 at 18:00 so only 18:00 is allowed
+          return Array.from({ length: 59 }, (_, i) => i + 1);
+        }
+        return [];
+      },
+    };
   };
+
+
 
   const isFormValid = () => {
     return (
@@ -208,7 +239,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="תאריך התור"
               rules={[{ required: true, message: "יש לבחור תאריך" }]}
             >
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableDaysNotMonToWed} />
+              <DatePicker  style={{ width: "100%" }} format="DD/MM/YY" disabledDate={disableAllExceptTomorrow} />
             </Form.Item>
 
             <Form.Item
@@ -216,7 +247,7 @@ const AddPatientModal = ({ isOpen: visible, onClose, onSubmit }: IAddPatientModa
               label="שעת הגעה רצויה"
               rules={[{ required: true, message: "יש לבחור שעה" }]}
             >
-              <TimePicker format="HH:mm" style={{ width: "100%" }} showNow={false} />
+              <TimePicker  disabledTime={disabledTime} format="HH:mm" style={{ width: "100%" }} showNow={false} />
             </Form.Item>
 
             <Form.Item
