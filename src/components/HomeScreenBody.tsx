@@ -16,7 +16,7 @@ import Table from "./Table/Table";
 import TravelBar from "./travel-bar/TravelBar";
 import GetStatus from "../hooks/data/useGetStatus";
 import useCreateShuttles from "../automation/autoMain";
-import sendWhatsMessages from "../functions/sendWhatsAppMessages";
+import sendWhatsMessages from "../functions/sendSmsMessages";
 
 export type TripDirection = "outbound" | "inbound";
 

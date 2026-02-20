@@ -8,7 +8,7 @@ import { TableRow } from "./Table/TableTypes";
 import { TripDirection } from "./HomeScreenBody";
 import useGetShuttles from "../hooks/data/useGetShuttles";
 import DeletePatientModal from "./DeletePatientModal";
-import sendWhatsMessages from "../functions/sendWhatsAppMessages";
+import sendWhatsMessages from "../functions/sendSmsMessages";
 import { useHomePageContext } from "../contexts/HomePage";
 
 interface RowActionsProps {
