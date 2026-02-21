@@ -12,14 +12,26 @@ interface HebrewDateTime {
   time_il: Date;
 }
 
-function sendSmsMessages(tableData: TableRow[]) {
+async function sendSmsMessages(tableData: TableRow[]) {
 
   const senderName = 'MarpeArava'
-  // username: 'marpearava',
-  // password: 'Marpearava123!',
+  const username = 'marpearava'
+  const password = 'Marpearava123!'
   const apiToken = ''
 
+
+  if (tableData.some(row => !row.phone)) {
+    return { status: "error", message: "Some Recipients Are Missing Phone", code: 400 }
+  }
+  if (tableData.some(row => !row.pickupTime)) {
+    return { status: "error", message: "Some Recipients Are Missing pickupTime", code: 400 }
+  }
+
   const convertTimeToHebrew = (timeUtcIso: Dayjs): HebrewDateTime => {
+    if (!timeUtcIso) {
+      console.log('no time !')
+    }
+
     const hebrewDays: Record<string, string> = {
       'Sunday': 'ראשון', 'Monday': 'שני', 'Tuesday': 'שלישי',
       'Wednesday': 'רביעי', 'Thursday': 'חמישי',
@@ -48,73 +60,62 @@ function sendSmsMessages(tableData: TableRow[]) {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////
-
   const mappedRecipients = tableData
     .filter((r) => r.status === "שובץ")
-    .map((row) => ({
-      let rowTimeHeb = convertTimeToHebrew(row.pickupTime),
-
-      Phone: row.phone,
-      FirstName: row.fullName,
-      Station: row.station,
-      Weekday_he: rowTimeHeb.weekday_he,
-      Day: rowTimeHeb.time_il.day,
-      Month_he: rowTimeHeb.month_he,
-      Year: rowTimeHeb.time_il.year,
-      Hour_minute: rowTimeHeb.time_il.strftime('%H:%M'),
-    }))
-
-
-  for (const details of mappedRecipients) {
-    const phone = details.phone
-    if (!phone) {
-      return { status: "error", message: "Missing phone", code: 400 }
-    }
-    if (!details.time) {
-      return { status: "error", message: "Missing time", code: 400 }
-    }
-
-    const { weekday_he, month_he, time_il } = convertTimeToHebrew(details.time)
-
-
-    const recipientsParamList = 
-
-
-    const cellcomRes = await fetch('https://capi.inforu.co.il/api/v2/SMS/SendSms', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        {
-          Message: encodeURIComponent(
-            `שלום [#FirstName#],\n` +
-            `השאטל שלך מ[#Station#] נקבע בהצלחה ליום [#Weekday_he#], ` +
-            `[#Day#] ב[#Month_he#] [#Year#] בשעה [#Hour_minute#].\n` +
-            `אם יש שינוי או שאלה — אפשר לפנות אלינו בכל עת.\n` +
-            `נסיעה טובה! 🚐`
-          ),
-          Recipients: [
-            {
-              "Phone": "0541234567",
-              "FirstName": "Jon",
-              "Station": "Smith",
-              "Weekday_he": "David",
-              "Day": "David",
-              "Month_he": "David",
-              "Year": "David",
-              "Hour_minute": "David",
-            },
-          ]
-        }
-      ),
+    .map((row) => {
+      const rowTimeHeb = convertTimeToHebrew(row.pickupTime!) // theres a null check in the beginning of the funciton
+      const date = rowTimeHeb.time_il
+      const hourMinute = dayjs(date).format('HH:mm')
+      return {
+        Phone: row.phone,
+        FirstName: row.fullName,
+        Station: row.station,
+        Weekday_he: rowTimeHeb.weekday_he,
+        Day: date.getDate(),
+        Month_he: rowTimeHeb.month_he,
+        Year: date.getFullYear(),
+        Hour_minute: hourMinute,
+      }
     })
 
-    console.log("🌐 Sent messages to recipients! response:", cellcomRes)
+  const cellcomRes = await fetch('https://capi.inforu.co.il/api/v2/SMS/SendSms', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      {
+        Message: encodeURIComponent(
+          `שלום [#FirstName#],\n` +
+          `השאטל שלך מ[#Station#] נקבע בהצלחה ליום [#Weekday_he#], ` +
+          `[#Day#] ב[#Month_he#] [#Year#] בשעה [#Hour_minute#].\n` +
+          `אם יש שינוי או שאלה — אפשר לפנות אלינו בכל עת.\n` +
+          `נסיעה טובה! 🚐`
+        ),
+        Recipients: [
+          mappedRecipients
+        ],
+        Settings:{
+          "Sender": senderName,
+          "CampaignName": "Marpe Arava",
+          // "TimeToSend": "2022-11-13 13:00:00",
+          // "DelayInSeconds": 10,
+          // "CustomerMessageID": "AF7864348",
+          // "CustomerParameter": "sms",
+          // "DeliveryNotificationUrl": "https://mysite.co.il/DeliveryNotification.aspx",
+          "Priority": 0,
+          "MaxSegments": 0,
+          "IgnoreUnsubscribeCheck": false,
+          // "ExpireDate": "2022-11-13 13:00:00",
+          // "IgnorePossibleSendingTime": false,
+          // "CheckTimeRestiction": false,
+          // "ShortenUrlEnable": true,
+          // "AllowDuplicates": false,
+          // "TrackPurchaseTData": true
+        }
+      }
+    ),
+  })
 
-    await new Promise(res => setTimeout(res, 2000))
-  }
-
-  return { status: "success", message: "All messages sent!" }
+  console.log("🌐 Sent messages to recipients! response:", cellcomRes)
 }
 
 export default sendSmsMessages;
@@ -312,3 +313,55 @@ if __name__ == '__main__':
 
 
  */
+
+    //////////////////////////////////////
+
+    /*
+
+
+    
+fetch('https://capi.inforu.co.il/api/v2/SMS/SendSms', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      {
+        Message: encodeURIComponent(
+          `שלום [#FirstName#],\n` +
+          `השאטל שלך מ[#Station#] נקבע בהצלחה ליום [#Weekday_he#], ` +
+          `[#Day#] ב[#Month_he#] [#Year#] בשעה [#Hour_minute#].\n` +
+          `אם יש שינוי או שאלה — אפשר לפנות אלינו בכל עת.\n` +
+          `נסיעה טובה! 🚐`
+        ),
+        Recipients: {
+        Phone: "0586150204",
+        FirstName: "גל",
+        Station: "הבית של גל",
+        Weekday_he: "ראשון",
+        Day: "29",
+        Month_he: "אפריל",
+        Year: "2026",
+        Hour_minute: "10:34",
+        },
+        Settings:{
+          "Sender": senderName,
+          "CampaignName": "Marpe Arava",
+          // "TimeToSend": "2022-11-13 13:00:00",
+          // "DelayInSeconds": 10,
+          // "CustomerMessageID": "AF7864348",
+          // "CustomerParameter": "sms",
+          // "DeliveryNotificationUrl": "https://mysite.co.il/DeliveryNotification.aspx",
+          "Priority": 0,
+          "MaxSegments": 0,
+          "IgnoreUnsubscribeCheck": false,
+          // "ExpireDate": "2022-11-13 13:00:00",
+          // "IgnorePossibleSendingTime": false,
+          // "CheckTimeRestiction": false,
+          // "ShortenUrlEnable": true,
+          // "AllowDuplicates": false,
+          // "TrackPurchaseTData": true
+        }
+      }
+    )
+    
+
+     */
