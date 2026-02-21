@@ -1,7 +1,11 @@
 import { TableRow } from "../components/Table/TableTypes";
+import dayjs, { Dayjs } from "dayjs";
+
 
 
 // https://cellsms.cellcom.co.il/SmsGate2.asmx/SendSmsEx?username=user&password=pass&target=0521234567&source=1234&message=Test&pushUrl=&validity=1&replace=false&immediate=false&isBinary=false&deliveryReceipt=true&maxSegments=0
+// response is number of amount that got the message (eg. : "2")\
+// %20 = space // %0D%0A = \n
 interface HebrewDateTime {
   weekday_he: string;
   month_he: string;
@@ -10,19 +14,12 @@ interface HebrewDateTime {
 
 function sendSmsMessages(tableData: TableRow[]) {
 
-  const mappedRecipients = tableData
-    .filter((r) => r.status === "שובץ")
-    .map((row) => ({
-      username: 'marpearava',
-      password: 'Marpearava123!',
-      target: row.phone,
-      time: row.pickupTime,
-      name: row.fullName,
-      station: row.station,
-      driver: row.driver,
-    }))
+  const senderName = 'MarpeArava'
+  // username: 'marpearava',
+  // password: 'Marpearava123!',
+  const apiToken = ''
 
-  const convertTimeToHebrew = (timeUtcIso: string): HebrewDateTime => {
+  const convertTimeToHebrew = (timeUtcIso: Dayjs): HebrewDateTime => {
     const hebrewDays: Record<string, string> = {
       'Sunday': 'ראשון', 'Monday': 'שני', 'Tuesday': 'שלישי',
       'Wednesday': 'רביעי', 'Thursday': 'חמישי',
@@ -36,61 +33,91 @@ function sendSmsMessages(tableData: TableRow[]) {
       'October': 'אוקטובר', 'November': 'נובמבר', 'December': 'דצמבר'
     }
 
-    // Parse ISO and add 3 hours (3 * 60 * 60 * 1000 ms)
-    const timeUtc = new Date(timeUtcIso)
-    const timeIl = new Date(timeUtc.getTime() + (3 * 60 * 60 * 1000))
+    // Parse ISO and add 3 hours using the .add() method
+    const timeUtc = dayjs(timeUtcIso)
+    const timeIl = timeUtc.add(3, 'hour')
 
     // Use Intl to get the English names for mapping
-    const weekdayEn = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(timeIl)
-    const monthEn = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(timeIl)
+    const weekdayEn = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(timeIl.toDate())
+    const monthEn = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(timeIl.toDate())
 
     return {
       weekday_he: hebrewDays[weekdayEn],
       month_he: hebrewMonths[monthEn],
-      time_il: timeIl
+      time_il: timeIl.toDate()
     }
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////
 
-  function createMessage(details: { name: string, station: string }, weekday_he: string, month_he: string, time_il: Date) {
-    const hour_minute = time_il.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
-    const day = time_il.getDate();
-    const year = time_il.getFullYear();
+  const mappedRecipients = tableData
+    .filter((r) => r.status === "שובץ")
+    .map((row) => ({
+      let rowTimeHeb = convertTimeToHebrew(row.pickupTime),
 
-    return (
-      `שלום ${details['name']},\n` +
-      `השאטל שלך מ${details['station']} נקבע בהצלחה ליום ${weekday_he}, ` +
-      `${day} ב${month_he} ${year} בשעה ${hour_minute}.\n` +
-      `אם יש שינוי או שאלה — אפשר לפנות אלינו בכל עת.\n` +
-      `נסיעה טובה! 🚐`
-    );
-  }
+      Phone: row.phone,
+      FirstName: row.fullName,
+      Station: row.station,
+      Weekday_he: rowTimeHeb.weekday_he,
+      Day: rowTimeHeb.time_il.day,
+      Month_he: rowTimeHeb.month_he,
+      Year: rowTimeHeb.time_il.year,
+      Hour_minute: rowTimeHeb.time_il.strftime('%H:%M'),
+    }))
 
-  function sendMessage() {
-    try {
 
-    } catch (e: any) {
-      console.error("❌ Error:", e);
-      return { status: "error", message: e.message, code: 500 };
-    } finally {
-      console.log("🧹 Browser closed");
+  for (const details of mappedRecipients) {
+    const phone = details.phone
+    if (!phone) {
+      return { status: "error", message: "Missing phone", code: 400 }
+    }
+    if (!details.time) {
+      return { status: "error", message: "Missing time", code: 400 }
     }
 
+    const { weekday_he, month_he, time_il } = convertTimeToHebrew(details.time)
+
+
+    const recipientsParamList = 
+
+
+    const cellcomRes = await fetch('https://capi.inforu.co.il/api/v2/SMS/SendSms', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        {
+          Message: encodeURIComponent(
+            `שלום [#FirstName#],\n` +
+            `השאטל שלך מ[#Station#] נקבע בהצלחה ליום [#Weekday_he#], ` +
+            `[#Day#] ב[#Month_he#] [#Year#] בשעה [#Hour_minute#].\n` +
+            `אם יש שינוי או שאלה — אפשר לפנות אלינו בכל עת.\n` +
+            `נסיעה טובה! 🚐`
+          ),
+          Recipients: [
+            {
+              "Phone": "0541234567",
+              "FirstName": "Jon",
+              "Station": "Smith",
+              "Weekday_he": "David",
+              "Day": "David",
+              "Month_he": "David",
+              "Year": "David",
+              "Hour_minute": "David",
+            },
+          ]
+        }
+      ),
+    })
+
+    console.log("🌐 Sent messages to recipients! response:", cellcomRes)
+
+    await new Promise(res => setTimeout(res, 2000))
   }
 
-  const res = await fetch("https://cellsms.cellcom.co.il/SmsGate2.asmx/SendSmsEx", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(messagesInfo),
-  });
-
-  if (res.ok) {
-    alert("✅ Message sent!");
-  } else {
-    alert("❌ Failed to send message");
-  }
+  return { status: "success", message: "All messages sent!" }
 }
-export default sendMessage;
+
+export default sendSmsMessages;
 
 
 /*
